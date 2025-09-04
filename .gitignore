@@ -1,0 +1,51 @@
+# Archivos de registro de compilación
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+*.glsdefs
+#*.idx
+#*.ilg
+#*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.pdf
+*.thm
+*.toc
+tfg.pdf
+
+# Archivos de metadatos y de salida intermedia
+*.acn
+#*.acr
+#*.alg
+*.glo
+#*.gls
+*.ist
+
+# Archivos temporales y backup
+#*.dvi
+#*.nav
+#*.pdfsync
+#*.snm
+*.synctex.gz
+#*.vrb
+
+# Archivos de salida final
+#*.eps
+#*.ps
+
+
+# Archivos de edición y respaldo (por si usas editores que los generan)
+#*~
+#*.bak
+#*.backup
+
+# Carpetas de compilación
+#_build/
+
+# Proyecto de referencia
+Original Referencia/

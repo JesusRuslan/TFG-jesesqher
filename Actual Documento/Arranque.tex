@@ -1,0 +1,28 @@
+%!TEX root =  tfg.tex
+\chapter{Arranque}
+
+\begin{quotation} [Empresario] {Sam Walton (1918--1992)}
+Tener grandes expectativas es la clave de todo.
+\end{quotation}
+
+\begin{abstract}
+Vamos a explicar el comienzo del proyecto, definiendo las características que dispondrá nuestra aplicación, así como el diseño arquitectónico definido.
+\end{abstract}
+
+\section{Lista de características}
+
+Esta es la primera iteración de funcionalidades que se han desarrollado:
+\section{Diseño arquitectónico}
+\label{sec:arquitectura}
+Descripción de los sistemas de producción, preproducción y pruebas.
+En cuanto al diseño arquitectónico es imprescindible que hablemos de los sistemas de producción. preproducción y pruebas.
+
+Empecemos por el primero de los mentados, en el contexto de los sistemas de producción seguiremos un proceso iterativo en el que produciremos un PMV funcional y seguiremos iterando definiendo mejoras a ese PMV para la finalización del proyecto en su totalidad.
+
+En cuanto a los sistemas de preproducción del Back-End, seguiremos una metodología de \emph{git flow}, para ello tendremos una rama de develop en el que se subirán todos los cambios en el código fuente, cada cambio o funcionalidad se deberá crear una rama cuyo nombre sea la funcionalidad a implementar con la nomenclatura correcta para cada caso, una vez implementada la funcionalidad o solucionado el error, se comprobará en el despliegue local, una vez se haya asegurado el correcto funcionamiento de el código producido se subirá la rama con los cambios al repositorio desde el que se realizará una \emph{pull request} para la integración en la rama de \emph{develop}.
+
+Cuando el Back-End esté producido completamente, se realizará una \emph{pull request} con todo el código producido a la rama de \emph{master} para, en el despliegue con el nombre definitivo, donde se realizarán las peticiones http para el acceso a los datos desde el Front-End desarrollado para la aplicación web.
+
+En el caso del despliegue para el Front-End en aplicación web se utilizará Netlify, ya que nos ofrece un plan gratuito que nos brinda unas características más que suficientes para el correcto funcionamiento de la aplicación.
+
+Por último en cuanto al sistema de pruebas, se deberán hacer en los dos lados del sistema, primero en cuanto a las pruebas que se harán en el Back-End, se harán pruebas unitarias, de todos los servicios y controladores del sistema, para la realización de estas pruebas se han tomado las clases y dividido a la mitad, Daniel ha realizado las pruebas de los siguientes servicios, tareas; en cuanto a los controladores, ha realizado pruebas notificación, tarea, invitación . Por otro lado, se deberán hacer pruebas también del Front-End, en este aspecto se han decidido realizar pruebas de componentes que aseguren el correcto funcionamiento de las redirecciones y respuestas del sistema en la aplicación web.

@@ -1,0 +1,339 @@
+\chapter{Iteración 5}
+
+\begin{quotation}[Empresario]{Steve Jobs (1955--2011)}
+El diseño no es solo lo que ves, sino cómo funciona.
+\end{quotation}
+
+\begin{abstract}
+En este capítulo reflejaremos todos y cada uno de los costes que se han de reflejar a la hora de desarrollar el proyecto así como la relación de funcionalidades que se desarrollan con estos costes.
+\end{abstract}
+
+\section{Características a desarrollar}
+
+\begin{enumerate}
+\item Funcionalidad 1: Generación de notificaciones. Ver Tabla \ref{tab:valor1AportadoIteracion5}.
+\item Funcionalidad 2: Asignación de tareas a equipos. Ver Tabla \ref{tab:valor2AportadoIteracion5}.
+\item Funcionalidad 3: Asignación de tareas a uno mismo. Ver Tabla \ref{tab:valor3AportadoIteracion5}.
+\item Funcionalidad 4: Creación de tareas a un equipo particular. Ver Tabla \ref{tab:valor4AportadoIteracion5}.
+\item Funcionalidad 5: Obtención de tareas asignadas a un usuario registrado. Ver Tabla \ref{tab:valor5AportadoIteracion5}.
+\item Funcionalidad 6: Volver mánager o asociado a un usuario de un equipo. Ver Tabla \ref{tab:valor6AportadoIteracion5}.
+\item Funcionalidad 7: Algoritmo de asignación de tareas. Ver Tabla \ref{tab:valor7AportadoIteracion5}.
+\end{enumerate}
+
+%----------------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Análisis de valor aportado 0001}
+\textbf{Propuesta}&Se pretende desarrollar la funcionalidad para generar las notificaciones al invitar a un equipo y asignar una tarea a un compañero de un equipo al que administres.\\
+\midrule
+\textbf{Valor}&El valor aportado es poder visualizar las notificaciones que se generan al realizar algunas de las acciones mencionadas anteriormente.\\
+\textbf{Coste}&Se requiere la participación de ambos miembros del equipo desarrollador para llevar a cabo la implementación.\\
+\textbf{Opciones}&Esta funcionalidad tiene un valor alto en la aplicación.\\
+\textbf{Riesgos}&La no correcta generación de las notificaciones al realizar algunas de las acciones mencionadas anteriormente.\\
+\textbf{Deuda técnica}&Se ha elegido la solución más factible para el desarrollo de la misma.\\
+	\end{coolTable}
+	\caption{Análisis de valor aportado 0001\label{tab:valor1AportadoIteracion5}}
+\end{table*}
+%----------------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Análisis de valor aportado 0002}
+\textbf{Propuesta}&Se pretende desarrollar la funcionalidad de asignar tareas a un equipo.\\
+\midrule
+\textbf{Valor}&El valor aportado es poder asignar las tareas creadas por los usuarios a un equipo concreto.\\
+\textbf{Coste}&Se requiere la participación de ambos miembros del equipo desarrollador para llevar a cabo la implementación.\\
+\textbf{Opciones}&Esta funcionalidad tiene un valor prioritario en la aplicación.\\
+\textbf{Riesgos}&La posibilidad de no poder asignar la tarea al equipo de forma satisfactoria.\\
+\textbf{Deuda técnica}&Se ha elegido la solución más factible para el desarrollo de la misma.\\
+	\end{coolTable}
+	\caption{Análisis de valor aportado 0002\label{tab:valor2AportadoIteracion5}}
+\end{table*}
+%----------------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Análisis de valor aportado 0003}
+\textbf{Propuesta}&Se pretende desarrollar la funcionalidad de asignarse las tareas a uno mismo.\\
+\midrule
+\textbf{Valor}&El valor aportado es poder asignarse las tareas creadas por uno mismo o una tarea creada por otro usuario.\\
+\textbf{Coste}&Se requiere la participación de ambos miembros del equipo desarrollador para llevar a cabo la implementación.\\
+\textbf{Opciones}&Esta funcionalidad tiene un valor prioritario en la aplicación.\\
+\textbf{Riesgos}&La posibilidad de no poder realizar la asignación de tareas de forma satisfactoria.\\
+\textbf{Deuda técnica}&Se ha elegido la solución más factible para el desarrollo de la misma.\\
+	\end{coolTable}
+	\caption{Análisis de valor aportado 0003\label{tab:valor3AportadoIteracion5}}
+\end{table*}
+
+%----------------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Análisis de valor aportado 0004}
+\textbf{Propuesta}&Se pretende desarrollar la funcionalidad de crear tareas para un equipo en particular.\\
+\midrule
+\textbf{Valor}&El valor aportado es poder crear las tareas para un equipo en particular.\\
+\textbf{Coste}&Se requiere la participación de ambos miembros del equipo desarrollador para llevar a cabo la implementación.\\
+\textbf{Opciones}&Esta funcionalidad tiene un valor prioritario en la aplicación.\\
+\textbf{Riesgos}&La posibilidad de no poder crear tareas para un equipo de forma satisfactoria.\\
+\textbf{Deuda técnica}&Se ha elegido la solución más factible para el desarrollo de la misma.\\
+	\end{coolTable}
+	\caption{Análisis de valor aportado 0004\label{tab:valor4AportadoIteracion5}}
+\end{table*}
+
+%---------------------------------------------------------------------------------------------------------- 
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Análisis de valor aportado 0005}
+\textbf{Propuesta}&Se pretende desarrollar la funcionalidad de obtener las tareas asignadas de un usuario registrado.\\
+\midrule
+\textbf{Valor}&El valor aportado es poder obtener las tareas asignadas de un usuario registrado.\\
+\textbf{Coste}&Se requiere la participación de ambos miembros del equipo desarrollador para llevar a cabo la implementación.\\
+\textbf{Opciones}&Esta funcionalidad tiene un valor prioritario en la aplicación.\\
+\textbf{Riesgos}&La no correcta visualización de las tareas asignadas a un usuario registrado.\\
+\textbf{Deuda técnica}&Se ha elegido la solución más factible para el desarrollo de la misma.\\
+	\end{coolTable}
+	\caption{Análisis de valor aportado 0005\label{tab:valor5AportadoIteracion5}}
+\end{table*}
+
+%---------------------------------------------------------------------------------------------------------- 
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Análisis de valor aportado 0006}
+\textbf{Propuesta}&Se pretende desarrollar la funcionalidad de volver mánager o asociado a un usuario de un equipo.\\
+\midrule
+\textbf{Valor}&El valor aportado es poder ascender un usuario de asociado a mánager o descender un mánager a lista de asociados.\\
+\textbf{Coste}&Se requiere la participación de ambos miembros del equipo desarrollador para llevar a cabo la implementación.\\
+\textbf{Opciones}&Esta funcionalidad tiene un valor alto en la aplicación.\\
+\textbf{Riesgos}&La no correcta asignación del usuario, ya sea de asociado a mánager o viceversa.\\
+\textbf{Deuda técnica}&Se ha elegido la solución más factible para el desarrollo de la misma.\\
+	\end{coolTable}
+	\caption{Análisis de valor aportado 0006\label{tab:valor6AportadoIteracion5}}
+\end{table*}
+
+%---------------------------------------------------------------------------------------------------------- 
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Análisis de valor aportado 0007}
+\textbf{Propuesta}&Se pretende desarrollar un algoritmo que ordene y asigne un horario a cada tarea a desarrollar por un  usuario\\
+\midrule
+\textbf{Valor}&El valor aportado es la asignación temporal de las tareas.\\
+\textbf{Coste}&Se requiere la participación de ambos miembros del equipo desarrollador para llevar a cabo la implementación.\\
+\textbf{Opciones}&Esta funcionalidad tiene un valor prioritario en la aplicación.\\
+\textbf{Riesgos}&La asignación no eficiente de las tareas así como la no asignación de las mismas.\\
+\textbf{Deuda técnica}&Se ha elegido la solución más factible para el desarrollo de la misma aunque podría mejorarse la complejidad del algoritmo reduciendo su tiempo de ejecución.\\
+	\end{coolTable}
+	\caption{Análisis de valor aportado 0007\label{tab:valor7AportadoIteracion5}}
+\end{table*}
+
+\clearpage
+
+\section{Diseño}
+
+Esto es comparable en la siguiente figura. \ref{fig:diseno05}.
+
+\begin{figure}[htbp]
+\begin{center}
+
+\includegraphics[width=\textwidth]{figures/UML-iteracion-5.jpg}
+\caption{Diagrama UML de diseño para la iteración 5}
+\label{fig:diseno05}
+\end{center}
+\end{figure}
+
+\clearpage
+Se pretende añadir un nuevo modelo de las notificaciones, estas deberán tener una relación con un usuario que recibirá una notificación.
+
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0001}
+\textbf{Asunto}&Diseño del modelo Tarea.\\
+\textbf{Resumen}&Se ha diseñado un modelo de Tarea que contenga los elementos necesarios para nuestra definición de esta; título, descripción, fechas de inicio y fin, duración, priorización si está terminada o no, la estimación de la finalización de la tarea, además contaremos con el creador de la tarea, el usuario asignado a la tarea y el equipo de la tarea si esta tuviera.\\
+\midrule
+\textbf{Factores causantes}&La relación entre modelos, ya que la clase Tarea cuenta con una asociación tanto con el modelo Equipo como con el modelo Usuario, así como los datos que requerimos que estos tengan asignados para el proyecto. \\
+\textbf{Solución}&El modelo resultante asigna un tipo de dato para cada uno de los campos así como las relaciones que no pueden ser nulas en ningún momento por la concepción del modelo de Tarea como pueden ser el nombre o el creador.\\
+\textbf{Motivación}&Un modelo que contenga los datos necesarios para un correcto procesamiento de las tareas.\\
+\textbf{Cuestiones abiertas}& La correcta relación entre tablas y completitud de los atributos.\\
+\textbf{Alternativas}&Se valoraron otras alternativas de relaciones, pero la dispuesta es la que se consideró más óptima tanto a niveles de implementación como de seguridad.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0001}
+\end{table*}
+
+%-----------------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0002}
+\textbf{Asunto}&Diseño del modelo Equipo.\\
+\textbf{Resumen}&Se ha diseñado un modelo de Equipo que contenga los elementos necesarios para nuestra definición de esta; nombre, además contaremos con el creador del equipo, lista de asociados, así como de la lista de managers.\\
+\midrule
+\textbf{Factores causantes}&La relación entre modelos, ya que la clase Equipo cuenta con una asociación con el modelo Usuario, así como los datos que requerimos que estos tengan asignados para el proyecto.\\
+\textbf{Solución}&El modelo resultante asigna un tipo de dato para cada uno de los campos.\\
+\textbf{Motivación}&Un modelo que contenga los datos necesarios para un correcto procesamiento de los equipos.\\
+\textbf{Cuestiones abiertas}& La correcta relación entre tablas y completitud de los atributos.\\
+\textbf{Alternativas}&Dado a la tecnología utilizada la manera de llevar a cabo esta relación entre tablas es la más óptima.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0002}
+\end{table*}
+
+%-------------------------------------------------------------------------------------------------------
+
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0003}
+\textbf{Asunto}&Diseño del modelo Usuario.\\
+\textbf{Resumen}&Se ha diseñado un modelo de Usuario que contenga los elementos necesarios para nuestra definición de este; nombre, apellidos, correo electrónico, la hora de inicio de su jornada laboral, hora de fin de la jornada laboral, nombre de usuario, contraseña, una lista de equipos y un atributo boolean que denota si este ha iniciado sesión.\\
+\midrule
+\textbf{Factores causantes}&La relación entre modelos, ya que la clase Usuario cuenta con dos asociaciones con el modelo Tarea y con el modelo Equipo, así como los datos que requerimos que estos tengan asignados para el proyecto.\\
+\textbf{Solución}&El modelo resultante asigna un tipo de dato para cada uno de los campos.\\
+\textbf{Motivación}&Un modelo que contenga los datos necesarios para un correcto procesamiento de las Usuario.\\
+\textbf{Cuestiones abiertas}&La correcta relación entre tablas y completitud de los atributos.\\
+\textbf{Alternativas}&Se valoraron otras alternativas de relaciones, pero la dispuesta es la que se consideró más óptima tanto a niveles de implementación como de seguridad.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0003}
+\end{table*}
+
+%----------------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0004}
+\textbf{Asunto}&Diseño del modelo Invitación.\\
+\textbf{Resumen}&Se ha diseñado un modelo de Invitación que contenga los elementos necesarios para nuestra definición de esta; mensaje, estado, además contaremos con el usuario invitado, así como el equipo al que pertenece la invitación.\\
+\midrule
+\textbf{Factores causantes}&La relación entre modelos, ya que la clase Invitación cuenta con una asociación con el modelo Usuario y con una asociación con el modelo Equipo, así como los datos que requerimos que estos tengan asignados para el proyecto.\\
+\textbf{Solución}&El modelo resultante asigna un tipo de dato para cada uno de los campos.\\
+\textbf{Motivación}&Un modelo que contenga los datos necesarios para un correcto procesamiento de las invitaciones.\\
+\textbf{Cuestiones abiertas}& La correcta relación entre tablas y completitud de los atributos.\\
+\textbf{Alternativas}&Dado a la tecnología utilizada la manera de llevar a cabo esta relación entre tablas es la más óptima.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0004}
+\end{table*}
+
+%------------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0005}
+\textbf{Asunto}&Diseño del modelo Notificación.\\
+\textbf{Resumen}&Se ha diseñado un modelo de Notificación que contenga los elementos necesarios para nuestra definición de esta; mensaje, estado, tipo de notificación, además contaremos con el usuario invitado, así como el equipo al que pertenece la invitación.\\
+\midrule
+\textbf{Factores causantes}&La relación entre modelos, ya que la clase Notificación cuenta con una asociación con el modelo Usuario, así como los datos que requerimos que estos tengan asignados para el proyecto.\\
+\textbf{Solución}&El modelo resultante asigna un tipo de dato para cada uno de los campos.\\
+\textbf{Motivación}&Un modelo que contenga los datos necesarios para un correcto procesamiento de las notificaciones.\\
+\textbf{Cuestiones abiertas}& La correcta relación entre tablas y completitud de los atributos.\\
+\textbf{Alternativas}&Dado a la tecnología utilizada la manera de llevar a cabo esta relación entre tablas es la más óptima.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0005}
+\end{table*}
+
+%------------------------------------------------------------------------------------------------------
+
+\clearpage
+
+\section{Implementación}
+
+En esta sección se va a realizar un memorando técnico por cada decisión de implementación y refactorización que afecte al diseño.
+
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0001}
+\textbf{Asunto}&La creación de la clase Tarea.\\
+\textbf{Resumen}&Se han definido los siguientes atributos para la clase Tarea que son los necesarios para mostrar los datos que queremos.\\
+\midrule
+\textbf{Factores causantes}&La relación entre tablas, ya que la clase Tarea cuenta con una asociación tanto con la clase Equipo como con la clase Usuario. \\
+\textbf{Solución}&La solución llevada a cabo tiene la utilización de las anotaciones que proporciona JPA, para gestionar las relaciones entre dos tablas. En este caso para la relación entre Tarea y Equipo será \textbf{@ManyToOne} y para la relación entre Tarea y Usuario será \textbf{@OneToOne}.\\
+\textbf{Motivación}&Ya conocíamos esta forma de relacionar las tablas.\\
+\textbf{Cuestiones abiertas}& La correcta relación entre tablas.\\
+\textbf{Alternativas}&Dado a la tecnología utilizada la manera de llevar a cabo esta relación entre tablas es la más óptima.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0001}
+\end{table*}
+
+%-----------------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0002}
+\textbf{Asunto}&La creación de la clase Equipo.\\
+\textbf{Resumen}&Se han definido los siguientes atributos para la clase Equipo que son los necesarios para mostrar los datos que queremos.\\
+\midrule
+\textbf{Factores causantes}&La relación entre tablas, ya que la clase Equipo cuenta con una asociación con la clase Usuario. \\
+\textbf{Solución}&La solución llevada a cabo tiene la utilización de las anotaciones que proporciona JPA, para gestionar las relaciones entre dos tablas. En este caso la relación entre Equipo y Usuario serán \textbf{@ManyToMany}.\\
+\textbf{Motivación}&Ya conocíamos esta forma de relacionar las tablas.\\
+\textbf{Cuestiones abiertas}& La correcta relación entre tablas.\\
+\textbf{Alternativas}&Dado a la tecnología utilizada la manera de llevar a cabo esta relación entre tablas es la más óptima.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0002}
+\end{table*}
+
+%-------------------------------------------------------------------------------------------------------
+
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0003}
+\textbf{Asunto}&La creación de la clase Usuario.\\
+\textbf{Resumen}&Se han definido los siguientes atributos para la clase Usuario que son los necesarios para mostrar los datos que queremos.\\
+\midrule
+\textbf{Factores causantes}&La relación entre tablas, ya que la clase Usuario cuenta con una asociación con la clase Equipo. \\
+\textbf{Solución}&La solución llevada a cabo tiene la utilización de las anotaciones que proporciona JPA, para gestionar las relaciones entre dos tablas. En este caso para la relación entre Usuario y Equipo será \textbf{@OneToMany}.\\
+\textbf{Motivación}&Ya conocíamos esta forma de relacionar las tablas.\\
+\textbf{Cuestiones abiertas}& La correcta relación entre tablas.\\
+\textbf{Alternativas}&Dado a la tecnología utilizada la manera de llevar a cabo esta relación entre tablas es la más óptima.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0003}
+\end{table*}
+
+%----------------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0004}
+\textbf{Asunto}&La creación de la clase Invitación.\\
+\textbf{Resumen}&Se han definido los siguientes atributos para la clase Invitación que son los necesarios para mostrar los datos que queremos.\\
+\midrule
+\textbf{Factores causantes}&La relación entre tablas, ya que la clase Invitación cuenta con una asociación tanto con la clase Equipo como con la clase Usuario. \\
+\textbf{Solución}&La solución llevada a cabo tiene la utilización de las anotaciones que proporciona JPA, para gestionar las relaciones entre dos tablas. En este caso para la relación entre Invitación y Equipo será \textbf{@OneToOne} y para la relación entre Invitación y Usuario será \textbf{@OneToOne}.\\
+\textbf{Motivación}&Ya conocíamos esta forma de relacionar las tablas.\\
+\textbf{Cuestiones abiertas}& La correcta relación entre tablas.\\
+\textbf{Alternativas}&Dado a la tecnología utilizada la manera de llevar a cabo esta relación entre tablas es la más óptima.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0004}
+\end{table*}
+
+%-----------------------------------------------------------------------------------------------------
+\begin{table*}[htb]
+	\centering
+	\begin{coolTable}{p{4cm}p{\textwidth-4.5cm}}{2}
+{Memorando técnico 0005}
+\textbf{Asunto}&La creación de la clase Notificación.\\
+\textbf{Resumen}&Se han definido los siguientes atributos para la clase Invitación que son los necesarios para mostrar los datos que queremos.\\
+\midrule
+\textbf{Factores causantes}&La relación entre tablas, ya que la clase Notificación cuenta con una asociación con la clase Usuario. \\
+\textbf{Solución}&La solución llevada a cabo tiene la utilización de las anotaciones que proporciona JPA, para gestionar las relaciones entre dos tablas. En este caso para la relación entre Notificación y Usuario será \textbf{@OneToOne}.\\
+\textbf{Motivación}&Ya conocíamos esta forma de relacionar las tablas.\\
+\textbf{Cuestiones abiertas}& La correcta relación entre tablas.\\
+\textbf{Alternativas}&Dado a la tecnología utilizada la manera de llevar a cabo esta relación entre tablas es la más óptima.\\
+	\end{coolTable}
+	\caption{Memorando técnico 0005}
+\end{table*}
+
+%-----------------------------------------------------------------------------------------------------
+
+\clearpage
+
+\section{Pruebas}
+
+De la misma manera que con la iteración anterior no se han integrado ninguna prueba automatizada sobre el código, estas se desarrollarán en su totalidad en la sexta iteración. Por lo que por ahora aunque no se han desarrollado pruebas automatizadas, el software producido ha sido testeado por los desarrolladores de manera manual.
+
+\section{Despliegue}
+
+Se han realizado despliegues recurrentes durante el desarrollo del proyecto aunque por la casuística expuesta en la planificación el número de despliegues es el mayor hasta ahora puesto que se han implementado casi la de las funcionalidades heredadas de la totalidad de las anteriores iteraciones por lo que diariamente se ha realizado un despliegue en el servidor de Heroku con las nuevas funcionalidades del Back-End.

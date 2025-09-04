@@ -1,0 +1,99 @@
+\documentclass[titlepage,openright,twoside,a4paper,final,12pt,spanish]{book}
+
+% Configuring the environment to support spanish characters.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\selectlanguage{spanish}
+
+\usepackage[pdftex,final]{graphicx}
+
+% Style package
+\usepackage{TFM}
+% Font Package (Palatino)
+\usepackage{mathpazo}
+% Packages for specific capabilities
+\usepackage{rotating} % for text rotation in tables
+\usepackage{multirow} % for multirow in tables
+\usepackage{subfigure} % Place subfigures in figure environment
+% Packages for specific symbols
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{eurosym} % Euro symbol
+\usepackage{bbding} % for \XSolidBrush
+\usepackage{pifont} % for \ding{55} (a check mark)
+
+\author{Francisco José Anillo Carrasco}{Máster Universitario en Ingeniería Informática}{D.~}{24523601N}
+\authorEMail{fraanicar@alum.us.es}
+\setTitle{PERMUTAS ETSII}
+\setUniversity{Universidad de Sevilla}
+\copyrightText{Reservados todos los derechos. Está prohibida la reproducción total o parcial de esta obra por cualquier medio o procedimiento, comprendidos la impresión, la reprografía, el microfilm, el tratamiento informático o cualquier otro sistema, así como la distribución de ejemplares mediante alquiler y préstamo, sin la autorización escrita del autor o de los límites que autorice la Ley de Propiedad Intelectual.}
+\supervisor{María del Carmen Romero Ternero}{Dra.~}{Departamento de Tecnología Electrónica}
+
+
+\makeglossaries
+\begin{document}
+\makeTitlePage
+
+\pagestyle{empty}
+% \begin{dedication}
+% ...Dedicatoria
+% \end{dedication}
+\pagenumbering{roman}
+
+\input{agradecimientos}
+\input{resumen}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
+
+\pagenumbering{arabic}
+\input{acronyms}
+
+\lineNumbersOff
+
+\part{Introducción}
+\input{Contexto}
+\input{Objetivos}
+\input{Alcance}
+
+\part{Metodología}
+\input{AnalisisMetodología}
+\input{Metodologia}
+\input{HerramientasGestion}
+\input{Planificacion}
+% \input{costes}
+% \input{Riesgos}
+
+\part{Diseño del sistema}
+\input{ElicitacionRequisitos}
+\input{DiseñoSistema}
+\input{EstudioTecnologia}
+\input{Seguridad}
+
+\part{Desarrollo del proyecto}
+% \input{Arranque}
+% \input{iteracion1}
+% \input{iteracion2}
+% \input{iteracion3}
+% \input{iteracion4}
+% \input{iteracion5}
+% \input{iteracion6}
+% \input{iteracion7}
+
+\part{Cierre del proyecto}
+% \input{Manual}
+
+\part{Apendices}
+
+\printglossaries
+\newpage
+
+\bibliographystyle{abbrvnat}
+\addcontentsline{toc}{chapter}{Referencias bibliográficas}
+\bibliography{referencias}
+
+\end{document} 
