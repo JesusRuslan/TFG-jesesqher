@@ -17,7 +17,7 @@
 \RequirePackage{colortbl} % Needed to change the \midrule line color in coolTables
 \RequirePackage{booktabs} % Professional-like tables. Avoid vertical lines!
 %\RequirePackage{amsthm} % for definitions and example math environments
-\RequirePackage[square,numbers,sort]{natbib} 
+\RequirePackage[square,numbers,sort]{natbib}
 \RequirePackage{lettrine} % Drop caps support
 \RequirePackage[thmmarks]{ntheorem}
 \RequirePackage{needspace} % to ensure that the lines in theorems are not alone in the head/bottom of a page
@@ -33,9 +33,9 @@
 \definecolor{BackgroundColor}{cmyk}{0,0.3,0.94,0}
 
 \DeclareOption{blackwhite}{
-\definecolor{ThemeColor1}{cmyk}{0,0,0,0.776}
-\definecolor{ThemeColor2}{cmyk}{0,0,0,0.051}
-\definecolor{BackgroundColor}{cmyk}{0,0,0,0.286}
+  \definecolor{ThemeColor1}{cmyk}{0,0,0,0.776}
+  \definecolor{ThemeColor2}{cmyk}{0,0,0,0.051}
+  \definecolor{BackgroundColor}{cmyk}{0,0,0,0.286}
 }
 \ProcessOptions\relax
 
@@ -55,7 +55,7 @@
 %% Line numbering macros
 %%
 \newcommand{\lineNumbersOn}{\ifoptiondraft{\begin{linenumbers}}{}}
-\newcommand{\lineNumbersOff}{\ifoptiondraft{\end{linenumbers}}{}}
+      \newcommand{\lineNumbersOff}{\ifoptiondraft{\end{linenumbers}}{}}
 
 %%
 %% Margins
@@ -63,15 +63,15 @@
 \topmargin 0pt
 \advance \topmargin by -\headheight
 \advance \topmargin by -\headsep
-     
+
 \textheight 8.9in
-     
+
 \oddsidemargin 0pt
 \evensidemargin \oddsidemargin
 \marginparwidth 0.8in
-     
+
 \textwidth 6.3in
-     
+
 % For users of A4 paper: The above values are suited for american 8.5x11in
 % paper. If your output driver performs a conversion for A4 paper, keep
 % those values. If your output driver conforms to the TeX standard (1in/1in),
@@ -112,10 +112,10 @@
 %%
 %% Definition and example environments
 %%
-\newtheoremstyle{TFMTheorem}
-	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\ ##2\theorem@separator}\hbox{\strut}}}]}
-	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\ ##2\ - ##3\theorem@separator}\hbox{\strut}}}]}
-\theoremstyle{TFMTheorem}
+\newtheoremstyle{TFGTheorem}
+{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\ ##2\theorem@separator}\hbox{\strut}}}]}
+{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\ ##2\ - ##3\theorem@separator}\hbox{\strut}}}]}
+\theoremstyle{TFGTheorem}
 \theoremsymbol{}
 \theoremheaderfont{\bfseries\color{ThemeColor1}}
 \theorembodyfont{\normalfont}
@@ -133,9 +133,9 @@
 \newtheorem{operation}{Operation}
 
 \newenvironment{define}[1][Definition]{\begin{trivlist}
-	\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+    \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
 \newenvironment{example}[1][Example]{\begin{trivlist}
-	\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+    \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
 
 %%
 %% Page headings (even and odd)
@@ -144,71 +144,71 @@
 \renewcommand{\headheight}{15pt}
 
 \newcommand*\tikzheadeven{%
-\begin{tikzpicture}[remember picture,overlay]
-\node[yshift=-2cm] at (current page.north west)
-{\begin{tikzpicture}[remember picture, overlay]
-\fill[ThemeColor2
-] (0,-0.1cm) rectangle
-(\paperwidth,0.1cm);
-\ifthenelse{\equal{\rightmark}{}}{}{
-\node[anchor=west,xshift=.1\paperwidth,rectangle,
-rounded corners=15pt,inner sep=11pt,
-fill=ThemeColor2]
-{\color{ThemeColor1}\leftmark};
-}
-\end{tikzpicture}
-};
-\end{tikzpicture}}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[yshift=-2cm] at (current page.north west)
+    {\begin{tikzpicture}[remember picture, overlay]
+        \fill[ThemeColor2
+        ] (0,-0.1cm) rectangle
+        (\paperwidth,0.1cm);
+        \ifthenelse{\equal{\rightmark}{}}{}{
+          \node[anchor=west,xshift=.1\paperwidth,rectangle,
+            rounded corners=15pt,inner sep=11pt,
+            fill=ThemeColor2]
+          {\color{ThemeColor1}\leftmark};
+        }
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}}
 
 \newcommand*\tikzheadodd{%
-\begin{tikzpicture}[remember picture,overlay]
-\node[yshift=-2cm] at (current page.north west)
-{\begin{tikzpicture}[remember picture, overlay]
-\fill[ThemeColor2
-] (0,-0.1cm) rectangle
-(\paperwidth,0.1cm);
-\ifthenelse{\equal{\rightmark}{}}{}{
-\node[anchor=east,xshift=.9\paperwidth,rectangle,
-rounded corners=15pt,inner sep=11pt,
-fill=ThemeColor2]
-{\color{ThemeColor1}\rightmark};}
-\end{tikzpicture}
-};
-\end{tikzpicture}}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[yshift=-2cm] at (current page.north west)
+    {\begin{tikzpicture}[remember picture, overlay]
+        \fill[ThemeColor2
+        ] (0,-0.1cm) rectangle
+        (\paperwidth,0.1cm);
+        \ifthenelse{\equal{\rightmark}{}}{}{
+          \node[anchor=east,xshift=.9\paperwidth,rectangle,
+            rounded corners=15pt,inner sep=11pt,
+            fill=ThemeColor2]
+          {\color{ThemeColor1}\rightmark};}
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}}
 
 %%
 %% Page feet (even and odd)
 %%
 \newcommand*\tikzfooteven{%
-\begin{tikzpicture}[remember picture,overlay]
-\node at (current page.south west)
-{\begin{tikzpicture}[remember picture, overlay]
-\fill[ThemeColor2] (0,1.7cm) rectangle
-(\paperwidth,1.9cm);
-\node[anchor=west,xshift=.1\paperwidth,
-yshift=1.8cm,circle,
-rounded corners=15pt,inner sep=0.1cm,minimum size=1.1cm,
-fill=ThemeColor2]
-{\color{ThemeColor1}\thepage};
-\end{tikzpicture}
-};
-\end{tikzpicture}}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node at (current page.south west)
+    {\begin{tikzpicture}[remember picture, overlay]
+        \fill[ThemeColor2] (0,1.7cm) rectangle
+        (\paperwidth,1.9cm);
+        \node[anchor=west,xshift=.1\paperwidth,
+          yshift=1.8cm,circle,
+          rounded corners=15pt,inner sep=0.1cm,minimum size=1.1cm,
+          fill=ThemeColor2]
+        {\color{ThemeColor1}\thepage};
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}}
 
 \newcommand*\tikzfootodd[2]{%
-\begin{tikzpicture}[remember picture,overlay]
-\node at (current page.south west)
-{\begin{tikzpicture}[remember picture, overlay]
-\fill[#2
-] (0,1.7cm) rectangle
-(\paperwidth,1.9cm);
-\node[anchor=east,xshift=.9\paperwidth,
-yshift=1.8cm,circle,
-rounded corners=15pt,inner sep=0.1cm,minimum size=1.1cm,
-fill=#2]
-{\color{#1}\thepage};
-\end{tikzpicture}
-};
-\end{tikzpicture}}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node at (current page.south west)
+    {\begin{tikzpicture}[remember picture, overlay]
+        \fill[#2
+        ] (0,1.7cm) rectangle
+        (\paperwidth,1.9cm);
+        \node[anchor=east,xshift=.9\paperwidth,
+          yshift=1.8cm,circle,
+          rounded corners=15pt,inner sep=0.1cm,minimum size=1.1cm,
+          fill=#2]
+        {\color{#1}\thepage};
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}}
 
 
 %%
@@ -228,44 +228,44 @@ fill=#2]
 %% Page style for plain pages (chapters and parts)
 %%
 \fancypagestyle{plain}{%
-\fancyhf{}
-%\fancyfoot[CO]{\tikzfootodd{BackgroundColor}{ThemeColor1}}
-\fancyfoot[CO]{}
-\fancyfoot[CE]{\tikzfooteven}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+  \fancyhf{}
+  %\fancyfoot[CO]{\tikzfootodd{BackgroundColor}{ThemeColor1}}
+  \fancyfoot[CO]{}
+  \fancyfoot[CE]{\tikzfooteven}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
 }
 
 %%
 %% Page style for title pages
 %%
 \fancypagestyle{title}{%
-\fancyhf{}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
 }
 %%
 %% Page headings for empty pages
 %%
 
 \newcommand*\tikzemptyfoot{%
-\begin{tikzpicture}[remember picture,overlay]
-\node at (current page.south west)
-{\begin{tikzpicture}[remember picture, overlay]
-\fill[ThemeColor2
-] (0,1.7) rectangle
-(\paperwidth,1.9cm);
-\end{tikzpicture}
-};
-\end{tikzpicture}}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node at (current page.south west)
+    {\begin{tikzpicture}[remember picture, overlay]
+        \fill[ThemeColor2
+        ] (0,1.7) rectangle
+        (\paperwidth,1.9cm);
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}}
 
 
 \fancypagestyle{empty}{%
-\fancyhf{}
-\fancyfoot[CO]{\tikzemptyfoot}
-\fancyfoot[CE]{\tikzemptyfoot}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+  \fancyhf{}
+  \fancyfoot[CO]{\tikzemptyfoot}
+  \fancyfoot[CE]{\tikzemptyfoot}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
 }
 
 %%
@@ -274,40 +274,40 @@ fill=#2]
 
 \newcommand*\chapterlabel{}
 \titleformat{\chapter}
-  {\gdef\chapterlabel{}}
-  {\gdef\chapterlabel{\thechapter\ }}{0pt}
-  {\begin{tikzpicture}[remember picture,overlay]
+{\gdef\chapterlabel{}}
+{\gdef\chapterlabel{\thechapter\ }}{0pt}
+{\begin{tikzpicture}[remember picture,overlay]
     \node[yshift=-2cm] at (current page.north west)
-      {\begin{tikzpicture}[remember picture, overlay]
+    {\begin{tikzpicture}[remember picture, overlay]
         \fill[ThemeColor1] (0,-0.1cm) rectangle
-          (\paperwidth,0.1cm);
-          \ifx \chapterlabel \empty
+        (\paperwidth,0.1cm);
+        \ifx \chapterlabel \empty
           % Non-labelled chapters such as abstract, preface, list of figures, etc.
-%        \node[anchor=east,xshift=.9\paperwidth,rectangle,
-%              rounded corners=20pt,inner sep=11pt,
-%              fill=ThemeColor1]
-%              {\color{BackgroundColor}#1};
-        \node[anchor=east,xshift=\paperwidth-\marginparwidth-\marginparsep,yshift=-2.5cm,rectangle,
-              rounded corners=20pt,inner sep=11pt,
-              text width = 14cm,
-              line width=0cm,align=flush right]
-              {\normalfont\huge\bfseries\scshape\color{ThemeColor1}#1};
-              \else
-             % Standard chapters
-               \node[anchor=east,circle,yshift=0cm,xshift=\paperwidth-\marginparwidth-\marginparsep,inner sep=7pt,fill=ThemeColor1]
-          		{\normalfont\huge\bfseries\scshape\color{BackgroundColor}\chapterlabel};
-               \node[anchor=north east,xshift=\paperwidth-\marginparwidth-\marginparsep,yshift=-1cm,rectangle,
-              rounded corners=20pt,inner sep=11pt,
-              text width = 14cm,
-              line width=0cm,align=flush right]
-              %draw=ThemeColor1, line width=0.1cm, align=flush center,fill=ThemeColor2]
-              {\normalfont\huge\bfseries\scshape\color{ThemeColor1}\parbox{\textwidth}{\begin{flushright}#1\end{flushright}}}; % \sffamily
-              \fi
-       \end{tikzpicture}
-      };
-   \end{tikzpicture}
-   \tikzfootodd{BackgroundColor}{ThemeColor1}
-  }
+          %        \node[anchor=east,xshift=.9\paperwidth,rectangle,
+          %              rounded corners=20pt,inner sep=11pt,
+          %              fill=ThemeColor1]
+          %              {\color{BackgroundColor}#1};
+          \node[anchor=east,xshift=\paperwidth-\marginparwidth-\marginparsep,yshift=-2.5cm,rectangle,
+            rounded corners=20pt,inner sep=11pt,
+            text width = 14cm,
+            line width=0cm,align=flush right]
+          {\normalfont\huge\bfseries\scshape\color{ThemeColor1}#1};
+        \else
+          % Standard chapters
+          \node[anchor=east,circle,yshift=0cm,xshift=\paperwidth-\marginparwidth-\marginparsep,inner sep=7pt,fill=ThemeColor1]
+          {\normalfont\huge\bfseries\scshape\color{BackgroundColor}\chapterlabel};
+          \node[anchor=north east,xshift=\paperwidth-\marginparwidth-\marginparsep,yshift=-1cm,rectangle,
+            rounded corners=20pt,inner sep=11pt,
+            text width = 14cm,
+            line width=0cm,align=flush right]
+          %draw=ThemeColor1, line width=0.1cm, align=flush center,fill=ThemeColor2]
+          {\normalfont\huge\bfseries\scshape\color{ThemeColor1}\parbox{\textwidth}{\begin{flushright}#1\end{flushright}}}; % \sffamily
+        \fi
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}
+  \tikzfootodd{BackgroundColor}{ThemeColor1}
+}
 \titlespacing*{\chapter}{0pt}{70pt}{0pt}
 
 %%
@@ -316,24 +316,24 @@ fill=#2]
 \newcommand*\partlabel{\thispagestyle{plain}}
 \titleformat{\part}
 % [] Shape
-  {\gdef\partlabel{}
-   \normalfont\Huge\bfseries\scshape} %Format
-  {\gdef\partlabel{\thepart\ }} % Label
-  {0pt} %Sep
-  {
-      \begin{tikzpicture}[remember picture, overlay]
-               \node[anchor=north,yshift=0.25\paperheight,rectangle,
-              inner sep=20pt, minimum height=3.4cm,
-              ThemeColor1,text width=0.6\paperwidth,text height = 20pt,inner xsep=2cm,align=center] (title) at (current page.center)
-              {\color{ThemeColor1}#1};
-      	\draw[ThemeColor1,line width=0.2cm] (title) ++(-0.4\paperwidth,1.7cm) -- +(0.8\paperwidth,0);
-	\draw[ThemeColor1,line width=0.2cm] (title) ++(-0.4\paperwidth,-1.7cm) -- +(0.8\paperwidth,0);
-	 \node[anchor=center,yshift=1.7cm,rectangle,
-             inner sep=11pt,
-              fill=white] at (title)
-              {\color{ThemeColor1}Parte \partlabel};
-   \end{tikzpicture}} %Before
-  %[] After
+{\gdef\partlabel{}
+  \normalfont\Huge\bfseries\scshape} %Format
+{\gdef\partlabel{\thepart\ }} % Label
+{0pt} %Sep
+{
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=north,yshift=0.25\paperheight,rectangle,
+      inner sep=20pt, minimum height=3.4cm,
+      ThemeColor1,text width=0.6\paperwidth,text height = 20pt,inner xsep=2cm,align=center] (title) at (current page.center)
+    {\color{ThemeColor1}#1};
+    \draw[ThemeColor1,line width=0.2cm] (title) ++(-0.4\paperwidth,1.7cm) -- +(0.8\paperwidth,0);
+    \draw[ThemeColor1,line width=0.2cm] (title) ++(-0.4\paperwidth,-1.7cm) -- +(0.8\paperwidth,0);
+    \node[anchor=center,yshift=1.7cm,rectangle,
+      inner sep=11pt,
+      fill=white] at (title)
+    {\color{ThemeColor1}Parte \partlabel};
+  \end{tikzpicture}} %Before
+%[] After
 
 
 
@@ -341,178 +341,178 @@ fill=#2]
 \newcounter{drawsupervisorsCounter}
 
 \newcommand{\supervisor}[3]{
-	\csdef{supervisorName\thesupervisorsCounter}{#1}	
-	\csdef{supervisorTitle\thesupervisorsCounter}{#2}
-	\csdef{supervisorCharge\thesupervisorsCounter}{#3}
-	\stepcounter{supervisorsCounter}
+  \csdef{supervisorName\thesupervisorsCounter}{#1}
+  \csdef{supervisorTitle\thesupervisorsCounter}{#2}
+  \csdef{supervisorCharge\thesupervisorsCounter}{#3}
+  \stepcounter{supervisorsCounter}
 }
 
 
 \newcommand{\drawSupervisorsEnglish}{\setcounter{drawsupervisorsCounter}{0}\@whilenum \value{drawsupervisorsCounter} < \value{supervisorsCounter} \do
-{\csuse{supervisorTitle\thedrawsupervisorsCounter}\csuse{supervisorName\thedrawsupervisorsCounter}\stepcounter{drawsupervisorsCounter}\ifnum \value{drawsupervisorsCounter} < \value{supervisorsCounter}{ and}\fi
-}
+  {\csuse{supervisorTitle\thedrawsupervisorsCounter}\csuse{supervisorName\thedrawsupervisorsCounter}\stepcounter{drawsupervisorsCounter}\ifnum \value{drawsupervisorsCounter} < \value{supervisorsCounter}{ and}\fi
+  }
 }
 
 \newcommand{\drawSupervisorsSpanish}{\setcounter{drawsupervisorsCounter}{0}\@whilenum \value{drawsupervisorsCounter} < \value{supervisorsCounter} \do
-{\csuse{supervisorTitle\thedrawsupervisorsCounter}\csuse{supervisorName\thedrawsupervisorsCounter}\stepcounter{drawsupervisorsCounter}\ifnum \value{drawsupervisorsCounter} < \value{supervisorsCounter}{ y}\fi
-}
+  {\csuse{supervisorTitle\thedrawsupervisorsCounter}\csuse{supervisorName\thedrawsupervisorsCounter}\stepcounter{drawsupervisorsCounter}\ifnum \value{drawsupervisorsCounter} < \value{supervisorsCounter}{ y}\fi
+  }
 }
 \newcommand{\drawSupervisorsSpanishFull}{\setcounter{drawsupervisorsCounter}{0}\@whilenum \value{drawsupervisorsCounter} < \value{supervisorsCounter} \do
-{\csuse{supervisorTitle\thedrawsupervisorsCounter}\csuse{supervisorName\thedrawsupervisorsCounter}, \csuse{supervisorCharge\thedrawsupervisorsCounter}\stepcounter{drawsupervisorsCounter}\ifnum \value{drawsupervisorsCounter} < \value{supervisorsCounter}{ y}\fi}}
+  {\csuse{supervisorTitle\thedrawsupervisorsCounter}\csuse{supervisorName\thedrawsupervisorsCounter}, \csuse{supervisorCharge\thedrawsupervisorsCounter}\stepcounter{drawsupervisorsCounter}\ifnum \value{drawsupervisorsCounter} < \value{supervisorsCounter}{ y}\fi}}
 
 \newcommand{\drawSupervisorsList}{\setcounter{drawsupervisorsCounter}{0}\@whilenum \value{drawsupervisorsCounter} < \value{supervisorsCounter} \do
-{\csuse{supervisorTitle\thedrawsupervisorsCounter}\csuse{supervisorName\thedrawsupervisorsCounter}\stepcounter{drawsupervisorsCounter}\ifnum\value{drawsupervisorsCounter} < \value{supervisorsCounter}{,}\fi
-}
+  {\csuse{supervisorTitle\thedrawsupervisorsCounter}\csuse{supervisorName\thedrawsupervisorsCounter}\stepcounter{drawsupervisorsCounter}\ifnum\value{drawsupervisorsCounter} < \value{supervisorsCounter}{,}\fi
+  }
 }
 
 \renewcommand{\author}[4]{
-\def\dissertationAuthor{#1}
-\def\dissertationAuthorEducation{#2}
-\def\dissertationAuthorTitle{#3}
-\def\dissertationAuthorID{#4}
+  \def\dissertationAuthor{#1}
+  \def\dissertationAuthorEducation{#2}
+  \def\dissertationAuthorTitle{#3}
+  \def\dissertationAuthorID{#4}
 }
 \newcommand{\setTitle}[1]{
-\def\dissertationTitle{#1}
+  \def\dissertationTitle{#1}
 }
 \newcommand{\setSubtitle}[1]{
-\def\dissertationSubtitle{#1}
+  \def\dissertationSubtitle{#1}
 }
 \newcommand{\setUniversity}[1]{
-\def\university{#1}
+  \def\university{#1}
 }
 
 %%
 %% Macro to create the title page
 %% 
 \newcommand{\makeTitlePage}{
-\pagestyle{title}
-\begin{titlepage}
-\thispagestyle{title}
-    \vfill    
+  \pagestyle{title}
+  \begin{titlepage}
+    \thispagestyle{title}
+    \vfill
     \begin{tikzpicture}[remember picture,overlay]
-    	% Title node
-	\node  [yshift=0.3\paperheight,rectangle,inner sep=20pt,text width=0.8\paperwidth-40pt,minimum height=5cm, text centered,fill=ThemeColor2] (title) at (current page.center)
-          {\parbox{0.7\paperwidth}{\centering \color{ThemeColor1} \normalfont\huge\bfseries\scshape \dissertationTitle
+      % Title node
+      \node  [yshift=0.3\paperheight,rectangle,inner sep=20pt,text width=0.8\paperwidth-40pt,minimum height=5cm, text centered,fill=ThemeColor2] (title) at (current page.center)
+      {\parbox{0.7\paperwidth}{\centering \color{ThemeColor1} \normalfont\huge\bfseries\scshape \dissertationTitle
           \ifx \dissertationSubtitle \@undefined
-		\relax
-	\else
-		\\\vspace{0.5cm}\normalfont\Large\bfseries\scshape \dissertationSubtitle\\
-	\fi
-           }};
-          % Check if a subtitle is provided
-        \draw[ThemeColor1,line width=0.2cm] (title) ++(-0.4\paperwidth,2.5cm) -- +(0.8\paperwidth,0);
-	\draw[ThemeColor1,line width=0.2cm] (title) ++(-0.4\paperwidth,-2.5cm) -- +(0.8\paperwidth,0);
-          % Author node
-%          \ifthenelse{\equal{#2}{}}{}{
-%         		 {\parbox{0.7\paperwidth}{\centering \color{ThemeColor1} \normalfont\large\bfseries\scshape #2}};
-%	}
-          \node  [anchor=north,yshift=0.3\paperheight-2.5cm-20pt-20pt,inner sep=11pt] (author) at (current page.center)  {\color{ThemeColor1} \textbf{\LARGE\scshape \dissertationAuthor}};
-          % Supervisor node
-           \node  [anchor=north,yshift=-40pt,inner sep=11pt] (dissertation) at (author)
-          {\color{ThemeColor1} \textbf{\Large Trabajo fin de Máster}};
-          \node  [anchor=north,yshift=-20pt,inner sep=11pt,text width=0.8\paperwidth,text centered] at (dissertation)
-          {\parbox{0.7\paperwidth}{\centering \color{ThemeColor1}\Large\textbf{Supervisado por\drawSupervisorsEnglish}}};
-          % University logo
-          \node [anchor=south,yshift=0.2\paperheight] (logo) at (current page.south){
-              \includegraphics[width=0.25\paperwidth]{figures/universidad}
-          };
-          \node [anchor=north,yshift=0.2\paperheight] at (current page.south) {\color{ThemeColor1} \textbf{\large \university}};
-          \node [anchor=north,yshift=0.15\paperheight] at (current page.south) {\color{ThemeColor1} \textbf{\large \monthYear\today}};
+            \relax
+          \else
+            \\\vspace{0.5cm}\normalfont\Large\bfseries\scshape \dissertationSubtitle\\
+          \fi
+        }};
+      % Check if a subtitle is provided
+      \draw[ThemeColor1,line width=0.2cm] (title) ++(-0.4\paperwidth,2.5cm) -- +(0.8\paperwidth,0);
+      \draw[ThemeColor1,line width=0.2cm] (title) ++(-0.4\paperwidth,-2.5cm) -- +(0.8\paperwidth,0);
+      % Author node
+      %          \ifthenelse{\equal{#2}{}}{}{
+      %         		 {\parbox{0.7\paperwidth}{\centering \color{ThemeColor1} \normalfont\large\bfseries\scshape #2}};
+      %	}
+      \node  [anchor=north,yshift=0.3\paperheight-2.5cm-20pt-20pt,inner sep=11pt] (author) at (current page.center)  {\color{ThemeColor1} \textbf{\LARGE\scshape \dissertationAuthor}};
+      % Supervisor node
+      \node  [anchor=north,yshift=-40pt,inner sep=11pt] (dissertation) at (author)
+      {\color{ThemeColor1} \textbf{\Large Trabajo fin de Grado}};
+      \node  [anchor=north,yshift=-20pt,inner sep=11pt,text width=0.8\paperwidth,text centered] at (dissertation)
+      {\parbox{0.7\paperwidth}{\centering \color{ThemeColor1}\Large\textbf{Supervisado por\drawSupervisorsEnglish}}};
+      % University logo
+      \node [anchor=south,yshift=0.2\paperheight] (logo) at (current page.south){
+        \includegraphics[width=0.25\paperwidth]{figures/universidad}
+      };
+      \node [anchor=north,yshift=0.2\paperheight] at (current page.south) {\color{ThemeColor1} \textbf{\large \university}};
+      \node [anchor=north,yshift=0.15\paperheight] at (current page.south) {\color{ThemeColor1} \textbf{\large \monthYear\today}};
 
-   \end{tikzpicture}
-    
+    \end{tikzpicture}
+
     \vfill
     \newpage
     \disclaimer
     \cleardoublepage
     \authorDeclare
-   \cleardoublepage
-\end{titlepage}
+    \cleardoublepage
+  \end{titlepage}
 }
 
 \newcommand{\disclaimer}{
-\thispagestyle{title}
-\begin{flushleft}
-\noindent Publicado en \monthYear\today ~ por\\
-\dissertationAuthor\\
-Copyright \copyright ~ \uppercase\expandafter{\romannumeral \THEYEAR}\\
+  \thispagestyle{title}
+  \begin{flushleft}
+    \noindent Publicado en \monthYear\today ~ por\\
+    \dissertationAuthor\\
+    Copyright \copyright ~ \uppercase\expandafter{\romannumeral \THEYEAR}\\
 
-%Author URL if it exists
-\ifx \@authorURL \@undefined
-	\relax
-\else
-	\@authorURL\\
-\fi
+    %Author URL if it exists
+    \ifx \@authorURL \@undefined
+      \relax
+    \else
+      \@authorURL\\
+    \fi
 
-%Author e-mail if it exists
-\ifx \@authorEMail \@undefined
-	\relax
-\else
-	\@authorEMail\\
-\fi
+    %Author e-mail if it exists
+    \ifx \@authorEMail \@undefined
+      \relax
+    \else
+      \@authorEMail\\
+    \fi
 
-% Copyright text if it exists
-\ifx \@copyrightText \@undefined
-	\relax
-\else
-	\bigskip
-	\@copyrightText\\
-\fi
-\end{flushleft}
+    % Copyright text if it exists
+    \ifx \@copyrightText \@undefined
+      \relax
+    \else
+      \bigskip
+      \@copyrightText\\
+    \fi
+  \end{flushleft}
 }
 
 
 \newcommand{\supervisorsDeclare}{
-\thispagestyle{title}
+  \thispagestyle{title}
 
-\drawSupervisorsSpanishFull,\\\\
-\ifthenelse{\equal{\thesupervisorsCounter}{1}}
-	{\indent\textbf{HACE CONSTAR}}
-	{\indent\textbf{HACEN CONSTAR}}
+  \drawSupervisorsSpanishFull,\\\\
+  \ifthenelse{\equal{\thesupervisorsCounter}{1}}
+  {\indent\textbf{HACE CONSTAR}}
+  {\indent\textbf{HACEN CONSTAR}}
 
-que \dissertationAuthorTitle\dissertationAuthor, \dissertationAuthorEducation, ha realizado bajo
-\ifthenelse{\equal{\thesupervisorsCounter}{1}}
-	{mi\relax}
-	{nuestra\relax}
-supervisi\'on el trabajo titulado\\
-\begin{center}\textit{\dissertationTitle \ifx \dissertationSubtitle \@undefined
-		\relax
-	\else
-		,\\\dissertationSubtitle
-	\fi}
-\end{center}
-\indent Una vez revisado, autorizamos el comienzo de los tr\'amites para su presentaci\'on como trabajo fin de máster al tribunal que ha de juzgarlo.
-\\
-\vfill
-\begin{flushright}
-Fdo. \drawSupervisorsSpanish\\
-en la \university\\
-\ddmmyyyydate\today
-\end{flushright}
+  que \dissertationAuthorTitle\dissertationAuthor, \dissertationAuthorEducation, ha realizado bajo
+  \ifthenelse{\equal{\thesupervisorsCounter}{1}}
+  {mi\relax}
+  {nuestra\relax}
+  supervisi\'on el trabajo titulado\\
+  \begin{center}\textit{\dissertationTitle \ifx \dissertationSubtitle \@undefined
+        \relax
+      \else
+        ,\\\dissertationSubtitle
+      \fi}
+  \end{center}
+  \indent Una vez revisado, autorizamos el comienzo de los tr\'amites para su presentaci\'on como trabajo fin de grado al tribunal que ha de juzgarlo.
+  \\
+  \vfill
+  \begin{flushright}
+    Fdo. \drawSupervisorsSpanish\\
+    en la \university\\
+    \ddmmyyyydate\today
+  \end{flushright}
 }
 
 \newcommand{\authorDeclare}{
-\thispagestyle{title}
+  \thispagestyle{title}
 
-\indent Yo, \dissertationAuthorTitle\dissertationAuthor~con NIF n\'umero \dissertationAuthorID,\\\\
-\indent\textbf{DECLARO}\\\\
-\indent mi autoría del trabajo que se presenta en la memoria de este trabajo fin de máster que tiene por título:\\
+  \indent Yo, \dissertationAuthorTitle\dissertationAuthor~con NIF n\'umero \dissertationAuthorID,\\\\
+  \indent\textbf{DECLARO}\\\\
+  \indent mi autoría del trabajo que se presenta en la memoria de este trabajo fin de grado que tiene por título:\\
 
-\begin{center}\textit{\dissertationTitle
-          \ifx \dissertationSubtitle \@undefined
-		\relax
-	\else
-		,\\\dissertationSubtitle
-	\fi}
-\end{center}
+  \begin{center}\textit{\dissertationTitle
+      \ifx \dissertationSubtitle \@undefined
+        \relax
+      \else
+        ,\\\dissertationSubtitle
+      \fi}
+  \end{center}
 
-\indent Lo cual firmo,\\
-\vfill
-\begin{flushright}
-Fdo. \dissertationAuthorTitle\dissertationAuthor\\
-en la \university\\
-\ddmmyyyydate\today\\
-\end{flushright}
+  \indent Lo cual firmo,\\
+  \vfill
+  \begin{flushright}
+    Fdo. \dissertationAuthorTitle\dissertationAuthor\\
+    en la \university\\
+    \ddmmyyyydate\today\\
+  \end{flushright}
 }
 
 %%
@@ -529,8 +529,8 @@ en la \university\\
 {\thesubsection}{1em}{#1}
 \titlespacing{\subsection}
 {0pt}{1.5ex plus .1ex minus .2ex}{1.5ex minus .1ex}
- 
- \titleformat{\subsubsection}
+
+\titleformat{\subsubsection}
 {\normalfont\bfseries}
 {}{1em}{#1}
 \titlespacing{\subsubsection}
@@ -540,7 +540,7 @@ en la \university\\
 %%
 \newcommand{\done}[1]{\todo[inline,nolist,color=green!40]{\ding{52}: #1}}
 \newcommand{\marginminor}[1]{\todo[color=yellow]{#1}}
-\newcommand{\addref}{\marginminor{Add reference.}}	
+\newcommand{\addref}{\marginminor{Add reference.}}
 \newcommand{\minor}[1]{\todo[inline,color=yellow,caption={\thesection{}: #1}]{#1}}
 \newcommand{\review}[1]{\todo[inline,color=orange,caption={\thesection{}: #1}]{RV:  #1}}
 \newcommand{\rewrite}[1]{\todo[inline,color=red!80,caption={\thesection{}: #1}]{RW: #1}}
@@ -548,35 +548,35 @@ en la \university\\
 \newcommand{\info}[1]{\todo[nolist,inline,size=\small,color=blue!10]{#1}}
 
 \ifoptiondraft{
- \renewcommand{\@todonotes@addElementToListOfTodos}{%
- \if@todonotes@colorinlistoftodos%
-\addcontentsline{tdo}{todo}{%
-\colorbox{\@todonotes@currentbackgroundcolor}%
- {\textcolor{\@todonotes@currentbackgroundcolor}{o}}%
- \ \@todonotes@caption}%
- \else%
- \addcontentsline{tdo}{todo}{\@todonotes@caption}%
- \fi}}{}
- 
+  \renewcommand{\@todonotes@addElementToListOfTodos}{%
+    \if@todonotes@colorinlistoftodos%
+      \addcontentsline{tdo}{todo}{%
+        \colorbox{\@todonotes@currentbackgroundcolor}%
+        {\textcolor{\@todonotes@currentbackgroundcolor}{o}}%
+        \ \@todonotes@caption}%
+    \else%
+      \addcontentsline{tdo}{todo}{\@todonotes@caption}%
+    \fi}}{}
+
 %%
 %% Frame to indicate a chapter is a version of a paper submitted to a journal
 %%
 \newcommand{\paperversion}[1]{
-\vspace{0.5cm}
-\begin{center}
-\frame{\colorbox{ThemeColor2}{
-\begin{minipage}[c]{4in}
-\setlength{\parindent}{0.8cm} 
-\vspace{0.25cm}
-\begin{center}
-\begin{color}{ThemeColor1}
-\textit{#1}
-\end{color}
-\end{center}
-\vspace{0cm}
-\end{minipage}}}
-\end{center}
-\vspace{0.5cm}
+  \vspace{0.5cm}
+  \begin{center}
+    \frame{\colorbox{ThemeColor2}{
+        \begin{minipage}[c]{4in}
+          \setlength{\parindent}{0.8cm}
+          \vspace{0.25cm}
+          \begin{center}
+            \begin{color}{ThemeColor1}
+              \textit{#1}
+            \end{color}
+          \end{center}
+          \vspace{0cm}
+        \end{minipage}}}
+  \end{center}
+  \vspace{0.5cm}
 }
 
 %%
@@ -585,62 +585,62 @@ en la \university\\
 \font\zapf=pzcmi at 12pt
 \renewenvironment{quotation}[2][\empty]%
 {%
-    \def\quotationAuthor{#2}%
-    \def\quotationInfo{#1}
-    \vspace{\bigskipamount}%
-    %\bodywide
-        \parskip=0pt%
-        \def\\{\par\hfill}%
-        \noindent\hfill\itshape\zapf%
+\def\quotationAuthor{#2}%
+\def\quotationInfo{#1}
+\vspace{\bigskipamount}%
+%\bodywide
+\parskip=0pt%
+\def\\{\par\hfill}%
+\noindent\hfill\itshape\zapf%
 }%
 {%
-        \medbreak%
-        \noindent\hfill\itshape\zapf%
-        \quotationAuthor%
-        \ifx\quotationInfo\empty%
-        \else%
-            ,\\\quotationInfo\relax\\%
-        \fi%
-    %\endbodywide%
-    \vspace{\bigskipamount}%
-    
+\medbreak%
+\noindent\hfill\itshape\zapf%
+\quotationAuthor%
+\ifx\quotationInfo\empty%
+\else%
+  ,\\\quotationInfo\relax\\%
+\fi%
+%\endbodywide%
+\vspace{\bigskipamount}%
+
 }%
 
 %%
 %% Side-Text
 %%
 \newcommand{\sidetext}[1]{
-\begin{floatingfigure}[p]{5cm}
-\begin{center}
-\normalfont\sffamily\bfseries\scshape
-\color{ThemeColor1}
-\rule[0pt]{5cm}{0.5mm}
- #1\\
-\rule[0.1cm]{5cm}{0.5mm}
-\end{center}
-\end{floatingfigure}
+  \begin{floatingfigure}[p]{5cm}
+    \begin{center}
+      \normalfont\sffamily\bfseries\scshape
+      \color{ThemeColor1}
+      \rule[0pt]{5cm}{0.5mm}
+      #1\\
+      \rule[0.1cm]{5cm}{0.5mm}
+    \end{center}
+  \end{floatingfigure}
 }
 
 \newcommand{\sidebox}[1]{
-\begin{floatingfigure}[p]{0.3\textwidth}
-\noindent
-\makebox[0.3\textwidth]{
-\begin{tikzpicture}
-\draw (0,0) node [draw=ThemeColor1,color=ThemeColor1,rounded corners=0.2cm,inner sep=0.5cm,fill=ThemeColor2,text width=0.3\textwidth - 1.0cm - \pgflinewidth,anchor=south west,line width=0.05cm] {#1};
-\end{tikzpicture}}
-\end{floatingfigure}
+  \begin{floatingfigure}[p]{0.3\textwidth}
+    \noindent
+    \makebox[0.3\textwidth]{
+      \begin{tikzpicture}
+        \draw (0,0) node [draw=ThemeColor1,color=ThemeColor1,rounded corners=0.2cm,inner sep=0.5cm,fill=ThemeColor2,text width=0.3\textwidth - 1.0cm - \pgflinewidth,anchor=south west,line width=0.05cm] {#1};
+      \end{tikzpicture}}
+  \end{floatingfigure}
 }
 
 %%
 %% Hyper references
 %%
 \hypersetup{
-    final,
-    colorlinks,
-    citecolor= ThemeColor1,
-    filecolor= ThemeColor1,
-    linkcolor= black,
-    urlcolor= ThemeColor1
+  final,
+  colorlinks,
+  citecolor= ThemeColor1,
+  filecolor= ThemeColor1,
+  linkcolor= black,
+  urlcolor= ThemeColor1
 }
 
 % Pagebackref support. It adds references to the pages where bibliography is cited. In draft mode, it remarks if a bibentry has not been cited in the text.
@@ -648,37 +648,37 @@ en la \university\\
 \renewcommand*{\backreftwosep}{, }
 \renewcommand*{\backref}[1]{}
 \renewcommand*{\backrefalt}[4]{
-	\ifcase #1
-		\ifoptiondraft{\begin{color}{red}No citation\end{color}}{\relax}
-	\or (page #2).
-	\else (pages #2).
-	\fi
+  \ifcase #1
+    \ifoptiondraft{\begin{color}{red}No citation\end{color}}{\relax}
+  \or (page #2).
+  \else (pages #2).
+  \fi
 }
 
 %%
 %% Text frame to remark important information (\importantframe)
 %%
 \newcommand{\importantframe}[2]{
-\vspace{0.5cm}
-\begin{center}
-\frame{\colorbox{ThemeColor2}{
-\begin{minipage}[c]{0.9\textwidth}
-\setlength{\parindent}{0.8cm}
-\large
-\begin{center}
-\begin{color}{ThemeColor1}
-\textbf{#1}
-\end{color}
-\end{center}
-\begin{center}
-\begin{color}{ThemeColor1}
-\textit{#2}
-\end{color}
-\end{center}
-\vspace{0cm}
-\end{minipage}}}
-\end{center}
-\vspace{0.5cm}
+  \vspace{0.5cm}
+  \begin{center}
+    \frame{\colorbox{ThemeColor2}{
+        \begin{minipage}[c]{0.9\textwidth}
+          \setlength{\parindent}{0.8cm}
+          \large
+          \begin{center}
+            \begin{color}{ThemeColor1}
+              \textbf{#1}
+            \end{color}
+          \end{center}
+          \begin{center}
+            \begin{color}{ThemeColor1}
+              \textit{#2}
+            \end{color}
+          \end{center}
+          \vspace{0cm}
+        \end{minipage}}}
+  \end{center}
+  \vspace{0.5cm}
 }
 
 %%
@@ -692,55 +692,55 @@ en la \university\\
 \newsavebox{\dataTableContent} % Box
 \newenvironment{coolTable}[3] % \new environment
 {%
-\noindent
-\begin{lrbox}{\dataTableContent}%
-\arrayrulecolor{ThemeColor1} % Defines the line color
-\begin{tabular}{#1}
-\multicolumn{#2}{c}{\begin{color}{ThemeColor2} \textbf{#3} \end{color}}\\ % Here comes the caption
-\midrule}%
-%
-{%
-\end{tabular}
-\end{lrbox}
-\begin{tikzpicture}
-\node [inner xsep=0pt] (tbl){\usebox{\dataTableContent}};
-\begin{pgfonlayer}{background}
-% table
-\draw[rounded corners=3pt,fill=ThemeColor1,draw=ThemeColor1]
-(tbl.north east) rectangle (tbl.south west);
-\draw[fill=ThemeColor2,draw=ThemeColor2]
-($(tbl.north west)-(0,1.5\baselineskip)$) rectangle ($(tbl.south east)+(0,0.1\baselineskip)$);
-\end{pgfonlayer}
-\end{tikzpicture}
-\arrayrulecolor{black} % Defines the line color
+  \noindent
+  \begin{lrbox}{\dataTableContent}%
+    \arrayrulecolor{ThemeColor1} % Defines the line color
+    \begin{tabular}{#1}
+      \multicolumn{#2}{c}{\begin{color}{ThemeColor2} \textbf{#3} \end{color}} \\ % Here comes the caption
+      \midrule}%
+      %
+      {%
+    \end{tabular}
+  \end{lrbox}
+  \begin{tikzpicture}
+    \node [inner xsep=0pt] (tbl){\usebox{\dataTableContent}};
+    \begin{pgfonlayer}{background}
+      % table
+      \draw[rounded corners=3pt,fill=ThemeColor1,draw=ThemeColor1]
+      (tbl.north east) rectangle (tbl.south west);
+      \draw[fill=ThemeColor2,draw=ThemeColor2]
+      ($(tbl.north west)-(0,1.5\baselineskip)$) rectangle ($(tbl.south east)+(0,0.1\baselineskip)$);
+    \end{pgfonlayer}
+  \end{tikzpicture}
+  \arrayrulecolor{black} % Defines the line color
 }
 
 \newenvironment{simpleTable}[1] % \new environment
 {%
-\noindent
-\begin{lrbox}{\dataTableContent}%
-\arrayrulecolor{ThemeColor1} % Defines the line color
-\begin{tabular}{#1}
-}%
-%
-{%
-\end{tabular}
-\end{lrbox}
-\begin{tikzpicture}
-\node [inner xsep=0pt] (tbl){\usebox{\dataTableContent}};
-\begin{pgfonlayer}{background}
-% table
-\draw[rounded corners=3pt,fill=ThemeColor2,draw=ThemeColor1]
-(tbl.north east) rectangle (tbl.south west);
-\end{pgfonlayer}
-\end{tikzpicture}
-\arrayrulecolor{black} % Defines the line color
+  \noindent
+  \begin{lrbox}{\dataTableContent}%
+    \arrayrulecolor{ThemeColor1} % Defines the line color
+    \begin{tabular}{#1}
+      }%
+      %
+      {%
+    \end{tabular}
+  \end{lrbox}
+  \begin{tikzpicture}
+    \node [inner xsep=0pt] (tbl){\usebox{\dataTableContent}};
+    \begin{pgfonlayer}{background}
+      % table
+      \draw[rounded corners=3pt,fill=ThemeColor2,draw=ThemeColor1]
+      (tbl.north east) rectangle (tbl.south west);
+    \end{pgfonlayer}
+  \end{tikzpicture}
+  \arrayrulecolor{black} % Defines the line color
 }
 
 \newcommand{\TableSubtitle}[2] {
-%\midrule
-\multicolumn{#1}{c}{\begin{color}{ThemeColor1} \textbf{#2} \end{color}}\\
-\midrule
+  %\midrule
+  \multicolumn{#1}{c}{\begin{color}{ThemeColor1} \textbf{#2} \end{color}}\\
+  \midrule
 }
 
 %%
@@ -749,23 +749,23 @@ en la \university\\
 \newcommand{\code}[1]{\texttt{\small #1}}
 % Style for cool Java listings
 \lstdefinestyle{javacode} {language=Java, basicstyle=\footnotesize\ttfamily,frame=tb,rulecolor=\color{ThemeColor1},aboveskip=0.35cm,belowskip=0.35cm,commentstyle=\color{gray},
-     keywordstyle=\bfseries
+  keywordstyle=\bfseries
 }
 % Style for cool plain-text FM listings
 \lstdefinestyle{fm} {language=featureModel,basicstyle=\small,frame=tb,rulecolor=\color{ThemeColor1},aboveskip=0.35cm,belowskip=0.35cm,commentstyle=\color{gray}}
 
 %FM Language for listings
 \lstdefinelanguage{featureModel}{% general command to set parameter(s)
-	basicstyle=\scriptsize, 															% print whole listing small
-	emph={Relationships,Constraints}, emphstyle=\color{black}\bfseries,
+  basicstyle=\scriptsize, 															% print whole listing small
+  emph={Relationships,Constraints}, emphstyle=\color{black}\bfseries,
   keywordstyle=\color{black}\bfseries,				  					% bold black keywords	
-	keywords={Root,requires,excludes,REQUIRES,EXCLUDES},						% keywords list
-	identifierstyle=\color{black}\ttfamily,
-	commentstyle=\color{blue}, 									  					% blue comments
-	stringstyle=\ttfamily, 																	% typewriter type for strings
-	showstringspaces=false,																	% no special string spaces
-	morecomment=[l]{\%\%}
-	}	
+  keywords={Root,requires,excludes,REQUIRES,EXCLUDES},						% keywords list
+  identifierstyle=\color{black}\ttfamily,
+  commentstyle=\color{blue}, 									  					% blue comments
+  stringstyle=\ttfamily, 																	% typewriter type for strings
+  showstringspaces=false,																	% no special string spaces
+  morecomment=[l]{\%\%}
+}
 
 %%
 %% Cap letters. \cappar
@@ -780,7 +780,7 @@ en la \university\\
 % and passes them to lettrine
 \newcommand*{\ecap}[1]{\begingroup\obeyspaces\etospace{#1}{}}
 \newcommand*{\etospace}[3]{\ifthenelse{\equal{#3}{\space}}%
-{\endgroup\lettrine[findent=10pt,nindent=0pt]{#1}{}#2#3}{\etospace{#1}{#2#3}}}
+  {\endgroup\lettrine[findent=10pt,nindent=0pt]{#1}{}#2#3}{\etospace{#1}{#2#3}}}
 
 \newenvironment{abstract}
 {\vspace{0.1\paperheight} \itshape \ecap}
@@ -795,25 +795,25 @@ en la \university\\
 \font\zapfBig=pzcmi at 16pt
 \newenvironment{dedication}
 {\cleardoublepage\vspace{0.4\paperheight} \begin{flushright} \itshape \zapfBig}
-{\end{flushright}\par\cleardoublepage}
+    {\end{flushright}\par\cleardoublepage}
 
 \newenvironment{asigResponsabilidad}[3]
-{ 
-\begin{tabular}{|p{0.8cm}|p{2cm}|p{0.6\textwidth}|p{1cm}|p{0.5cm}|}
-\hline
-\multicolumn{2}{|c|}{\cellcolor{lightgray}Identificador}&\multicolumn{3}{|c|}{\cellcolor{lightgray}Descripción de la acción de alto nivel}\\
-\hline
-\multicolumn{2}{|c|}{#1}&\multicolumn{3}{|l|}{#2}\\
-\hline
-\multicolumn{5}{|c|}{\cellcolor{lightgray}Métodos de alto nivel}\\
-\hline
-\multicolumn{5}{|c|}{#3}\\
-\hline
-\multicolumn{5}{|c|}{\cellcolor{lightgray}Pasos (Usar Pseudocódigo o similar)}\\
-\hline
-}
-{ 
-\end{tabular}
+{
+  \begin{tabular}{|p{0.8cm}|p{2cm}|p{0.6\textwidth}|p{1cm}|p{0.5cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{lightgray}Identificador} & \multicolumn{3}{|c|}{\cellcolor{lightgray}Descripción de la acción de alto nivel} \\
+    \hline
+    \multicolumn{2}{|c|}{#1}                                 & \multicolumn{3}{|l|}{#2}                                                          \\
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{lightgray}Métodos de alto nivel}                                                                             \\
+    \hline
+    \multicolumn{5}{|c|}{#3}                                                                                                                     \\
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{lightgray}Pasos (Usar Pseudocódigo o similar)}                                                               \\
+    \hline
+    }
+    {
+  \end{tabular}
 }
 
 \newcommand{\pasoPseudo}[1]
@@ -824,22 +824,22 @@ en la \university\\
 
 \newcommand{\cabeceraMetodosBajoNivel}
 {
-\multicolumn{5}{|c|}{\cellcolor{lightgray}Métodos de bajo nivel necesarios}\\
-\hline
-\textbf{Paso}&\textbf{Clase}&\textbf{Método}&\textbf{Mem. Técn.}&\textbf{IU}\\
-\hline
+  \multicolumn{5}{|c|}{\cellcolor{lightgray}Métodos de bajo nivel necesarios}\\
+  \hline
+  \textbf{Paso}&\textbf{Clase}&\textbf{Método}&\textbf{Mem. Técn.}&\textbf{IU}\\
+  \hline
 }
 
 \newcommand{\pasoCodigo}[5]
 {
-#1&#2&#3&#4&#5\\
-\hline
+  #1&#2&#3&#4&#5\\
+  \hline
 }
 
 \newcommand{\diagramaColaboracion}[1]
 {
-\multicolumn{5}{|c|}{\cellcolor{lightgray}Diagrama de Colaboración}\\
-\hline
-\multicolumn{5}{|c|}{\includegraphics[width=0.9\textwidth]{#1}}\\
-\hline
+  \multicolumn{5}{|c|}{\cellcolor{lightgray}Diagrama de Colaboración}\\
+  \hline
+  \multicolumn{5}{|c|}{\includegraphics[width=0.9\textwidth]{#1}}\\
+  \hline
 }
