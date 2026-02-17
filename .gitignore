@@ -43,11 +43,15 @@ tfg.pdf
 *.bak
 *.backup
 
+# Archivos de configuración de editores
+.vscode/
+.idea/
+
 # Carpetas de compilación
 _build/
-ros2/*/build/
-ros2/*/install/
-ros2/*/log/
+ros2/**/build/
+ros2/**/install/
+ros2/**/log/
 
 # Proyecto de referencia
 Original Referencia/
