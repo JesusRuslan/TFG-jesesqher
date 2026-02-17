@@ -6,9 +6,9 @@
 *.fdb_latexmk
 *.fls
 *.glsdefs
-#*.idx
-#*.ilg
-#*.ind
+*.idx
+*.ilg
+*.ind
 *.lof
 *.log
 *.lot
@@ -20,32 +20,34 @@ tfg.pdf
 
 # Archivos de metadatos y de salida intermedia
 *.acn
-#*.acr
-#*.alg
+*.acr
+*.alg
 *.glo
-#*.gls
+*.gls
 *.ist
 
 # Archivos temporales y backup
-#*.dvi
-#*.nav
-#*.pdfsync
-#*.snm
+*.dvi
+*.nav
+*.pdfsync
+*.snm
 *.synctex.gz
-#*.vrb
+*.vrb
 
 # Archivos de salida final
-#*.eps
-#*.ps
-
+*.eps
+*.ps
 
 # Archivos de edición y respaldo (por si usas editores que los generan)
-#*~
-#*.bak
-#*.backup
+*~
+*.bak
+*.backup
 
 # Carpetas de compilación
-#_build/
+_build/
+ros2/*/build/
+ros2/*/install/
+ros2/*/log/
 
 # Proyecto de referencia
 Original Referencia/
