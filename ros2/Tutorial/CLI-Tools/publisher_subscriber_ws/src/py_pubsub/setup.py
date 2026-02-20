@@ -15,7 +15,7 @@ setup(
     zip_safe=True,
     maintainer='yisus',
     maintainer_email='jesesqher@alum.us.es',
-    description='TODO: Package description',
+    description='Examples of minimal publisher/subscriber using rclpy',
     license='Apache-2.0',
     extras_require={
         'test': [
@@ -24,6 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
+        	'talker = py_pubsub.publisher_member_function:main',
+            'listener = py_pubsub.subscriber_member_function:main',
         ],
     },
 )
