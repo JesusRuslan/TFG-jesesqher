@@ -12,10 +12,11 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(irobot_create_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 
 add_executable(turtlebot4_first_cpp_node src/turtlebot4_first_cpp_node.cpp)
 
-ament_target_dependencies(turtlebot4_first_cpp_node rclcpp irobot_create_msgs geometry_msgs)
+ament_target_dependencies(turtlebot4_first_cpp_node rclcpp irobot_create_msgs geometry_msgs nav_msgs)
 
 target_include_directories(turtlebot4_first_cpp_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
