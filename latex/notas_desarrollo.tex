@@ -1,0 +1,264 @@
+% ============================================================
+%  notas_desarrollo.tex
+%  Diario de desarrollo — TFG: Optimizacion SLAM TurtleBot4
+%  Autor: Jesús Ruslan Esquinas Herrera
+%
+%  USO:
+%    Añade una \entrada{} cada vez que resuelvas algo relevante.
+%    Cuando escribas la memoria final, busca la \secciondestino
+%    de cada entrada para saber dónde encaja el contenido.
+%
+%  Para incluirlo en tu documento principal (opcional):
+%    \input{notas_desarrollo}
+% ============================================================
+
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{array}
+
+% ── Colores ──────────────────────────────────────────────────
+\definecolor{colorProblema}{RGB}{180, 60, 40}
+\definecolor{colorSolucion}{RGB}{30, 120, 60}
+\definecolor{colorDestino}{RGB}{30, 80, 160}
+\definecolor{colorNota}{RGB}{140, 90, 0}
+\definecolor{colorFondo}{RGB}{248, 248, 248}
+\definecolor{colorBorde}{RGB}{200, 200, 200}
+\definecolor{codeGray}{RGB}{245, 245, 245}
+
+% ── Estilo de código ─────────────────────────────────────────
+\lstset{
+  backgroundcolor=\color{codeGray},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{colorBorde},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  tabsize=2,
+  showstringspaces=false,
+  keywordstyle=\color{colorDestino}\bfseries,
+  commentstyle=\color{colorSolucion}\itshape,
+  stringstyle=\color{colorProblema},
+}
+
+% ── Entorno de entrada de diario ─────────────────────────────
+%  \entrada{fecha}{título}
+\newenvironment{entrada}[2]{%
+  \begin{mdframed}[
+    backgroundcolor=colorFondo,
+    linecolor=colorBorde,
+    linewidth=0.8pt,
+    topline=true, bottomline=true,
+    leftline=true, rightline=false,
+    leftmargin=0pt, rightmargin=0pt,
+    innerleftmargin=10pt, innerrightmargin=10pt,
+    innertopmargin=8pt, innerbottommargin=8pt,
+  ]
+  \noindent
+  {\small\color{gray}\texttt{#1}} \hfill
+  {\small\color{gray}---}\\[2pt]
+  {\large\bfseries #2}\\[6pt]
+  \hrule height 0.4pt \color{colorBorde}
+  \vspace{6pt}
+}{%
+  \end{mdframed}
+  \vspace{8pt}
+}
+
+% ── Comandos de etiquetas ─────────────────────────────────────
+\newcommand{\problema}[1]{%
+  \vspace{4pt}
+  \noindent{\color{colorProblema}\bfseries Problema:} #1\par
+}
+
+\newcommand{\causa}[1]{%
+  \vspace{2pt}
+  \noindent{\color{colorProblema}\bfseries Causa:} #1\par
+}
+
+\newcommand{\solucion}[1]{%
+  \vspace{2pt}
+  \noindent{\color{colorSolucion}\bfseries Solución:} #1\par
+}
+
+\newcommand{\secciondestino}[1]{%
+  \vspace{4pt}
+  \noindent{\color{colorDestino}\bfseries $\rightarrow$ Sección en memoria:} \texttt{#1}\par
+}
+
+\newcommand{\nota}[1]{%
+  \vspace{4pt}
+  \noindent{\color{colorNota}\bfseries Nota:} \textit{#1}\par
+}
+
+\newcommand{\resultado}[1]{%
+  \vspace{4pt}
+  \noindent{\color{colorSolucion}\bfseries Resultado medible:} #1\par
+}
+
+% ── Cabecera ─────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small TFG — Notas de desarrollo}
+\lhead{\small Jesús Ruslan}
+\cfoot{\thepage}
+
+% ============================================================
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Diario de desarrollo}\\[6pt]
+  {\large TFG: Optimizacion SLAM TurtleBot4}\\[4pt]
+  {\small Jesús Ruslan Esquinas Herrera \quad·\quad Universidad de Sevilla}\\[2pt]
+  {\small Curso 2025--2026}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1.5em}
+
+% ── Resumen de mapeo (referencia rápida) ─────────────────────
+\section*{Mapa de secciones}
+
+\begin{tabular}{>{\ttfamily}p{4.5cm} p{9cm}}
+  \toprule
+  \normalfont\bfseries Sección & \bfseries Contenido esperado \\
+  \midrule
+  3.3.1 & Planificación temporal, instalaciones, entorno \\
+  3.3.2 & Metodología de desarrollo (iterativa, tutoriales, etc.) \\
+  4.2   & Marco teórico: ROS2, Nav2, Create3, algoritmos \\
+  4.3   & Requisitos: velocidad máx., frecuencia cmd\_vel, etc. \\
+  5.2   & Arquitectura del sistema (simulado y real) \\
+  5.2.1 & Diferencias y similitudes simulado vs. real \\
+  6.1   & Introducción a la implementación, entorno software \\
+  6.2   & Desarrollo de algoritmos (open-loop, closed-loop, Nav2\ldots) \\
+  6.3   & Metodología experimental, incidencias y decisiones \\
+  7.3   & Resultados obtenidos y tablas comparativas \\
+  7.4   & Optimizaciones realizadas \\
+  \bottomrule
+\end{tabular}
+
+\vspace{1.5em}
+\hrule
+\vspace{1.5em}
+
+% ============================================================
+%  ENTRADAS DEL DIARIO
+%  Añade una entrada nueva cada vez que avances algo relevante.
+% ============================================================
+
+% ── ENTRADAS YA REGISTRADAS ──────────────────────────────────
+
+\begin{entrada}{2025-XX-XX}{Puesta en marcha del entorno de simulación}
+  \problema{Necesidad de reproducir el comportamiento del TurtleBot4 sin disponer del robot físico en todo momento.}
+  \solucion{Instalación de \texttt{ros-humble-turtlebot4-simulator} e Ignition Gazebo Fortress. Lanzamiento con:
+    \texttt{ros2 launch turtlebot4\_ignition\_bringup turtlebot4\_ignition.launch.py}}
+  \secciondestino{6.1 — Introducción a la implementación}
+  \nota{La simulación incluye el modelo URDF completo del TurtleBot4 Lite con el Create3 y el sensor LiDAR RPLIDAR A1.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Teleop con teclado — verificación del entorno}
+  \solucion{Verificación del entorno mediante \texttt{teleop\_twist\_keyboard}. El robot responde a comandos en \texttt{/cmd\_vel}.}
+  \secciondestino{6.1 — Introducción a la implementación}
+  \nota{Primer contacto con el topic \texttt{/cmd\_vel} (\texttt{geometry\_msgs/Twist}), que es la interfaz de control fundamental para todos los algoritmos posteriores.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Nodo C++ — control open-loop con botones del Create3}
+  \problema{Mover el robot una distancia fija ($d = 0{,}5$\,m) mediante los botones físicos del Create3 (\texttt{button\_1}, \texttt{button\_2}).}
+  \solucion{Nodo suscrito a \texttt{/interface\_buttons} que publica en \texttt{/cmd\_vel}. Control open-loop: la duración del movimiento se calcula como $t = d / v$.}
+  \secciondestino{6.2 — Desarrollo de algoritmos (control básico)}
+  \nota{Primera implementación de referencia. El error de posición final de este método será la línea base para comparar con el control closed-loop.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Problema: el robot para solo tras un único comando de velocidad}
+  \problema{El robot avanzaba $\approx 0{,}15$\,m y se detenía sin que se alcanzara la distancia objetivo ni se publicara el mensaje de parada.}
+  \causa{El plugin del Create3 en Ignition Gazebo implementa un \textit{safety timeout}: si deja de recibir comandos en \texttt{/cmd\_vel} con regularidad, el robot para automáticamente. Una sola publicación no es suficiente.}
+  \solucion{Sustituir la publicación única por un \texttt{wall\_timer} a 10\,Hz que publica continuamente el \texttt{Twist} mientras \texttt{moving\_} sea \texttt{true}. El timer se cancela al alcanzar la distancia o al pulsar Button 2.}
+
+\begin{lstlisting}[language=C++, caption={Timer de publicación continua en /cmd\_vel}]
+cmd_vel_timer_ = this->create_wall_timer(
+  100ms,
+  [this]() {
+    if (!moving_) { cmd_vel_timer_->cancel(); return; }
+    auto twist = geometry_msgs::msg::Twist();
+    twist.linear.x = LINEAR_SPEED;
+    cmd_vel_publisher_->publish(twist);
+  });
+\end{lstlisting}
+
+  \secciondestino{6.3 — Metodología experimental (incidencias)}
+  \resultado{El comportamiento del simulador es fiel al robot real: el Create3 físico exige el mismo patrón de publicación continua a $\geq 10$\,Hz.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Nodo C++ — control closed-loop con odometría}
+  \problema{El control open-loop acumula error porque asume velocidad constante, ignorando la rampa de aceleración interna del Create3.}
+  \solucion{Suscripción a \texttt{/odom} (\texttt{nav\_msgs/Odometry}). Se guarda la posición de inicio $(x_0, y_0)$ al pulsar Button 1 y se para cuando:
+    \[ d = \sqrt{(x - x_0)^2 + (y - y_0)^2} \geq d_{\text{objetivo}} \]}
+  \secciondestino{6.2 — Desarrollo de algoritmos (control con realimentación)}
+  \resultado{Comparativa open-loop vs. closed-loop: medir el error de posición final $\varepsilon = |d_{\text{real}} - d_{\text{objetivo}}|$ en ambos métodos. Ver §\,7.3.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Problema: velocidad saturada a $\approx 0{,}31$\,m/s}
+  \problema{Al comandar \texttt{LINEAR\_SPEED = 2.0}\,m/s, la odometría reporta $\approx 0{,}31$\,m/s.}
+  \causa{El iRobot Create3 impone un límite de velocidad máxima de \textbf{0{,}306\,m/s} por firmware, tanto en robot real como en simulación. Cualquier valor superior se satura.}
+  \solucion{Usar \texttt{LINEAR\_SPEED = 0.3}\,m/s como velocidad nominal máxima.}
+  \secciondestino{4.3 — Requisitos del sistema (restricciones hardware)}
+  \nota{Este límite es un requisito hardware del sistema, no un bug. Debe documentarse en la sección de requisitos.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Problema: artefactos de compilación con colcon}
+  \problema{Tras modificar las constantes \texttt{LINEAR\_SPEED} y \texttt{TARGET\_DIST}, el robot seguía comportándose con los valores antiguos (recorría 5\,m en lugar de 0{,}5\,m).}
+  \causa{Los directorios \texttt{build/} e \texttt{install/} cacheaban el binario anterior. \texttt{colcon build} sin limpiar no recompiló el ejecutable.}
+  \solucion{Build limpio:
+\begin{lstlisting}[language=bash]
+rm -rf build/ install/ log/
+colcon build --packages-select turtlebot4_cpp_tutorials
+source install/setup.bash
+\end{lstlisting}}
+  \secciondestino{6.3 — Metodología experimental (decisiones técnicas)}
+  \nota{Buena práctica: ante comportamientos inesperados, verificar siempre que el binario en ejecución corresponde al código fuente actual.}
+\end{entrada}
+
+
+% ============================================================
+%  PLANTILLA PARA NUEVAS ENTRADAS
+%  Copia el bloque siguiente cada vez que añadas una entrada.
+% ============================================================
+
+% \begin{entrada}{YYYY-MM-DD}{Título descriptivo de la tarea o problema}
+%   \problema{Descripción del problema o tarea abordada.}
+%   \causa{Causa raíz identificada (si aplica).}
+%   \solucion{Qué se hizo para resolverlo.}
+%
+%   % Incluye código si es relevante:
+%   % \begin{lstlisting}[language=C++, caption={Descripción}]
+%   % // código aquí
+%   % \end{lstlisting}
+%
+%   \secciondestino{X.Y — Nombre de la sección}
+%   \resultado{Dato medible o conclusión extraíble (si aplica).}
+%   \nota{Observación adicional o lección aprendida.}
+% \end{entrada}
+
+\end{document}
