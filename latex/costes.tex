@@ -1,140 +1,40 @@
 %!TEX root =  tfg.tex
-\chapter{Gestión de los costos}
+\chapter{Costes}
 
-\begin{quotation}[Book]{A guide to the Project Management Body of Knowledge (PMBOK guide) (2017)}
-La Gestión de los Costos del Proyecto incluye los procesos involucrados en planificar, estimar, presupuestar, financiar, obtener financiamiento, gestionar y controlar los costos de modo que se complete el proyecto dentro del presupuesto aprobado. \cite{pmbok}
+\begin{quotation}[Novelist]{Ernest Hemingway (1899--1961)}
+The good parts of a book may be only something a writer is lucky enough to overhear or it may be the wreck of his whole damn life -- and one is as good as the other.
 \end{quotation}
 
 \begin{abstract}
-Se va a realizar de forma detallada la planificación de los costes, de forma que quede claro los recursos necesarios para llevar a cabo el proyecto.
+Resumen de lo que va a ocurrir en el capítulo. ¿Cuál es el objetivo que tenemos con este capítulo?
 \end{abstract}
 
-\clearpage
-
-\section{Planificar la Gestión de los costos}
-El plan de gestión de los costos describe la forma en que se planificarán, estructurarán y controlarán los costos del proyecto.
-En el plan de gestión de los costos, se establece lo siguiente:
-
-\begin{itemize}
-
-\item \textbf{Unidades de medida}: Se definen las unidades que se utilizan en las mediciones. La unidad monetaria empleada será el euro .La unidad empleada para el tiempo será por semanas de trabajo del personal.
-\item \textbf{Nivel de precisión}: Este consistirá en el grado de redondeo que se aplicará en las estimaciones del costo. Se redondeará en el contexto de este proyecto siempre al alza al a la décima, es decir, si el coste fuera de 862,84\euro, redondearíamos a 862,90\euro.
-\item \textbf{Umbrales de control}: Este define los umbrales de valoración donde se establece un valor acotado para la variación permitida en nuestro proyecto antes de que se deban tomar medidas. En nuestro caso estableceremos un rango de $\pm$ 15 \%, es decir, que dispondremos de una variación en el presupuesto del rango anteriormente indicado para contingencias.
-
-\item \textbf{Reglas para la medición del desempeño}: En este apartado, se realizará una medición y monitorización de los costes fijos y variables durante la primera iteración para luego realizar una comparación entre lo gastado con respecto a lo estimado. En dicha comparación se pueden dar dos situaciones diferentes:  
-
-\begin{itemize}
-
-\item Que lo gastado sea mayor de lo esperado, donde se investigará la causa de aquellos procesos que superasen el presupuesto estimado. Si no se encontrase una solución, en caso de que se superase el umbral establecido anteriormente para contingencias, se realizaría un cambio en el presupuesto.
-
-\item Que lo gastado sea menor de lo esperado, donde se realizaría un ajuste al umbral de control para aumentar el rango para contingencias.
-
-\end{itemize}
-
-\end{itemize}
-
-\clearpage
-
-
-\section{Estimación de los costos}
-
-A continuación se muestra la estimación de costes realizada para el proyecto desarrollado.
-En primer lugar, se estimarán los costes directos e indirectos del proyecto.
-
-\subsection{Costes directos}
-Son aquellos que se pueden medir y asignar de forma inequívoca al desarrollo del proyecto.
-
-\subsubsection{Costes de personal}
-En cuanto a los costes de personal tal y como hemos indicado anteriormente, contamos con los costes de dos ingenieros del software en el territorio español, tras la realización de búsquedas y medias de lo que sería este sueldo hemos llegado a que mensualmente se debería pagar 1.800 \euro brutos.
+\section{Resumen de costes del proyecto}
 
 \begin{table*}[h!]
 	\centering
 	\begin{coolTable}{ll}{2}
-{Costes del personal}
-	\textbf{Salario bruto por persona}& 21.600 \euro\\
-	Total Deducciones por persona &3.371,60 \euro\\
-	Tipo Total por persona & 18,84  \% \\
-	\textbf{TOTAL ANUAL NETO por persona}& 17.530,58 \euro\\
-	Costes Sociales de la empresa por persona & 6.458,40 \euro\\
-	\textbf{COSTE TOTAL EMPRESA por persona}& 28.058,40 \euro\\
-	\end{coolTable}
-	\caption{Tabla resumen de costes por persona}
-\end{table*}
-
-\newpage
-
-De esto podríamos inferir los siguientes costes sabiendo que contamos con dos empleados. 
-En la siguiente tabla, podemos observar los costes totales del proyecto cuya duración es de cuatro meses.
-
-\begin{table*}[h!]
-	\centering
-	\begin{coolTable}{ll}{2}
-    {Costes del proyecto}
-	\textbf{Salario bruto}& 14.400 \euro\\
-	Total Deducciones & 562,00 \euro\\
-	Tipo Total por persona & 18,84  \% \\
-	\textbf{TOTAL NETO }& 11.687,10 \euro\\
-	Costes Sociales de la empresa  & 4.305,60 \euro\\
-	\textbf{COSTE TOTAL EMPRESA }& 18.705,60 \euro\\
+{Resumen del proyecto}
+	\textbf{Costes de personal}&5.045 \euro\\
+	Sueldo neto&2.030 \euro\\
+	Impuestos&1.000 \euro\\
+	Costes sociales&2.015 \euro\\
+	\textbf{Costes materiales}&560 \euro\\
+	\textbf{Costes indirectos}&450 \euro\\
+	\midrule
+	\textbf{TOTAL}&8.000 \euro\\
 	\end{coolTable}
 	\caption{Tabla resumen de costes}
 \end{table*}
 
-\newpage
-\subsection{Costes indirectos}
-Son aquellos que afectan a un conjunto de actividades y procesos que hacen inviable la medición directa. Para ello, es necesario establecer un criterio de reparto sistemático y estable en el tiempocBajo esta definición se agrupan todos los costes necesarios para el desarrollo del proyecto a nivel físico (descartando la mano de obra), como podrían ser los equipamientos electrónicos, así como licencias de software o el abastecimiento de la red eléctrica \footnote{La cuenta (628) suministros se utiliza para contabilizar los gastos ocasionados por el consumo de electricidad. Se ha contratado la tarifa de luz One Luz te garantiza que el kWh tendrá un precio estable. El precio con impuestos es 0,183867 €/kWh, se ha estimado un consumo de 200kW. La información se puede encontrar (\href{https://www.endesa.com/es/luz-y-gas/luz/one/tarifa-one-luz}{en la siguiente referencia})}.
+\section{Costes de personal}
 
-\begin{table*}[h!]
-	\centering
-	\begin{coolTable}{ll}{2}
-    {Costes indirectos}
-	\textbf{Amortizaciones}& 522,00 \euro \\
-	Amortización equipos informáticos & 425,00 \euro\\
-	Amortización licencias de software  & 97,00 \euro \\ 
-    \midrule
-	\textbf{Licencias sistema operativo}& 290,00 \euro\\
-	 \midrule
-	\textbf{Luz}& 147,10 \euro\\
-	\midrule
-	\textbf{TOTAL}& \textbf{959,10 \euro}\\
-	\end{coolTable}
-	\caption{Tabla de costes indirectos}
-\end{table*}
+Ya hablaremos de esto
 
-\subsection{Costes totales}
-Los costes totales del proyecto por tanto, estarán definidos por la suma de los costes directos e indirectos, resultando en la siguiente referencia.
-\begin{table*}[h!]
-	\centering
-	\begin{coolTable}{ll}{2}
-    {Costes totales del proyecto}
-	\textbf{Costes Directos}& 18.705,60 \euro \\
-	\textbf{Costes Indirectos}& 959,10 \euro\\
-	\midrule
-	\textbf{TOTAL}& \textbf{19.664,70 \euro}\\
-	\end{coolTable}
-	\caption{Tabla de costes del desarrollo del proyecto}
-\end{table*}
+\section{Costes materiales}
 
-\section{Reserva}
+Y de esto también. Ver Sección \ref{sec:arquitectura}.
 
-La reserva para contingencias es definida en el presupuesto, esta se destinará a los riesgos, estas se contemplan como la parte del presupuesto para cubrir tanto los riesgos conocidos como desconocidos que puedan afectar al proyecto. Esta se puede establecer como un porcentaje sobre el costo estimado, un costo fijo o calcularse mediante otro tipo de métodos de análisis. Como es natural conforme avance el proyecto y estos riesgos no puedan llegar a darse debido a la reducción de incertidumbre del proyecto, la reserva podrá ejecutarse, reducirse o eliminarse. Se destinará un 10 \% del coste total del proyecto al fondo de contingencias para la resolución de riesgos en caso de que se produzcan.
+\section{Costes indirectos}
 
-
-\clearpage
-
-\section{Beneficio y generación de valor}
-
-El desarrollo del proyecto tiene como objetivo proveer un producto, el cual conlleva a realizar un esfuerzo en recursos, tiempos y costo.
-Este esfuerzo se verá reflejado como un beneficio para la organización que espera un resultado exitoso. El principio de nuestro proyecto nace en base a una necesidad encontrada que debe ser cumplida de forma satisfactoria, en nuestro caso el desarrollo de un software basado en la organización y gestión de equipos.
-Dentro de la ejecución del proyecto existen una serie de variables que se deben monitorizar,controlar, ajustar y cumplir para poder decidir el éxito de un proyecto. En nuestro caso, hemos optado por seguir la triple restricción \footnote{El modelo de triple restricción es un método para ver las compensaciones que realiza al completar un proyecto. Al trabajar con un cliente, el modelo de triple restricción le permite proteger sus intereses y los de su empresa al recibir una compensación justa por cualquier cambio que el cliente desee realizar. (\href{https://buom.store/que-es-la-triple-restriccion-como-usarlo-con-ejemplos/}{en la siguiente referencia})}.Para ello se tienen en consideración los siguientes puntos:
-
-\begin{itemize}
-
-\item El resultado del proyecto entregado debe incluir todo lo acordado en el alcance del proyecto.
-
-\item El proyecto debe finalizar dentro del tiempo acordado al comienzo del proyecto.
-
-\item El resultado del proyecto debe haber sido desarrollado dentro del presupuesto acordado con el cliente.
-
-\end{itemize}
-En nuestro contexto, el desarrollo del proyecto generará valor, ya que se satisfacen las necesidades del cliente y al producirle los resultados esperados que puedan ser aprovechados al máximo por los usuarios.
+Y esto es una fiesta
