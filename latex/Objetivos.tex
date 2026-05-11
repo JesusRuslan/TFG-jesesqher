@@ -1,20 +1,49 @@
-%!TEX root =  tfg.tex
-\chapter{Contexto}
+%!TEX root = tfg.tex
+\chapter{Objetivos del proyecto}
 
-\begin{quotation}[Novelist]{Ernest Hemingway (1899--1961)}
-The good parts of a book may be only something a writer is lucky enough to overhear or it may be the wreck of his whole damn life -- and one is as good as the other.
+%\begin{quotation}[Científico de la computación]{Edsger W. Dijkstra (1930--2002)}
+%Si la depuración es el proceso de eliminar errores, entonces la programación debe ser el proceso de introducirlos.
+%\end{quotation}
+\begin{quotation}{Anónimo}
+La verdadera medida de la autonomía no está en moverse, sino en saber hacia dónde ir.
 \end{quotation}
 
+
 \begin{abstract}
-Aqu\'i mal un breve resumen del capítulo.
+Antes de evaluar un sistema de navegación, es necesario definir qué se quiere mejorar y cómo medirlo. Este capítulo recoge la motivación del trabajo y los objetivos que estructuran su desarrollo.
 \end{abstract}
 
 \section{Motivación}
-Esta sección se rellenará cuando tengamos un producto de mercado en lugar de un proyecto en el que haya un cliente específico. Deberá justificar brevemente el problema a resolver, escenario en el que se aplica, hipótesis de partida, público objetivo, etc.
+
+La navegación autónoma de robots móviles es un campo de creciente relevancia en aplicaciones industriales, logísticas y de servicio. La capacidad de un robot para desplazarse de forma autónoma por un entorno, construyendo un mapa del mismo y planificando trayectorias eficientes, constituye una de las competencias fundamentales de la robótica moderna.
+
+El ecosistema ROS2 (Robot Operating System 2) junto con el stack de navegación Nav2 ofrece un marco de trabajo estandarizado para el desarrollo de estas capacidades. Sin embargo, la elección del algoritmo de planificación de trayectorias tiene un impacto directo en la eficiencia del robot: distintos algoritmos producen trayectorias de diferente longitud, suavidad y coste computacional, lo que afecta tanto al tiempo de ejecución como al consumo energético del sistema.
+
+Este trabajo surge de la necesidad de evaluar y comparar de forma sistemática distintos algoritmos de planificación de trayectorias sobre una plataforma robótica real, el TurtleBot4, empleando tanto un entorno de simulación como el robot físico.
 
 \section{Listado de objetivos}
 
 \begin{description}
-\item \textbf{Objetivo 1. Blabla} Detalles del objetivo 1.
-\item \textbf{Objetivo 2. Blabla} Detalles del objetivo 2.
+
+\item \textbf{Objetivo 1. Puesta en marcha del entorno de simulación.}
+Configurar y verificar el entorno de simulación basado en Ignition Gazebo con el modelo TurtleBot4, garantizando que el robot simulado se comporta de forma equivalente al robot real en lo relativo a control de movimiento y lectura de sensores.
+
+\item \textbf{Objetivo 2. Desarrollo de nodos de control en ROS2.}
+Implementar nodos de control en C++ que permitan mover el robot de forma autónoma, incorporando tanto control open-loop como closed-loop con realimentación de odometría.
+
+\item \textbf{Objetivo 3. Integración con el stack de navegación Nav2.}
+Configurar Nav2 para la navegación autónoma del TurtleBot4, incluyendo la localización mediante AMCL y la planificación de trayectorias sobre un mapa del entorno.
+
+\item \textbf{Objetivo 4. Implementación y evaluación de algoritmos de planificación.}
+Configurar y ejecutar distintos algoritmos de planificación de trayectorias disponibles en Nav2 (Dijkstra, A* y al menos un algoritmo alternativo), midiendo métricas de rendimiento comparables.
+
+\item \textbf{Objetivo 5. Diseño del sistema de medición.}
+Desarrollar un nodo ROS2 en C++ que automatice la recogida de métricas de navegación (longitud de trayectoria, tiempo de planificación, suavidad) para cada algoritmo evaluado.
+
+\item \textbf{Objetivo 6. Validación en robot real.}
+Reproducir los experimentos realizados en simulación sobre el TurtleBot4 físico, generando previamente un mapa del entorno real mediante SLAM y comparando los resultados obtenidos en ambos entornos.
+
+\item \textbf{Objetivo 7. Análisis comparativo.}
+Elaborar un análisis cuantitativo y cualitativo de los algoritmos evaluados, identificando las condiciones bajo las cuales cada uno ofrece un mejor rendimiento.
+
 \end{description}

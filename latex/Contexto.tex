@@ -1,22 +1,48 @@
-%!TEX root =  tfg.tex
 \chapter{Contexto}
 
-\begin{quotation}[Novelist]{Ernest Hemingway (1899--1961)}
-The good parts of a book may be only something a writer is lucky enough to overhear or it may be the wreck of his whole damn life -- and one is as good as the other.
+\begin{quotation}[Físico teórico]{Richard P. Feymann (1918--1988)}
+Lo que no puedo crear, no lo entiendo.
+%La verdadera medida de la autonomía no está en moverse, sino en saber hacia dónde ir.
 \end{quotation}
 
 \begin{abstract}
-Resumen de lo que va a ocurrir en el capítulo. ¿Cuál es el objetivo que tenemos con este capítulo?
+Antes de construir un edificio, es necesario conocer sus cimientos. Este capítulo presenta el contexto sobre el que se asienta el proyecto.
 \end{abstract}
 
-\section{El mundo del X (videojuego, e-commerce,...)}
+\section{El mundo de la robótica móvil}
 
-Hay que ir poco a poco acotando el contexto donde se desarrolla el proyecto. No se debe sobreentender que el evaluador de la memoria sabe del tema. Escribid el texto para la abuela.
+La robótica móvil estudia el diseño y control de sistemas que pueden desplazarse de forma autónoma en un entorno físico. A diferencia de otros robots que trabajan en espacios muy restringidos o guiados por carriles, un robot móvil se mueve en un espacio continuo, donde el entorno puede cambiar, y donde ningún trayecto es exactamente igual al anterior. Esto hace que la navegación autónoma sea un problema desafiante: se trata no solo de moverse, sino de moverse de forma segura, eficiente y con un objetivo claro.
 
-\section{Subcontexto}
+En este contexto, los robots móviles se utilizan en entornos muy diversos: fábricas, almacenes, hospitales, museos, edificios universitarios o incluso en la calle. En todos ellos, el robot debe ser capaz de interpretar su entorno, saber dónde se encuentra, y planificar rutas hacia lugares de destino sin chocar ni bloquear el paso a personas u otros sistemas. La clave no está solo en tener ruedas, sensores o motores, sino en integrarlos en un sistema que tome decisiones razonables sobre el movimiento.
 
-\section{Subsubcontexto}
+\section{Navegación autónoma: entre la percepción y la decisión}
+
+La navegación autónoma de un robot móvil puede resumirse como un ciclo continuo de tres pasos: percibir el entorno, localizarse en él y decidir hacia dónde moverse. En este proyecto, el robot se apoya en sensores como el láser o el SLAM para construir un mapa 2D del entorno, y utiliza algoritmos de planificación de trayectoria para calcular rutas desde el punto actual hasta un objetivo. En este sentido, como señaló Alfred Korzybski, ``\emph{el mapa no es el territorio}'', por lo que esta representación nunca es perfecta y el sistema debe ser capaz de adaptarse a las diferencias entre el modelo y la realidad. La decisión final se traduce en comandos de velocidad que el robot ejecuta, ajustando su trayectoria en tiempo real.
+
+Esta idea se acerca mucho a la frase que abre el capítulo: la verdadera medida de la autonomía no es que el robot pueda moverse, sino que sepa \emph{hacia dónde ir} y cómo llegar de forma segura. Un sistema de navegación autónoma no es un mero motor que avanza recto, sino un sistema de control que reacciona a obstáculos, cambios de planificación y errores de localización, ajustando su comportamiento en cada instante.
+
+\section{ROS 2 como base del sistema}
+
+ROS 2 (Robot Operating System 2) es un marco de desarrollo de software ampliamente utilizado en robótica por su arquitectura distribuida, modular y orientada a componentes. En lugar de construir un sistema monolítico, ROS 2 permite que cada parte del robot —percepción, localización, planificación, control y supervisión— se implemente como un nodo independiente que se comunica con el resto mediante mensajes. Esto favorece la reutilización de código, la integración de sensores y la extensión futura del sistema.
+
+En este trabajo se utiliza la distribución \textbf{ROS 2 Humble}, que ofrece estabilidad y soporte de largo plazo, ideal para proyectos académicos y experimentales. Además, ROS 2 proporciona herramientas estándar para la depuración, la visualización y el testeo de nodos, lo que permite entender el comportamiento del sistema en tiempo de ejecución y corregir fallos de forma más eficiente. Desde ROS 2 se coordinan tanto el robot simulado en Gazebo/Ignition como el sistema real de TurtleBot 4, permitiendo que el desarrollo se transfiera con relativa facilidad entre simulación y hardware.
+
+\section{TurtleBot 4: plataforma para navegar y validar}
+
+TurtleBot 4 es una plataforma de robótica móvil diseñada para investigación, aprendizaje y prototipado. Combina un chasis móvil, sensores de proximidad, láser (o equivalentes), procesamiento embebido y conectividad inalámbrica, y está pensada precisamente para experimentar con navegación autónoma, mapeado y control de robots. Su compatibilidad con ROS 2 Humble facilita la integración de paquetes de navegación, SLAM y visualización, lo que la convierte en una base muy adecuada para un TFG centrado en navegación autónoma.
+
+En este proyecto, TurtleBot 4 se utiliza como laboratorio rodante: el entorno de simulación permite probar algoritmos, parámetros y configuraciones de forma segura, mientras que el robot real permite validar que el comportamiento en el mundo físico es coherente con el esperado en simulación. Esta combinación entre simulación y hardware permite profundizar en aspectos como la robustez de la navegación, la influencia de los sensores y la calidad del mapa sobre el rendimiento global del sistema.
+
+\section{Del mapeado a la navegación continua}
+
+Un paso clave en la navegación autónoma es la construcción de un mapa del entorno. Para ello se utiliza \textbf{SLAM} (Simultaneous Localization And Mapping), que permite que el robot se localice y construya un mapa 2D a la vez que se mueve. Una vez existe un mapa fiable, el robot puede usarlo para planificar trayectorias desde su posición actual hasta un objetivo, evitando obstáculos y respetando el espacio visible. Además, el sistema de navegación puede reaccionar ante cambios, como nuevos obstáculos o cambios de planificación, recalculando la ruta en tiempo real.
+
+En este contexto, la navegación no es un evento único, sino un proceso continuo. El robot debe ser capaz de replanificar, recuperarse de situaciones de bloqueo, respetar zonas de seguridad y adaptar su comportamiento al entorno. Esto implica que el diseño del sistema no solo tenga un “modo de avance”, sino estrategias de recuperación, de detección de problemas y de replanificación. En este trabajo, la pila de navegación \textbf{Nav2} proporciona este conjunto de herramientas dentro de ROS 2, permitiendo que el robot navegue de forma autónoma en entornos estáticos y dinámicos.
 
 \section{Estado del arte}
 
-Cómo se encuentra la industria hoy en día a nivel económico y tecnológico.
+Actualmente, la navegación autónoma de robots móviles ha dejado de ser una tecnología experimental para convertirse en una realidad en entornos de fábrica, logística y edificios inteligentes. Muchas empresas y proyectos de investigación utilizan sistemas basados en ROS 2, Nav2 y SLAM para dotar a sus robots de una navegación robusta y flexible. A su vez, plataformas como TurtleBot 4 ofrecen una forma accesible de experimentar con estos sistemas, lo que las convierte en candidatas naturales para proyectos académicos y de pruebas.
+
+En el ámbito académico, se han desarrollado múltiples trabajos que analizan el rendimiento de distintos algoritmos de navegación, modos de mapeado y estrategias de control para robots móviles. Estos trabajos muestran que la elección de la pila de navegación, los parámetros de planificación y la calidad del mapa tienen un impacto directo en la eficiencia y seguridad del robot. Además, la combinación de simulación y hardware real se ha convertido en una práctica estándar, ya que permite probar configuraciones complejas sin riesgo de daño físico.
+
+En este contexto, el proyecto se inserta en la línea de trabajo que explora la navegación autónoma de robots móviles con ROS 2 y TurtleBot 4, centrándose en la implementación, evaluación y ajuste de algoritmos de navegación y mapeado. La hipótesis central es que, mediante la configuración adecuada de la pila de navegación y la integración de SLAM, se puede obtener un sistema de navegación autónoma robusto, capaz de desplazarse de forma segura en entornos de interior, tanto en simulación como en el mundo real.
