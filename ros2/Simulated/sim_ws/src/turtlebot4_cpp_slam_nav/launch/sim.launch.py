@@ -19,7 +19,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, LogInfo
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, LogInfo, TimerAction, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression, PathJoinSubstitution
 from launch.conditions import IfCondition
@@ -123,6 +123,54 @@ def generate_launch_description():
         condition=IfCondition(launch_rviz)
     )
 
+    # -- Initial pose estimate ---------------------------------------------------------------------------
+    initial_pose = TimerAction(
+        period=60.0,
+        actions=[
+            ExecuteProcess(
+                cmd=[
+                    'ros2', 'topic', 'pub', '--once', '/initialpose',
+                    'geometry_msgs/msg/PoseWithCovarianceStamped',
+                    '{"header": {"frame_id": "map"}, '
+                    '"pose": {"pose": '
+                    '{"position": {"x": 0.0, "y": 0.0, "z": 0.0}, '
+                    '"orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}}}}'
+                ],
+                output='screen'
+            )
+        ]
+    )
+
+    # -- Undock ---------------------------------------------------------------------------
+    undock = TimerAction(
+        period=70.0,
+        actions=[
+            ExecuteProcess(
+                cmd=[
+                    'ros2', 'action', 'send_goal', '/undock',
+                    'irobot_create_msgs/action/Undock',
+                    '{}'
+                ],
+                output='screen'
+            )
+        ]
+    )
+
+    # -- 180º spin ---------------------------------------------------------------------------
+    rotate = TimerAction(
+        period=85.0,
+        actions=[
+            ExecuteProcess(
+                cmd=[
+                    'ros2', 'actions', 'send_goal', '/spin',
+                    'irobot_create_msgs/action/RotateAngle',
+                    '{"angle": 3.14159, "max_rotation_speed": 0.5}'
+                ],
+                output='screen'
+            )
+        ]
+    )
+
     # -- LaunchDescription ---------------------------------------------------------------------------
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(gazebo)
@@ -130,4 +178,7 @@ def generate_launch_description():
     ld.add_action(rviz_node)
     ld.add_action(LogInfo(msg=['Lanzado con planner: ', planner, '; rviz: ', launch_rviz, ' y smooth: ', smooth]))
     ld.add_action(LogInfo(msg=['Lanzado con yaml: ', planner_yaml]))
+    ld.add_action(initial_pose)
+    ld.add_action(undock)
+    ld.add_action(rotate)
     return ld
