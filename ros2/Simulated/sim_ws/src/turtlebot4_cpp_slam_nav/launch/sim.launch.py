@@ -177,9 +177,9 @@ def generate_launch_description():
         actions=[
             ExecuteProcess(
                 cmd=[
-                    'ros2', 'actions', 'send_goal', '/spin',
-                    'irobot_create_msgs/action/RotateAngle',
-                    '{"angle": 3.14159, "max_rotation_speed": 0.5}'
+                    'ros2', 'action', 'send_goal', '/spin',
+                    'nav2_msgs/action/Spin',
+                    '{"target_yaw": 3.14159}'
                 ],
                 output='screen'
             )
