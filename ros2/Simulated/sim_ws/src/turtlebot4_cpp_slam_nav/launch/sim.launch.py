@@ -141,6 +141,21 @@ def generate_launch_description():
         ]
     )
 
+    # -- Safety limit override ---------------------------------------------------------------------------
+    # Dado que el robot no puede ir marcha atrás más de una determinada distancia por un límite de seguridad, lo vamos
+    # a desactivar para poder tener mayor control sobre el movimiento del robot si fuera necesario
+    safety_override = TimerAction(
+        period=90.0,
+        actions=[
+            ExecuteProcess(
+            cmd=['ros2', 'param', 'set', '/motion_control',
+                 'safety_override',
+                 'backup_only'],
+            output='screen'
+        )
+        ]
+    )
+
     # -- Undock ---------------------------------------------------------------------------
     undock = TimerAction(
         period=70.0,
@@ -179,6 +194,7 @@ def generate_launch_description():
     ld.add_action(LogInfo(msg=['Lanzado con planner: ', planner, '; rviz: ', launch_rviz, ' y smooth: ', smooth]))
     ld.add_action(LogInfo(msg=['Lanzado con yaml: ', planner_yaml]))
     ld.add_action(initial_pose)
+    ld.add_action(safety_override)
     ld.add_action(undock)
     ld.add_action(rotate)
     return ld
