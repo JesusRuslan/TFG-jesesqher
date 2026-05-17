@@ -1,6 +1,6 @@
 % ============================================================
 %  notas_desarrollo.tex
-%  Diario de desarrollo — TFG: Optimizacion SLAM TurtleBot4
+%  Diario de desarrollo — TFG: Optimización SLAM TurtleBot4
 %  Autor: Jesús Ruslan Esquinas Herrera
 %
 %  USO:
@@ -57,7 +57,6 @@
 }
 
 % ── Entorno de entrada de diario ─────────────────────────────
-%  \entrada{fecha}{título}
 \newenvironment{entrada}[2]{%
   \begin{mdframed}[
     backgroundcolor=colorFondo,
@@ -123,7 +122,7 @@
 
 \begin{center}
   {\LARGE\bfseries Diario de desarrollo}\\[6pt]
-  {\large TFG: Optimizacion SLAM TurtleBot4}\\[4pt]
+  {\large TFG: Optimización SLAM TurtleBot4}\\[4pt]
   {\small Jesús Ruslan Esquinas Herrera \quad·\quad Universidad de Sevilla}\\[2pt]
   {\small Curso 2025--2026}
 \end{center}
@@ -132,24 +131,25 @@
 \hrule
 \vspace{1.5em}
 
-% ── Resumen de mapeo (referencia rápida) ─────────────────────
+% ── Mapa de secciones ────────────────────────────────────────
 \section*{Mapa de secciones}
 
 \begin{tabular}{>{\ttfamily}p{4.5cm} p{9cm}}
   \toprule
   \normalfont\bfseries Sección & \bfseries Contenido esperado \\
   \midrule
-  3.3.1 & Planificación temporal, instalaciones, entorno \\
-  3.3.2 & Metodología de desarrollo (iterativa, tutoriales, etc.) \\
-  4.2   & Marco teórico: ROS2, Nav2, Create3, algoritmos \\
-  4.3   & Requisitos: velocidad máx., frecuencia cmd\_vel, etc. \\
-  5.2   & Arquitectura del sistema (simulado y real) \\
-  5.2.1 & Diferencias y similitudes simulado vs. real \\
-  6.1   & Introducción a la implementación, entorno software \\
-  6.2   & Desarrollo de algoritmos (open-loop, closed-loop, Nav2\ldots) \\
-  6.3   & Metodología experimental, incidencias y decisiones \\
-  7.3   & Resultados obtenidos y tablas comparativas \\
-  7.4   & Optimizaciones realizadas \\
+  2.3.1 & Planificación temporal, instalaciones, entorno \\
+  2.3.2 & Metodología de desarrollo (iterativa, tutoriales, etc.) \\
+  3.2   & Marco teórico: ROS2, Nav2, AMCL, Create3, algoritmos \\
+  3.3   & Requisitos: velocidad máx., frecuencia cmd\_vel, etc. \\
+  4.2   & Arquitectura del sistema (simulado y real) \\
+  4.2.1 & Diferencias y similitudes simulado vs.\ real \\
+  5.1   & Introducción a la implementación, entorno software \\
+  5.2   & Desarrollo de algoritmos (open-loop, closed-loop, Nav2\ldots) \\
+  5.3   & Metodología experimental, incidencias y decisiones \\
+  6.3   & Resultados obtenidos y tablas comparativas \\
+  6.4   & Optimizaciones realizadas \\
+  7.2   & Líneas futuras (SLAM en robot real, etc.) \\
   \bottomrule
 \end{tabular}
 
@@ -159,23 +159,22 @@
 
 % ============================================================
 %  ENTRADAS DEL DIARIO
-%  Añade una entrada nueva cada vez que avances algo relevante.
 % ============================================================
 
-% ── ENTRADAS YA REGISTRADAS ──────────────────────────────────
+% ── CONTROL BÁSICO ───────────────────────────────────────────
 
 \begin{entrada}{2025-XX-XX}{Puesta en marcha del entorno de simulación}
   \problema{Necesidad de reproducir el comportamiento del TurtleBot4 sin disponer del robot físico en todo momento.}
   \solucion{Instalación de \texttt{ros-humble-turtlebot4-simulator} e Ignition Gazebo Fortress. Lanzamiento con:
     \texttt{ros2 launch turtlebot4\_ignition\_bringup turtlebot4\_ignition.launch.py}}
-  \secciondestino{6.1 — Introducción a la implementación}
+  \secciondestino{5.1 — Introducción a la implementación}
   \nota{La simulación incluye el modelo URDF completo del TurtleBot4 Lite con el Create3 y el sensor LiDAR RPLIDAR A1.}
 \end{entrada}
 
 
 \begin{entrada}{2025-XX-XX}{Teleop con teclado — verificación del entorno}
   \solucion{Verificación del entorno mediante \texttt{teleop\_twist\_keyboard}. El robot responde a comandos en \texttt{/cmd\_vel}.}
-  \secciondestino{6.1 — Introducción a la implementación}
+  \secciondestino{5.1 — Introducción a la implementación}
   \nota{Primer contacto con el topic \texttt{/cmd\_vel} (\texttt{geometry\_msgs/Twist}), que es la interfaz de control fundamental para todos los algoritmos posteriores.}
 \end{entrada}
 
@@ -183,7 +182,7 @@
 \begin{entrada}{2025-XX-XX}{Nodo C++ — control open-loop con botones del Create3}
   \problema{Mover el robot una distancia fija ($d = 0{,}5$\,m) mediante los botones físicos del Create3 (\texttt{button\_1}, \texttt{button\_2}).}
   \solucion{Nodo suscrito a \texttt{/interface\_buttons} que publica en \texttt{/cmd\_vel}. Control open-loop: la duración del movimiento se calcula como $t = d / v$.}
-  \secciondestino{6.2 — Desarrollo de algoritmos (control básico)}
+  \secciondestino{5.2 — Desarrollo de algoritmos (control básico)}
   \nota{Primera implementación de referencia. El error de posición final de este método será la línea base para comparar con el control closed-loop.}
 \end{entrada}
 
@@ -204,7 +203,7 @@ cmd_vel_timer_ = this->create_wall_timer(
   });
 \end{lstlisting}
 
-  \secciondestino{6.3 — Metodología experimental (incidencias)}
+  \secciondestino{5.3 — Metodología experimental (incidencias)}
   \resultado{El comportamiento del simulador es fiel al robot real: el Create3 físico exige el mismo patrón de publicación continua a $\geq 10$\,Hz.}
 \end{entrada}
 
@@ -213,8 +212,8 @@ cmd_vel_timer_ = this->create_wall_timer(
   \problema{El control open-loop acumula error porque asume velocidad constante, ignorando la rampa de aceleración interna del Create3.}
   \solucion{Suscripción a \texttt{/odom} (\texttt{nav\_msgs/Odometry}). Se guarda la posición de inicio $(x_0, y_0)$ al pulsar Button 1 y se para cuando:
     \[ d = \sqrt{(x - x_0)^2 + (y - y_0)^2} \geq d_{\text{objetivo}} \]}
-  \secciondestino{6.2 — Desarrollo de algoritmos (control con realimentación)}
-  \resultado{Comparativa open-loop vs. closed-loop: medir el error de posición final $\varepsilon = |d_{\text{real}} - d_{\text{objetivo}}|$ en ambos métodos. Ver §\,7.3.}
+  \secciondestino{5.2 — Desarrollo de algoritmos (control con realimentación)}
+  \resultado{Comparativa open-loop vs.\ closed-loop: medir el error de posición final $\varepsilon = |d_{\text{real}} - d_{\text{objetivo}}|$ en ambos métodos. Ver §\,6.3.}
 \end{entrada}
 
 
@@ -222,7 +221,7 @@ cmd_vel_timer_ = this->create_wall_timer(
   \problema{Al comandar \texttt{LINEAR\_SPEED = 2.0}\,m/s, la odometría reporta $\approx 0{,}31$\,m/s.}
   \causa{El iRobot Create3 impone un límite de velocidad máxima de \textbf{0{,}306\,m/s} por firmware, tanto en robot real como en simulación. Cualquier valor superior se satura.}
   \solucion{Usar \texttt{LINEAR\_SPEED = 0.3}\,m/s como velocidad nominal máxima.}
-  \secciondestino{4.3 — Requisitos del sistema (restricciones hardware)}
+  \secciondestino{3.3 — Requisitos del sistema (restricciones hardware)}
   \nota{Este límite es un requisito hardware del sistema, no un bug. Debe documentarse en la sección de requisitos.}
 \end{entrada}
 
@@ -236,14 +235,147 @@ rm -rf build/ install/ log/
 colcon build --packages-select turtlebot4_cpp_tutorials
 source install/setup.bash
 \end{lstlisting}}
-  \secciondestino{6.3 — Metodología experimental (decisiones técnicas)}
+  \secciondestino{5.3 — Metodología experimental (decisiones técnicas)}
   \nota{Buena práctica: ante comportamientos inesperados, verificar siempre que el binario en ejecución corresponde al código fuente actual.}
+\end{entrada}
+
+
+% ── SLAM Y NAVEGACIÓN ─────────────────────────────────────────
+
+\begin{entrada}{2025-XX-XX}{Intento de SLAM manual con slam\_toolbox — limitación del entorno}
+  \problema{Configurar \texttt{slam\_toolbox} manualmente para generar un mapa del entorno simulado.}
+  \causa{El \texttt{frame\_id} del scan publicado por el LiDAR en Ignition Gazebo es \texttt{turtlebot4/rplidar\_link/rplidar} (con namespace del robot), pero el árbol TF estático solo contiene \texttt{rplidar\_link} (sin namespace). Esta discrepancia hace que \texttt{slam\_toolbox} descarte todos los scans. Adicionalmente, la simulación corre al $\approx 20\%$ de la velocidad real, lo que agrava los problemas de sincronización de timestamps entre TF y scans.}
+  \solucion{Se descartó el SLAM manual en simulación. Se adoptó el mapa pregenerado del almacén incluido en \texttt{turtlebot4\_navigation} (\texttt{warehouse.yaml} + \texttt{warehouse.pgm}) como base para los experimentos de navegación.}
+  \secciondestino{5.3 — Metodología experimental (limitaciones del entorno)}
+  \nota{El SLAM en el robot real no tiene este problema: el hardware publica los TF con timestamps correctos y sin problemas de namespace. El SLAM real se realizará en la fase de pruebas con el robot físico.}
+  \resultado{Decisión: usar mapa pregenerado en simulación y SLAM real en robot físico. Ver §\,7.2 (Líneas futuras).}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Puesta en marcha de Nav2 con mapa pregenerado}
+  \problema{Configurar Nav2 para navegación autónoma en el entorno simulado usando el mapa del almacén.}
+  \solucion{Lanzamiento con:
+\begin{lstlisting}[language=bash]
+ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py \
+  nav2:=true localization:=true
+ros2 launch turtlebot4_viz view_robot.launch.py
+\end{lstlisting}
+  Nav2 arranca con AMCL para localización y NavFn (Dijkstra) como planificador global por defecto.}
+  \secciondestino{5.1 — Introducción a la implementación}
+  \nota{Es necesario hacer undock del robot antes de poder moverlo, ya sea con \texttt{ros2 action send\_goal /undock irobot\_create\_msgs/action/Undock \{\}} o desde el visor de Gazebo.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{AMCL — localización por partículas}
+  \problema{Al arrancar Nav2, el robot no aparece localizado en el mapa y los servidores de planificación dan error de TF (\textit{``frame map does not exist''}).}
+  \causa{AMCL (Adaptive Monte Carlo Localization) necesita una pose inicial aproximada para inicializar las partículas. Sin ella, las hipótesis de posición están dispersas por todo el mapa y la transformada \texttt{map~$\rightarrow$~odom} no se publica.}
+  \solucion{Usar el botón \textit{2D Pose Estimate} en RViz para indicar la posición y orientación aproximada del robot en el mapa. Las partículas (visibles como puntos verdes) convergen y Nav2 queda operativo.}
+  \secciondestino{3.2 — Marco teórico (AMCL)}
+  \nota{La convergencia de AMCL es menos precisa en zonas con geometría repetitiva (pasillos similares) y se ve afectada por la baja velocidad de simulación ($\approx 20\%$). En el robot real este problema es menos pronunciado.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Nav2 operativo — planificador Dijkstra (baseline)}
+  \solucion{Nav2 calcula y ejecuta trayectorias autónomas usando \texttt{NavfnPlanner} con Dijkstra (\texttt{use\_astar: false}). La trayectoria se visualiza en RViz como una línea rosa. El robot navega autónomamente hasta el destino.}
+  \secciondestino{5.2 — Desarrollo de algoritmos (planificador baseline)}
+  \resultado{Este es el planificador de referencia. Métricas a medir: longitud de trayectoria (m), tiempo de planificación (ms) y suavidad (cambios de dirección). Ver §\,6.3.}
+  \nota{Configuración en \texttt{nav2.yaml}: \texttt{plugin: "nav2\_navfn\_planner/NavfnPlanner"}, \texttt{use\_astar: false}.}
+\end{entrada}
+
+
+% ── LAUNCH FILE PERSONALIZADO ────────────────────────────────
+
+\begin{entrada}{2025-XX-XX}{Launch file personalizado sim.launch.py}
+  \solucion{Se crea \texttt{sim.launch.py} en el paquete \texttt{turtlebot4\_cpp\_slam\_nav} que lanza Gazebo, Nav2, RViz y automatiza la pose inicial. Acepta argumentos \texttt{planner} (dijkstra/astar), \texttt{world} (warehouse/depot/maze) y \texttt{launch\_rviz} (true/false). El planificador se selecciona cargando el yaml correspondiente (\texttt{nav2\_dijkstra.yaml}, \texttt{nav2\_astar.yaml}, etc.).}
+\begin{lstlisting}[language=bash]
+# Lanzar con Dijkstra (por defecto)
+ros2 launch turtlebot4_cpp_slam_nav sim.launch.py
+
+# Lanzar con A*
+ros2 launch turtlebot4_cpp_slam_nav sim.launch.py planner:=astar
+
+# Sin RViz (para experimentos automatizados)
+ros2 launch turtlebot4_cpp_slam_nav sim.launch.py launch_rviz:=false
+\end{lstlisting}
+  \secciondestino{5.3 — Metodología experimental}
+  \nota{El argumento se llama \texttt{launch\_rviz} en lugar de \texttt{rviz} para evitar conflicto con el argumento homónimo del launch de Gazebo, que lo sobreescribía a \texttt{false}.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Automatización de pose inicial, undock y giro en el launch file}
+  \problema{Para reproducibilidad de los experimentos, el robot debe partir siempre de la misma posición y orientación sin intervención manual.}
+  \solucion{Se añaden cuatro \texttt{TimerAction} al launch file con los siguientes tiempos (absolutos desde el arranque):
+  \begin{itemize}
+    \item \texttt{t=60s} — publicar pose inicial en \texttt{/initialpose} (AMCL)
+    \item \texttt{t=65s} — desactivar límite de backup: \texttt{ros2 param set /motion\_control safety\_override backup\_only}
+    \item \texttt{t=70s} — undock: \texttt{ros2 action send\_goal /undock}
+    \item \texttt{t=85s} — giro de $\pi$ radianes: \texttt{ros2 action send\_goal /spin nav2\_msgs/action/Spin \{"target\_yaw": 3.14159\}}
+  \end{itemize}}
+  \secciondestino{5.3 — Metodología experimental}
+  \nota{Los tiempos son largos debido a la simulación al 20\% de velocidad real. El \texttt{safety\_override} es necesario porque el undock falla intermitentemente por el límite de backup del Create3 en simulación.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Problema: costmap local inflado alrededor del robot}
+  \problema{El costmap local mostraba una zona rosa/morada enorme alrededor del robot, haciendo que el spin y otros comportamientos abortaran con \textit{``Collision Ahead''}.}
+  \causa{El parámetro \texttt{obstacle\_min\_range: 0.0} hacía que el costmap marcara como obstáculo cualquier lectura del LiDAR, incluyendo las muy cercanas al robot (partes del propio robot, dock).}
+  \solucion{Cambiar en el yaml de Nav2:
+\begin{lstlisting}[language=yaml]
+voxel_layer:
+  scan:
+    obstacle_min_range: 0.2
+    raytrace_min_range: 0.2
+obstacle_layer:
+  scan:
+    obstacle_min_range: 0.2
+    raytrace_min_range: 0.2
+\end{lstlisting}}
+  \secciondestino{5.3 — Metodología experimental (incidencias)}
+  \resultado{El costmap local quedó limpio alrededor del robot, permitiendo el spin y mejorando la navegación local.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Problema: undock intermitente en simulación}
+  \problema{El undock automático falla en la mayoría de ejecuciones con \textit{``Reached backup limit''}, aunque ocasionalmente tiene éxito.}
+  \causa{El Create3 en simulación tiene un límite de distancia de retroceso durante el undock. El parámetro \texttt{safety\_override} debería desactivarlo, pero el nodo \texttt{/motion\_control} no siempre está disponible cuando se intenta setear.}
+  \solucion{Ajustar los tiempos del \texttt{TimerAction} para asegurar que \texttt{/motion\_control} está disponible antes de intentar el \texttt{safety\_override}. El goal del undock termina con estado \texttt{CANCELED} pero \texttt{is\_docked: false} — el robot sí se separa físicamente del dock.}
+  \secciondestino{5.3 — Metodología experimental (limitaciones del entorno)}
+  \nota{El plugin de Ignition del Create3 no implementa correctamente la detección de ``undock completado'' — en el robot real el undock siempre termina con \texttt{SUCCEEDED} usando sensores IR físicos. No tiene solución en simulación con Humble. El comportamiento es funcional aunque el status sea incorrecto. Esta limitación no afecta a la comparativa de algoritmos de planificación, ya que las métricas se miden sobre la trayectoria planificada (\texttt{/plan}), no sobre la ejecución física.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Yamls personalizados de Nav2 por algoritmo}
+  \solucion{Se crean yamls completos (copia del oficial) por algoritmo en \texttt{config/}:
+  \begin{itemize}
+    \item \texttt{nav2\_dijkstra.yaml} — \texttt{use\_astar: false}
+    \item \texttt{nav2\_astar.yaml} — \texttt{use\_astar: true}
+    \item \texttt{nav2\_dijkstra\_nosmooth.yaml} — Dijkstra sin suavizado (\texttt{do\_refinement: False})
+    \item \texttt{nav2\_astar\_nosmooth.yaml} — A* sin suavizado
+  \end{itemize}
+  El launch file selecciona el yaml mediante \texttt{PythonExpression} combinando los argumentos \texttt{planner} y \texttt{smooth}.}
+  \secciondestino{5.2 — Desarrollo de algoritmos}
+  \nota{Se intentó usar yaml mínimo con \texttt{RewrittenYaml} para fusionar con el oficial, pero \texttt{params\_file} reemplaza completamente el yaml oficial en lugar de fusionarlo. Solución adoptada: yaml completo por algoritmo.}
+\end{entrada}
+
+
+% ── NODO DE MÉTRICAS ─────────────────────────────────────────
+
+\begin{entrada}{2025-XX-XX}{Decisión de diseño: métricas en simulación vs.\ robot real}
+  \problema{Definir qué métricas medir y cómo en cada entorno, dado que el robot no navega correctamente en simulación.}
+  \solucion{Se distinguen dos modos de operación del nodo de métricas:
+  \begin{itemize}
+    \item \textbf{Simulación:} el nodo envía el goal, espera a que \texttt{/plan} publique la trayectoria, recoge todas las métricas sobre el plan y cancela la navegación inmediatamente. No se mide ETA real.
+    \item \textbf{Robot real:} el nodo envía el goal, espera a que el robot llegue al destino y mide también el ETA real y el tiempo total de navegación.
+  \end{itemize}
+  Los goals son fijos y hardcodeados en el código (mismo conjunto de puntos para todos los algoritmos), garantizando comparabilidad entre experimentos. Los resultados se guardan en \texttt{\textasciitilde/tfg\_ws/results/} fuera del workspace para evitar que \texttt{colcon build} los elimine.}
+  \secciondestino{5.3 — Metodología experimental}
+  \resultado{Las métricas medidas en simulación son: longitud total, tiempo de planificación, suavidad, número de puntos intermedios, curvatura media y ratio distancia vs.\ línea recta. El ETA real se añade en las pruebas con el robot físico.}
+  \nota{La cancelación inmediata tras recibir el plan es necesaria en simulación para evitar que el robot intente ejecutar trayectorias incorrectas (por la localización imprecisa de AMCL) e interfiera en los siguientes goals.}
 \end{entrada}
 
 
 % ============================================================
 %  PLANTILLA PARA NUEVAS ENTRADAS
-%  Copia el bloque siguiente cada vez que añadas una entrada.
 % ============================================================
 
 % \begin{entrada}{YYYY-MM-DD}{Título descriptivo de la tarea o problema}
@@ -251,7 +383,6 @@ source install/setup.bash
 %   \causa{Causa raíz identificada (si aplica).}
 %   \solucion{Qué se hizo para resolverlo.}
 %
-%   % Incluye código si es relevante:
 %   % \begin{lstlisting}[language=C++, caption={Descripción}]
 %   % // código aquí
 %   % \end{lstlisting}
