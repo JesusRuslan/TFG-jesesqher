@@ -158,7 +158,7 @@ def generate_launch_description():
 
     # -- Undock ---------------------------------------------------------------------------
     undock = TimerAction(
-        period=70.0,
+        period=95.0,
         actions=[
             ExecuteProcess(
                 cmd=[
@@ -173,7 +173,7 @@ def generate_launch_description():
 
     # -- 180º spin ---------------------------------------------------------------------------
     rotate = TimerAction(
-        period=85.0,
+        period=110.0,
         actions=[
             ExecuteProcess(
                 cmd=[
