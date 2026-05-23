@@ -7,10 +7,26 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav2_msgs REQUIRED)
+
+add_executable(data_measure src/data_measure.cpp)
+ament_target_dependencies(
+  data_measure
+  rclcpp
+  rclcpp_action
+  nav_msgs
+  nav2_msgs
+  geometry_msgs
+)
+
+install(TARGETS data_measure
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 install(DIRECTORY config launch
   DESTINATION share/${PROJECT_NAME}
