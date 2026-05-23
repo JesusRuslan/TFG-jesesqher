@@ -29,10 +29,10 @@ struct Goal
 
 static const std::vector<Goal> GOALS = {
     {0.0, 1.0, "warmup"},            // goal de calentamiento para cargar caches (no recogido en métricas)
-    {-5.0, 1.0, "goal1_recto"},      // placeholder
-    {-5.0, 1.0, "goal2_obstaculos"}, // placeholder
-    {-5.0, 1.0, "goal3_lejos"},      // placeholder
-    {-5.0, 1.0, "goal4_atras"},      // placeholder
+    {-11.0, 1.0, "goal1_recto"},      // trayectoria en línea recta desde el dock
+    {2.0, -5.0, "goal2_obstaculos"}, // trayectoria pasando entre estanterías
+    {11.0, -13.0, "goal3_larga"},      // trayectoria de longitud media
+    {-13.0, 19.0, "goal4_compleja"},   // trayectoria lejana y compleja
 };
 
 // -- Struct para almacenar métricas ---------------------------------------------------------------------------
@@ -79,19 +79,19 @@ public:
         this->declare_parameter("smooth", true);
         bool smooth = this->get_parameter("smooth").as_bool();
 
+        // -- Directorio de resultados ---------------------------------------------------------------------------
+        std::filesystem::create_directories(results_dir_);
+
         // -- Fichero de resultados ---------------------------------------------------------------------------
         std::string suffix = smooth ? "" : "_nosmooth";
         csv_filename_ = "metrics_" + planner_name + suffix + ".csv";
 
-        std::string filepath = results_dir_ + csv_filename_;
+        filepath = results_dir_ + csv_filename_;
         if (std::filesystem::exists(filepath))
         {
             std::filesystem::remove(filepath);
             RCLCPP_INFO(this->get_logger(), "CSV anterior eliminado: %s", filepath.c_str());
         }
-
-        // -- Directorio de resultados ---------------------------------------------------------------------------
-        std::filesystem::create_directories(results_dir_);
 
         RCLCPP_INFO(this->get_logger(), "Nodo de métricas iniciado. Esperando Nav2...");
 
