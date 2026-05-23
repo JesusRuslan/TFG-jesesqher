@@ -79,9 +79,16 @@ public:
         this->declare_parameter("smooth", true);
         bool smooth = this->get_parameter("smooth").as_bool();
 
-        // -- Directorio de resultados ---------------------------------------------------------------------------
+        // -- Fichero de resultados ---------------------------------------------------------------------------
         std::string suffix = smooth ? "" : "_nosmooth";
         csv_filename_ = "metrics_" + planner_name + suffix + ".csv";
+
+        std::string filepath = results_dir_ + csv_filename_;
+        if (std::filesystem::exists(filepath))
+        {
+            std::filesystem::remove(filepath);
+            RCLCPP_INFO(this->get_logger(), "CSV anterior eliminado: %s", filepath.c_str());
+        }
 
         // -- Directorio de resultados ---------------------------------------------------------------------------
         std::filesystem::create_directories(results_dir_);
@@ -163,7 +170,6 @@ private:
     // -- Guardar métricas en CSV ---------------------------------------------------------------------------
     void save_metrics(const Metrics &m)
     {
-        std::string filepath = results_dir_ + csv_filename_;
         bool file_exists = std::filesystem::exists(filepath);
 
         std::ofstream file(filepath, std::ios::app);
@@ -286,10 +292,11 @@ private:
                     m.num_waypoints,
                     m.eta_s);
 
-        if (goal.name != "warmup") {
+        if (goal.name != "warmup")
+        {
             save_metrics(m);
         }
-        
+
         // Cancelar navegación y pasar al siguiente goal
         nav_client_->async_cancel_all_goals();
         current_goal_idx_++;
@@ -315,6 +322,7 @@ private:
 
     std::string results_dir_;
     std::string csv_filename_;
+    std::string filepath;
 
     std::vector<Metrics> all_metrics_;
 };
