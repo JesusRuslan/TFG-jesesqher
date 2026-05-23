@@ -172,9 +172,16 @@ private:
         // Cabecera solo si el archivo es nuevo
         if (!file_exists)
         {
-            file << "goal_name,goal_x,goal_y,plan_time_ms,path_length_m,"
-                 << "straight_line_m,ratio_length,smoothness_rad,"
-                 << "mean_curvature_rad_m,num_waypoints,eta_s\n";
+            file << "goal_name,"
+                 << "goal_x,"
+                 << "goal_y,"
+                 << "plan_time_ms,"
+                 << "path_length_m,"
+                 << "straight_line_m,"
+                 << "ratio_length,"
+                 << "smoothness_rad,"
+                 << "mean_curvature_rad_m,"
+                 << "num_waypoints,eta_s\n";
         }
 
         file << std::fixed << std::setprecision(4)
