@@ -190,7 +190,7 @@ def generate_launch_description():
 
     # -- Nodo de métricas ---------------------------------------------------------------------------
     metrics_node = TimerAction(
-        period=120.0,
+        period=150.0,
         actions=[
             Node(
                 package='turtlebot4_cpp_slam_nav',
