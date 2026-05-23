@@ -126,6 +126,9 @@ private:
         }
         m.path_length_m = total_length;
 
+        // ETA aproximado
+        m.eta_s = total_length / 0.306;
+
         // Distancia en línea recta (primer punto → último punto)
         double dx0 = path.poses.back().pose.position.x - path.poses.front().pose.position.x;
         double dy0 = path.poses.back().pose.position.y - path.poses.front().pose.position.y;
@@ -243,15 +246,6 @@ private:
                 rclcpp::shutdown();
             }
         };
-        send_goal_options.feedback_callback =
-            [this](GoalHandleNav::SharedPtr,
-                   const std::shared_ptr<const NavigateToPose::Feedback> feedback)
-        {
-            if (waiting_for_plan_)
-            {
-                last_eta_s_ = feedback->estimated_time_remaining.sec + feedback->estimated_time_remaining.nanosec * 1e-9;
-            }
-        };
 
         nav_client_->async_send_goal(nav_goal, send_goal_options);
     }
@@ -269,7 +263,6 @@ private:
 
         const Goal &goal = GOALS[current_goal_idx_];
         Metrics m = compute_metrics(*msg, goal, plan_time_ms);
-        m.eta_s = last_eta_s_;
 
         // Log en consola
         RCLCPP_INFO(this->get_logger(),
@@ -314,7 +307,6 @@ private:
 
     int current_goal_idx_;
     bool waiting_for_plan_;
-    double last_eta_s_{0.0};
 
     rclcpp::Time goal_sent_time_;
 
