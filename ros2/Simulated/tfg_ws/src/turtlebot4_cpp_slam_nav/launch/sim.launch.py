@@ -72,9 +72,11 @@ def generate_launch_description():
 
     # -- Yaml del planificador elegido ---------------------------------------------------------------------------
     # Nav2 coge los parámetros de nuestro yaml y sobreescribe el yaml oficial al ejecutar
-    # Construye la ruta al yaml según el argumento 'planner':
+    # Construye la ruta al yaml según los argumentos 'planner' y 'smooth':
     #   dijkstra    ->      config/nav2_dijkstra.yaml
+    #               ->      config/nav2_dijkstra_nosmooth.yaml
     #   astar       ->      config/nav2_astar.yaml
+    #               ->      config/nav2_astar_nosmooth.yaml
     
     smooth_str = PythonExpression([
         '"" if "', smooth, '" == "true" else "_nosmooth"'
@@ -186,6 +188,27 @@ def generate_launch_description():
         ]
     )
 
+    # -- Nodo de métricas ---------------------------------------------------------------------------
+    metrics_node = TimerAction(
+        period=120.0,
+        actions=[
+            Node(
+                package='turtlebot4_cpp_slam_nav',
+                executable='data_measure',
+                name='nav_metrics_node',
+                output='screen',
+                parameters=[{
+                    'results_dir': os.path.join(
+                        os.path.expanduser('~'),
+                        'TFG-jesesqher/ros2/Simulated/Results/'
+                    ),
+                    'planner_name': planner,
+                    'smooth': PythonExpression(['"', smooth, '" == "true"'])
+                }]
+            )
+        ]
+    )
+
     # -- LaunchDescription ---------------------------------------------------------------------------
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(gazebo)
@@ -197,4 +220,5 @@ def generate_launch_description():
     ld.add_action(safety_override)
     ld.add_action(undock)
     ld.add_action(rotate)
+    ld.add_action(metrics_node)
     return ld
