@@ -28,6 +28,7 @@ struct Goal
 };
 
 static const std::vector<Goal> GOALS = {
+    {0.0, 1.0, "warmup"},            // goal de calentamiento para cargar caches (no recogido en métricas)
     {-5.0, 1.0, "goal1_recto"},      // placeholder
     {-5.0, 1.0, "goal2_obstaculos"}, // placeholder
     {-5.0, 1.0, "goal3_lejos"},      // placeholder
@@ -285,8 +286,10 @@ private:
                     m.num_waypoints,
                     m.eta_s);
 
-        save_metrics(m);
-
+        if (goal.name != "warmup") {
+            save_metrics(m);
+        }
+        
         // Cancelar navegación y pasar al siguiente goal
         nav_client_->async_cancel_all_goals();
         current_goal_idx_++;

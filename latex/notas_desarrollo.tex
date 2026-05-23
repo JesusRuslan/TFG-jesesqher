@@ -374,6 +374,87 @@ obstacle_layer:
 \end{entrada}
 
 
+% ── NODO DE MÉTRICAS ─────────────────────────────────────────
+
+\begin{entrada}{2025-XX-XX}{Nodo C++ de medición de métricas de navegación}
+  \problema{Necesidad de medir y comparar automáticamente el rendimiento de distintos algoritmos de planificación de trayectorias.}
+  \solucion{Se crea \texttt{data\_measure.cpp} en el paquete \texttt{turtlebot4\_cpp\_slam\_nav}. El nodo actúa como action client de Nav2 (\texttt{/navigate\_to\_pose}), envía goals programáticamente, recibe la trayectoria planificada por \texttt{/plan} y calcula las siguientes métricas:
+  \begin{itemize}
+    \item \textbf{Tiempo de planificación} — diferencia entre el envío del goal y la recepción del plan (ms)
+    \item \textbf{Longitud total} — suma de distancias entre puntos consecutivos (m)
+    \item \textbf{Distancia en línea recta} — distancia euclídea origen-destino (m)
+    \item \textbf{Ratio longitud} — longitud real / línea recta (1.0 = trayectoria perfecta)
+    \item \textbf{Suavidad} — suma de cambios de ángulo entre segmentos (rad)
+    \item \textbf{Curvatura media} — suavidad / longitud (rad/m)
+    \item \textbf{Número de waypoints} — puntos intermedios del plan
+    \item \textbf{ETA aproximado} — longitud / velocidad máxima del Create3 (0.3 m/s)
+  \end{itemize}
+  Los resultados se guardan en CSV en \texttt{\textasciitilde/TFG-jesesqher/ros2/Simulated/Results/}.}
+  \secciondestino{5.2 — Desarrollo de algoritmos}
+  \nota{En simulación el nodo cancela la navegación inmediatamente tras recibir el plan — el robot no ejecuta las trayectorias. En el robot real sí se ejecutarán para medir el tiempo real de viaje y compararlo con el ETA aproximado.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Decisión: goal de calentamiento para métricas consistentes}
+  \problema{El primer goal de cada ejecución tardaba significativamente más en planificarse (~36ms vs ~17ms) porque Nav2 inicializa cachés internas en la primera planificación.}
+  \solucion{Se añade un goal de calentamiento (\texttt{"warmup"}) al principio del array de goals. Este goal se planifica y cancela igual que los demás, pero sus métricas no se guardan en el CSV. Así todos los goals reales tienen tiempos de planificación consistentes.}
+  \secciondestino{5.3 — Metodología experimental}
+  \resultado{El tiempo de planificación del primer goal real pasó de ~36ms a ~17ms, consistente con el resto.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Nombre del CSV según algoritmo y configuración}
+  \problema{Con varios algoritmos y configuraciones (con/sin smoother), los resultados de distintas ejecuciones se sobreescribían en el mismo archivo.}
+  \solucion{El nombre del CSV se construye dinámicamente a partir de parámetros ROS2 pasados desde el launch file:
+\begin{lstlisting}[language=C++]
+this->declare_parameter("planner_name", std::string("dijkstra"));
+this->declare_parameter("smooth", std::string("true"));
+std::string suffix = (smooth_str == "true") ? "" : "_nosmooth";
+csv_filename_ = "metrics_" + planner_name + suffix + ".csv";
+\end{lstlisting}
+  Generando archivos como \texttt{metrics\_dijkstra.csv}, \texttt{metrics\_astar\_nosmooth.csv}, etc.}
+  \secciondestino{5.3 — Metodología experimental}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Problema: ETA siempre 0.0 desde el feedback de Nav2}
+  \problema{El campo \texttt{eta\_s} aparecía siempre a 0.0 en el CSV porque el feedback de Nav2 llegaba después de que el plan ya se había procesado y la navegación cancelado.}
+  \causa{El plan llega muy rápido (~17ms) pero el primer feedback de Nav2 con el ETA tarda más en llegar. Al cancelar inmediatamente tras recibir el plan, el \texttt{feedback\_callback} nunca se ejecuta.}
+  \solucion{Se calcula el ETA como aproximación: $\text{ETA} = \text{longitud} / v_{\max}$, donde $v_{\max} = 0.3$\,m/s (velocidad máxima del Create3). Es una estimación consistente entre algoritmos y suficiente para la comparativa en simulación.}
+  \secciondestino{5.3 — Metodología experimental (decisiones técnicas)}
+  \nota{En el robot real se medirá el tiempo de viaje real y se comparará con este ETA aproximado. Ver §\,7.2 (Líneas futuras).}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Problema: spin ignorado por motion\_control}
+  \problema{El giro de $\pi$ radianes tras el undock se ignoraba porque \texttt{motion\_control} seguía en estado de comportamiento autónomo tras el undock cancelado.}
+  \causa{El undock termina con \texttt{CANCELED} pero deja al \texttt{motion\_control} en un estado transitorio durante varios segundos. El spin se lanzaba antes de que ese estado se limpiara.}
+  \solucion{Aumentar el margen de tiempo entre undock y spin. Tiempos definitivos del launch file:
+  \begin{itemize}
+    \item \texttt{t=60s} — pose inicial
+    \item \texttt{t=90s} — \texttt{safety\_override}
+    \item \texttt{t=95s} — undock
+    \item \texttt{t=110s} — spin ($\pi$ radianes)
+    \item \texttt{t=135s} — nodo de métricas
+  \end{itemize}}
+  \secciondestino{5.3 — Metodología experimental (incidencias)}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Primer CSV de resultados con Dijkstra}
+  \resultado{Primera ejecución completa del nodo de métricas con Dijkstra y 4 goals placeholder $(-5.0, 1.0)$:
+\begin{lstlisting}[language=bash]
+goal1_recto:      plan=17ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
+goal2_obstaculos: plan=19ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
+goal3_lejos:      plan=16ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
+goal4_atras:      plan=18ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
+\end{lstlisting}
+  Resultados idénticos porque todos los goals apuntan al mismo punto placeholder. Se actualizarán con los goals definitivos.}
+  \secciondestino{6.3 — Resultados obtenidos}
+  \nota{El archivo se guarda en \texttt{Results/metrics\_dijkstra.csv} e ignorado por \texttt{.gitignore}. La carpeta se mantiene en el repositorio con un archivo \texttt{.gitkeep}.}
+\end{entrada}
+
+
 % ============================================================
 %  PLANTILLA PARA NUEVAS ENTRADAS
 % ============================================================
