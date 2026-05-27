@@ -29,10 +29,10 @@ struct Goal
 
 static const std::vector<Goal> GOALS = {
     {0.0, 1.0, "warmup"},            // goal de calentamiento para cargar caches (no recogido en métricas)
-    {-11.0, 1.0, "goal1_recto"},      // trayectoria en línea recta desde el dock
+    {-11.0, 1.0, "goal1_recto"},     // trayectoria en línea recta desde el dock
     {2.0, -5.0, "goal2_obstaculos"}, // trayectoria pasando entre estanterías
-    {11.0, -13.0, "goal3_larga"},      // trayectoria de longitud media
-    {-13.0, 19.0, "goal4_compleja"},   // trayectoria lejana y compleja
+    {11.0, -13.0, "goal3_larga"},    // trayectoria de longitud media
+    {-13.0, 19.0, "goal4_compleja"}, // trayectoria lejana y compleja
 };
 
 // -- Struct para almacenar métricas ---------------------------------------------------------------------------
@@ -55,9 +55,12 @@ struct Metrics
 class NavMetricsNode : public rclcpp::Node
 {
 public:
-    NavMetricsNode() : Node("nav_metrics_node"), current_goal_idx_(0), waiting_for_plan_(false)
+    NavMetricsNode()
+        : Node("nav_metrics_node"),
+          current_goal_idx_(0),
+          waiting_for_plan_(false)
     {
-        // -- Parámetros configurables ---------------------------------------------------------------------------
+        // -- Parámetros ---------------------------------------------------------------------------
 
         // -- Action client para Nav2 ---------------------------------------------------------------------------
         nav_client_ = rclcpp_action::create_client<NavigateToPose>(
@@ -86,14 +89,14 @@ public:
         std::string suffix = smooth ? "" : "_nosmooth";
         csv_filename_ = "metrics_" + planner_name + suffix + ".csv";
 
-        filepath = results_dir_ + csv_filename_;
-        if (std::filesystem::exists(filepath))
+        filepath_ = results_dir_ + csv_filename_;
+        if (std::filesystem::exists(filepath_))
         {
-            std::filesystem::remove(filepath);
-            RCLCPP_INFO(this->get_logger(), "CSV anterior eliminado: %s", filepath.c_str());
+            std::filesystem::remove(filepath_);
+            RCLCPP_INFO(this->get_logger(), "CSV anterior eliminado: %s", filepath_.c_str());
         }
 
-        RCLCPP_INFO(this->get_logger(), "Nodo de métricas iniciado. Esperando Nav2...");
+        RCLCPP_INFO(this->get_logger(), "Nodo de métricas iniciado. CSV: %s. Esperando a Nav2", filepath_.c_str());
 
         // -- Timer para esperar a que Nav2 esté listo antes de empezar ---------------------------------------------------------------------------
         start_timer_ = this->create_wall_timer(
@@ -170,12 +173,12 @@ private:
     // -- Guardar métricas en CSV ---------------------------------------------------------------------------
     void save_metrics(const Metrics &m)
     {
-        bool file_exists = std::filesystem::exists(filepath);
+        bool file_exists = std::filesystem::exists(filepath_);
 
-        std::ofstream file(filepath, std::ios::app);
+        std::ofstream file(filepath_, std::ios::app);
         if (!file.is_open())
         {
-            RCLCPP_ERROR(this->get_logger(), "No se pudo abrir el archivo: %s", filepath.c_str());
+            RCLCPP_ERROR(this->get_logger(), "No se pudo abrir el archivo: %s", filepath_.c_str());
             return;
         }
 
@@ -207,7 +210,7 @@ private:
              << m.num_waypoints << ","
              << m.eta_s << "\n";
 
-        RCLCPP_INFO(this->get_logger(), "Métricas guardadas en %s", filepath.c_str());
+        RCLCPP_INFO(this->get_logger(), "Métricas guardadas en %s", filepath_.c_str());
     }
 
     // -- Enviar el siguiente goal ---------------------------------------------------------------------------
@@ -322,7 +325,7 @@ private:
 
     std::string results_dir_;
     std::string csv_filename_;
-    std::string filepath;
+    std::string filepath_;
 
     std::vector<Metrics> all_metrics_;
 };
