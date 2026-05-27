@@ -127,7 +127,7 @@ def generate_launch_description():
 
     # -- Initial pose estimate ---------------------------------------------------------------------------
     initial_pose = TimerAction(
-        period=60.0,
+        period=10.0,
         actions=[
             ExecuteProcess(
                 cmd=[
@@ -136,7 +136,7 @@ def generate_launch_description():
                     '{"header": {"frame_id": "map"}, '
                     '"pose": {"pose": '
                     '{"position": {"x": 0.0, "y": 0.0, "z": 0.0}, '
-                    '"orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}}}}'
+                    '"orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}}}}',
                 ],
                 output='screen'
             )
@@ -147,7 +147,7 @@ def generate_launch_description():
     # Dado que el robot no puede ir marcha atrás más de una determinada distancia por un límite de seguridad, lo vamos
     # a desactivar para poder tener mayor control sobre el movimiento del robot si fuera necesario
     safety_override = TimerAction(
-        period=90.0,
+        period=15.0,
         actions=[
             ExecuteProcess(
             cmd=['ros2', 'param', 'set', '/motion_control',
@@ -160,7 +160,7 @@ def generate_launch_description():
 
     # -- Undock ---------------------------------------------------------------------------
     undock = TimerAction(
-        period=95.0,
+        period=20.0,
         actions=[
             ExecuteProcess(
                 cmd=[
@@ -190,7 +190,7 @@ def generate_launch_description():
 
     # -- Nodo de métricas ---------------------------------------------------------------------------
     metrics_node = TimerAction(
-        period=240.0,
+        period=30.0,
         actions=[
             Node(
                 package='turtlebot4_cpp_slam_nav',
@@ -219,6 +219,6 @@ def generate_launch_description():
     ld.add_action(initial_pose)
     ld.add_action(safety_override)
     ld.add_action(undock)
-    ld.add_action(rotate)
+    #ld.add_action(rotate)
     ld.add_action(metrics_node)
     return ld

@@ -37,7 +37,6 @@ tfg.pdf
 # Archivos de salida final
 *.eps
 *.ps
-ros2/**/Results/*.csv
 
 # Archivos de edición y respaldo (por si usas editores que los generan)
 *~

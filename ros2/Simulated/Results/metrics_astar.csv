@@ -1,0 +1,5 @@
+goal_name,goal_x,goal_y,plan_time_ms,path_length_m,straight_line_m,ratio_length,smoothness_rad,mean_curvature_rad_m,num_waypoints,eta_s
+goal1_recto,-11.0000,1.0000,18.3763,10.7763,10.7166,1.0056,6.6114,0.6135,713,35.2167
+goal2_obstaculos,2.0000,-5.0000,14.0178,6.7679,5.4301,1.2464,21.1698,3.1280,447,22.1173
+goal3_larga,11.0000,-13.0000,23.2878,19.0330,17.1757,1.1081,27.8133,1.4613,1265,62.1993
+goal4_compleja,-13.0000,19.0000,49.0742,57.9300,22.9147,2.5281,242.2421,4.1816,3861,189.3136
