@@ -24,11 +24,25 @@ ament_target_dependencies(
   geometry_msgs
 )
 
-install(TARGETS data_measure
+add_executable(data_measure_dynamic src/data_measure_dynamic.cpp)
+ament_target_dependencies(
+  data_measure_dynamic
+  rclcpp
+  rclcpp_action
+  nav_msgs
+  nav2_msgs
+  geometry_msgs
+)
+
+install(TARGETS
+  data_measure
+  data_measure_dynamic
   DESTINATION lib/${PROJECT_NAME}
 )
 
-install(DIRECTORY config launch
+install(DIRECTORY
+  config
+  launch
   DESTINATION share/${PROJECT_NAME}
 )
 

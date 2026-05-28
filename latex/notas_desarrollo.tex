@@ -191,7 +191,6 @@
   \problema{El robot avanzaba $\approx 0{,}15$\,m y se detenía sin que se alcanzara la distancia objetivo ni se publicara el mensaje de parada.}
   \causa{El plugin del Create3 en Ignition Gazebo implementa un \textit{safety timeout}: si deja de recibir comandos en \texttt{/cmd\_vel} con regularidad, el robot para automáticamente. Una sola publicación no es suficiente.}
   \solucion{Sustituir la publicación única por un \texttt{wall\_timer} a 10\,Hz que publica continuamente el \texttt{Twist} mientras \texttt{moving\_} sea \texttt{true}. El timer se cancela al alcanzar la distancia o al pulsar Button 2.}
-
 \begin{lstlisting}[language=C++, caption={Timer de publicación continua en /cmd\_vel}]
 cmd_vel_timer_ = this->create_wall_timer(
   100ms,
@@ -202,7 +201,6 @@ cmd_vel_timer_ = this->create_wall_timer(
     cmd_vel_publisher_->publish(twist);
   });
 \end{lstlisting}
-
   \secciondestino{5.3 — Metodología experimental (incidencias)}
   \resultado{El comportamiento del simulador es fiel al robot real: el Create3 físico exige el mismo patrón de publicación continua a $\geq 10$\,Hz.}
 \end{entrada}
@@ -283,7 +281,7 @@ ros2 launch turtlebot4_viz view_robot.launch.py
 \end{entrada}
 
 
-% ── LAUNCH FILE PERSONALIZADO ────────────────────────────────
+% ── LAUNCH FILE Y CONFIGURACIÓN ───────────────────────────────
 
 \begin{entrada}{2025-XX-XX}{Launch file personalizado sim.launch.py}
   \solucion{Se crea \texttt{sim.launch.py} en el paquete \texttt{turtlebot4\_cpp\_slam\_nav} que lanza Gazebo, Nav2, RViz y automatiza la pose inicial. Acepta argumentos \texttt{planner} (dijkstra/astar), \texttt{world} (warehouse/depot/maze) y \texttt{launch\_rviz} (true/false). El planificador se selecciona cargando el yaml correspondiente (\texttt{nav2\_dijkstra.yaml}, \texttt{nav2\_astar.yaml}, etc.).}
@@ -294,7 +292,10 @@ ros2 launch turtlebot4_cpp_slam_nav sim.launch.py
 # Lanzar con A*
 ros2 launch turtlebot4_cpp_slam_nav sim.launch.py planner:=astar
 
-# Sin RViz (para experimentos automatizados)
+# Sin suavizado
+ros2 launch turtlebot4_cpp_slam_nav sim.launch.py smooth:=false
+
+# Sin RViz
 ros2 launch turtlebot4_cpp_slam_nav sim.launch.py launch_rviz:=false
 \end{lstlisting}
   \secciondestino{5.3 — Metodología experimental}
@@ -307,9 +308,10 @@ ros2 launch turtlebot4_cpp_slam_nav sim.launch.py launch_rviz:=false
   \solucion{Se añaden cuatro \texttt{TimerAction} al launch file con los siguientes tiempos (absolutos desde el arranque):
   \begin{itemize}
     \item \texttt{t=60s} — publicar pose inicial en \texttt{/initialpose} (AMCL)
-    \item \texttt{t=65s} — desactivar límite de backup: \texttt{ros2 param set /motion\_control safety\_override backup\_only}
-    \item \texttt{t=70s} — undock: \texttt{ros2 action send\_goal /undock}
-    \item \texttt{t=85s} — giro de $\pi$ radianes: \texttt{ros2 action send\_goal /spin nav2\_msgs/action/Spin \{"target\_yaw": 3.14159\}}
+    \item \texttt{t=90s} — desactivar límite de backup: \texttt{ros2 param set /motion\_control safety\_override backup\_only}
+    \item \texttt{t=95s} — undock: \texttt{ros2 action send\_goal /undock}
+    \item \texttt{t=110s} — giro de $\pi$ radianes: \texttt{ros2 action send\_goal /spin nav2\_msgs/action/Spin \{"target\_yaw": 3.14159\}}
+    \item \texttt{t=135s} — nodo de métricas
   \end{itemize}}
   \secciondestino{5.3 — Metodología experimental}
   \nota{Los tiempos son largos debido a la simulación al 20\% de velocidad real. El \texttt{safety\_override} es necesario porque el undock falla intermitentemente por el límite de backup del Create3 en simulación.}
@@ -340,7 +342,7 @@ obstacle_layer:
   \causa{El Create3 en simulación tiene un límite de distancia de retroceso durante el undock. El parámetro \texttt{safety\_override} debería desactivarlo, pero el nodo \texttt{/motion\_control} no siempre está disponible cuando se intenta setear.}
   \solucion{Ajustar los tiempos del \texttt{TimerAction} para asegurar que \texttt{/motion\_control} está disponible antes de intentar el \texttt{safety\_override}. El goal del undock termina con estado \texttt{CANCELED} pero \texttt{is\_docked: false} — el robot sí se separa físicamente del dock.}
   \secciondestino{5.3 — Metodología experimental (limitaciones del entorno)}
-  \nota{El plugin de Ignition del Create3 no implementa correctamente la detección de ``undock completado'' — en el robot real el undock siempre termina con \texttt{SUCCEEDED} usando sensores IR físicos. No tiene solución en simulación con Humble. El comportamiento es funcional aunque el status sea incorrecto. Esta limitación no afecta a la comparativa de algoritmos de planificación, ya que las métricas se miden sobre la trayectoria planificada (\texttt{/plan}), no sobre la ejecución física.}
+  \nota{El plugin de Ignition del Create3 no implementa correctamente la detección de ``undock completado'' — en el robot real el undock siempre termina con \texttt{SUCCEEDED} usando sensores IR físicos. No tiene solución en simulación con Humble. El comportamiento es funcional aunque el status sea incorrecto.}
 \end{entrada}
 
 
@@ -358,91 +360,91 @@ obstacle_layer:
 \end{entrada}
 
 
-% ── NODO DE MÉTRICAS ─────────────────────────────────────────
+% ── NODO DE MÉTRICAS ESTÁTICO ─────────────────────────────────
 
-\begin{entrada}{2025-XX-XX}{Decisión de diseño: métricas en simulación vs.\ robot real}
-  \problema{Definir qué métricas medir y cómo en cada entorno, dado que el robot no navega correctamente en simulación.}
-  \solucion{Se distinguen dos modos de operación del nodo de métricas:
+\begin{entrada}{2025-XX-XX}{Decisión de diseño: nodo estático vs.\ nodo dinámico}
+  \solucion{Se diseñan dos nodos de medición con objetivos complementarios:
   \begin{itemize}
-    \item \textbf{Simulación:} el nodo envía el goal, espera a que \texttt{/plan} publique la trayectoria, recoge todas las métricas sobre el plan y cancela la navegación inmediatamente. No se mide ETA real.
-    \item \textbf{Robot real:} el nodo envía el goal, espera a que el robot llegue al destino y mide también el ETA real y el tiempo total de navegación.
-  \end{itemize}
-  Los goals son fijos y hardcodeados en el código (mismo conjunto de puntos para todos los algoritmos), garantizando comparabilidad entre experimentos. Los resultados se guardan en \texttt{\textasciitilde/tfg\_ws/results/} fuera del workspace para evitar que \texttt{colcon build} los elimine.}
+    \item \textbf{Nodo estático (\texttt{data\_measure.cpp}):} mide métricas sobre la trayectoria \textit{planificada}. Cancela la navegación inmediatamente tras recibir el plan. Se usa en el portátil (simulación al 20\%) donde el robot no navega correctamente. Procesa 4 goals distintos por ejecución.
+    \item \textbf{Nodo dinámico (\texttt{data\_measure\_dynamic.cpp}):} mide métricas sobre la trayectoria \textit{ejecutada} en tiempo real. El robot navega hasta el destino. Se usa en el PC de alto rendimiento donde la simulación va más fluida. Procesa 1 goal real por ejecución.
+  \end{itemize}}
   \secciondestino{5.3 — Metodología experimental}
-  \resultado{Las métricas medidas en simulación son: longitud total, tiempo de planificación, suavidad, número de puntos intermedios, curvatura media y ratio distancia vs.\ línea recta. El ETA real se añade en las pruebas con el robot físico.}
-  \nota{La cancelación inmediata tras recibir el plan es necesaria en simulación para evitar que el robot intente ejecutar trayectorias incorrectas (por la localización imprecisa de AMCL) e interfiera en los siguientes goals.}
 \end{entrada}
 
 
-% ── NODO DE MÉTRICAS ─────────────────────────────────────────
-
-\begin{entrada}{2025-XX-XX}{Nodo C++ de medición de métricas de navegación}
-  \problema{Necesidad de medir y comparar automáticamente el rendimiento de distintos algoritmos de planificación de trayectorias.}
-  \solucion{Se crea \texttt{data\_measure.cpp} en el paquete \texttt{turtlebot4\_cpp\_slam\_nav}. El nodo actúa como action client de Nav2 (\texttt{/navigate\_to\_pose}), envía goals programáticamente, recibe la trayectoria planificada por \texttt{/plan} y calcula las siguientes métricas:
+\begin{entrada}{2025-XX-XX}{Nodo estático: data\_measure.cpp}
+  \solucion{El nodo actúa como action client de Nav2, envía goals programáticamente, recibe la trayectoria planificada por \texttt{/plan} y calcula:
   \begin{itemize}
-    \item \textbf{Tiempo de planificación} — diferencia entre el envío del goal y la recepción del plan (ms)
+    \item \textbf{Tiempo de planificación} — diferencia entre envío del goal y recepción del plan (ms)
     \item \textbf{Longitud total} — suma de distancias entre puntos consecutivos (m)
     \item \textbf{Distancia en línea recta} — distancia euclídea origen-destino (m)
     \item \textbf{Ratio longitud} — longitud real / línea recta (1.0 = trayectoria perfecta)
     \item \textbf{Suavidad} — suma de cambios de ángulo entre segmentos (rad)
     \item \textbf{Curvatura media} — suavidad / longitud (rad/m)
     \item \textbf{Número de waypoints} — puntos intermedios del plan
-    \item \textbf{ETA aproximado} — longitud / velocidad máxima del Create3 (0.3 m/s)
+    \item \textbf{ETA aproximado} — longitud / 0.3 m/s (velocidad máxima del Create3)
   \end{itemize}
-  Los resultados se guardan en CSV en \texttt{\textasciitilde/TFG-jesesqher/ros2/Simulated/Results/}.}
+  Goals definitivos: \texttt{warmup} $(-1, 0)$, \texttt{goal1\_recto} $(-6, 0)$, \texttt{goal2\_obstaculos} $(2, -5)$, \texttt{goal3\_lejos} $(-7, 13)$, \texttt{goal4\_atras} $(10, 7)$.}
   \secciondestino{5.2 — Desarrollo de algoritmos}
-  \nota{En simulación el nodo cancela la navegación inmediatamente tras recibir el plan — el robot no ejecuta las trayectorias. En el robot real sí se ejecutarán para medir el tiempo real de viaje y compararlo con el ETA aproximado.}
+  \nota{El CSV se nombra dinámicamente: \texttt{metrics\_dijkstra.csv}, \texttt{metrics\_astar\_nosmooth.csv}, etc. Se elimina al arrancar el nodo para evitar acumulación de ejecuciones anteriores.}
 \end{entrada}
 
 
 \begin{entrada}{2025-XX-XX}{Decisión: goal de calentamiento para métricas consistentes}
-  \problema{El primer goal de cada ejecución tardaba significativamente más en planificarse (~36ms vs ~17ms) porque Nav2 inicializa cachés internas en la primera planificación.}
-  \solucion{Se añade un goal de calentamiento (\texttt{"warmup"}) al principio del array de goals. Este goal se planifica y cancela igual que los demás, pero sus métricas no se guardan en el CSV. Así todos los goals reales tienen tiempos de planificación consistentes.}
+  \problema{El primer goal de cada ejecución tardaba significativamente más en planificarse ($\approx 36$\,ms vs.\ $\approx 17$\,ms) porque Nav2 inicializa cachés internas en la primera planificación.}
+  \solucion{Se añade un goal de calentamiento (\texttt{"warmup"}) al principio del array. Este goal se planifica y cancela igual que los demás, pero sus métricas no se guardan en el CSV.}
   \secciondestino{5.3 — Metodología experimental}
-  \resultado{El tiempo de planificación del primer goal real pasó de ~36ms a ~17ms, consistente con el resto.}
-\end{entrada}
-
-
-\begin{entrada}{2025-XX-XX}{Nombre del CSV según algoritmo y configuración}
-  \problema{Con varios algoritmos y configuraciones (con/sin smoother), los resultados de distintas ejecuciones se sobreescribían en el mismo archivo.}
-  \solucion{El nombre del CSV se construye dinámicamente a partir de parámetros ROS2 pasados desde el launch file:
-\begin{lstlisting}[language=C++]
-this->declare_parameter("planner_name", std::string("dijkstra"));
-this->declare_parameter("smooth", std::string("true"));
-std::string suffix = (smooth_str == "true") ? "" : "_nosmooth";
-csv_filename_ = "metrics_" + planner_name + suffix + ".csv";
-\end{lstlisting}
-  Generando archivos como \texttt{metrics\_dijkstra.csv}, \texttt{metrics\_astar\_nosmooth.csv}, etc.}
-  \secciondestino{5.3 — Metodología experimental}
+  \resultado{El tiempo de planificación del primer goal real pasó de $\approx 36$\,ms a $\approx 17$\,ms, consistente con el resto.}
 \end{entrada}
 
 
 \begin{entrada}{2025-XX-XX}{Problema: ETA siempre 0.0 desde el feedback de Nav2}
-  \problema{El campo \texttt{eta\_s} aparecía siempre a 0.0 en el CSV porque el feedback de Nav2 llegaba después de que el plan ya se había procesado y la navegación cancelado.}
-  \causa{El plan llega muy rápido (~17ms) pero el primer feedback de Nav2 con el ETA tarda más en llegar. Al cancelar inmediatamente tras recibir el plan, el \texttt{feedback\_callback} nunca se ejecuta.}
-  \solucion{Se calcula el ETA como aproximación: $\text{ETA} = \text{longitud} / v_{\max}$, donde $v_{\max} = 0.3$\,m/s (velocidad máxima del Create3). Es una estimación consistente entre algoritmos y suficiente para la comparativa en simulación.}
+  \problema{El campo \texttt{eta\_s} aparecía siempre a 0.0 en el CSV.}
+  \causa{El plan llega muy rápido ($\approx 17$\,ms) pero el primer feedback de Nav2 con el ETA tarda más. Al cancelar inmediatamente tras recibir el plan, el \texttt{feedback\_callback} nunca se ejecuta.}
+  \solucion{ETA calculado como aproximación: $\text{ETA} = \text{longitud} / 0.3$\,m/s. Consistente entre algoritmos y suficiente para la comparativa en simulación.}
   \secciondestino{5.3 — Metodología experimental (decisiones técnicas)}
-  \nota{En el robot real se medirá el tiempo de viaje real y se comparará con este ETA aproximado. Ver §\,7.2 (Líneas futuras).}
+  \nota{En el nodo dinámico el ETA real sí estará disponible desde el feedback de Nav2, ya que el robot navega hasta el destino sin cancelar.}
 \end{entrada}
 
 
 \begin{entrada}{2025-XX-XX}{Problema: spin ignorado por motion\_control}
-  \problema{El giro de $\pi$ radianes tras el undock se ignoraba porque \texttt{motion\_control} seguía en estado de comportamiento autónomo tras el undock cancelado.}
-  \causa{El undock termina con \texttt{CANCELED} pero deja al \texttt{motion\_control} en un estado transitorio durante varios segundos. El spin se lanzaba antes de que ese estado se limpiara.}
-  \solucion{Aumentar el margen de tiempo entre undock y spin. Tiempos definitivos del launch file:
-  \begin{itemize}
-    \item \texttt{t=60s} — pose inicial
-    \item \texttt{t=90s} — \texttt{safety\_override}
-    \item \texttt{t=95s} — undock
-    \item \texttt{t=110s} — spin ($\pi$ radianes)
-    \item \texttt{t=135s} — nodo de métricas
-  \end{itemize}}
+  \problema{El giro de $\pi$ radianes tras el undock se ignoraba porque \texttt{motion\_control} seguía en estado de comportamiento autónomo.}
+  \causa{El undock termina con \texttt{CANCELED} pero deja al \texttt{motion\_control} en estado transitorio durante varios segundos.}
+  \solucion{Aumentar el margen de tiempo entre undock y spin. Tiempos definitivos:
+  \texttt{t=60s} pose, \texttt{t=90s} safety\_override, \texttt{t=95s} undock, \texttt{t=110s} spin, \texttt{t=135s} nodo de métricas.}
   \secciondestino{5.3 — Metodología experimental (incidencias)}
 \end{entrada}
 
 
-\begin{entrada}{2025-XX-XX}{Primer CSV de resultados con Dijkstra}
-  \resultado{Primera ejecución completa del nodo de métricas con Dijkstra y 4 goals placeholder $(-5.0, 1.0)$:
+\begin{entrada}{2025-XX-XX}{Resultados del nodo estático — comparativa de algoritmos}
+  \resultado{Se obtienen CSVs para las 4 combinaciones: Dijkstra, A*, Dijkstra sin suavizado, A* sin suavizado. Cada CSV contiene 4 goals reales con las métricas definidas. Los resultados definitivos se incluirán en §\,6.3.}
+  \secciondestino{6.3 — Resultados obtenidos}
+\end{entrada}
+
+
+% ── NODO DE MÉTRICAS DINÁMICO ─────────────────────────────────
+
+\begin{entrada}{2025-XX-XX}{Nodo dinámico: data\_measure\_dynamic.cpp}
+  \solucion{Nodo de seguimiento de trayectoria en tiempo real. Se suscribe a \texttt{/odom} (posición y velocidades reales) y \texttt{/plan} (trayectoria planificada). Muestrea a 5\,Hz mientras el robot navega y guarda en CSV:
+  \begin{itemize}
+    \item \texttt{timestamp\_s} — tiempo desde el inicio de la navegación
+    \item \texttt{pos\_real\_x}, \texttt{pos\_real\_y} — posición real (odometría)
+    \item \texttt{pos\_plan\_x}, \texttt{pos\_plan\_y} — punto más cercano del plan
+    \item \texttt{desviacion\_m} — distancia entre posición real y plan
+    \item \texttt{eta\_s} — ETA recalculado en tiempo real (feedback de Nav2)
+    \item \texttt{vel\_lineal}, \texttt{vel\_angular} — velocidades reales
+  \end{itemize}
+  Goal único: \texttt{goal\_dinamico} $(-13, 19)$. Para automáticamente al llegar al destino o manualmente con \texttt{Ctrl+C} (guarda el CSV antes de salir). Se usa en el PC de alto rendimiento.}
+  \secciondestino{5.2 — Desarrollo de algoritmos}
+  \nota{La parada manual con \texttt{Ctrl+C} permite tomar métricas sobre un tramo concreto de la trayectoria. El CSV se nombra \texttt{metrics\_dijkstra\_dinamico.csv}, etc.}
+\end{entrada}
+
+
+% ── ENTORNO EN PC DE ALTO RENDIMIENTO ─────────────────────────
+
+\begin{entrada}{2025-XX-XX}{Entorno de desarrollo en PC del departamento (Ubuntu 24.04)}
+  \problema{La simulación corre al $\approx 20\%$ de la velocidad real en el portátil de desarrollo (Intel i5, gráficos integrados), lo que dificulta la navegación autónoma y las métricas dinámicas.}
+  \solucion{Se usa un PC del departamento (Intel i7-14700F, 20 núcleos, GPU NVIDIA RTX 3050 6\,GB, Ubuntu 24.04) para las pruebas con el nodo dinámico. Se instalaron los drivers NVIDIA y \texttt{nvidia-container-toolkit}, permitiendo usar la GPU desde Docker. La simulación corre al 80--100\% de la velocidad real.}
 \begin{lstlisting}[language=bash]
 goal1_recto:      plan=17ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
 goal2_obstaculos: plan=19ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
