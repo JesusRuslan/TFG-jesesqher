@@ -220,5 +220,5 @@ def generate_launch_description():
     ld.add_action(safety_override)
     ld.add_action(undock)
     #ld.add_action(rotate)
-    ld.add_action(metrics_node)
+    #ld.add_action(metrics_node)
     return ld
