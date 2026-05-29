@@ -127,7 +127,7 @@ def generate_launch_description():
 
     # -- Initial pose estimate ---------------------------------------------------------------------------
     initial_pose = TimerAction(
-        period=60.0,
+        period=10.0,
         actions=[
             ExecuteProcess(
                 cmd=[
@@ -147,7 +147,7 @@ def generate_launch_description():
     # Dado que el robot no puede ir marcha atrás más de una determinada distancia por un límite de seguridad, lo vamos
     # a desactivar para poder tener mayor control sobre el movimiento del robot si fuera necesario
     safety_override = TimerAction(
-        period=90.0,
+        period=15.0,
         actions=[
             ExecuteProcess(
             cmd=['ros2', 'param', 'set', '/motion_control',
@@ -160,7 +160,7 @@ def generate_launch_description():
 
     # -- Undock ---------------------------------------------------------------------------
     undock = TimerAction(
-        period=95.0,
+        period=20.0,
         actions=[
             ExecuteProcess(
                 cmd=[
@@ -190,7 +190,7 @@ def generate_launch_description():
 
     # -- Nodo de métricas ---------------------------------------------------------------------------
     dynamic_metrics_node = TimerAction(
-        period=240.0,
+        period=30.0,
         actions=[
             Node(
                 package='turtlebot_cpp_slam_nav',
