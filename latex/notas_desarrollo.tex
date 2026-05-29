@@ -444,16 +444,73 @@ obstacle_layer:
 
 \begin{entrada}{2025-XX-XX}{Entorno de desarrollo en PC del departamento (Ubuntu 24.04)}
   \problema{La simulación corre al $\approx 20\%$ de la velocidad real en el portátil de desarrollo (Intel i5, gráficos integrados), lo que dificulta la navegación autónoma y las métricas dinámicas.}
-  \solucion{Se usa un PC del departamento (Intel i7-14700F, 20 núcleos, GPU NVIDIA RTX 3050 6\,GB, Ubuntu 24.04) para las pruebas con el nodo dinámico. Se instalaron los drivers NVIDIA y \texttt{nvidia-container-toolkit}, permitiendo usar la GPU desde Docker. La simulación corre al 80--100\% de la velocidad real.}
+  \solucion{Se usa un PC del departamento (Intel i7-14700F, 20 núcleos, GPU NVIDIA RTX 3050 6\,GB, Ubuntu 24.04) para las pruebas con el nodo dinámico. Al no poder instalar ROS2 Humble directamente (Ubuntu 24.04 no es la plataforma oficial), se usa Docker con la imagen oficial \texttt{osrf/ros:humble-desktop-full} (Ubuntu 22.04).}
 \begin{lstlisting}[language=bash]
-goal1_recto:      plan=17ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
-goal2_obstaculos: plan=19ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
-goal3_lejos:      plan=16ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
-goal4_atras:      plan=18ms  long=5.037m  ratio=1.019  smooth=6.418rad  eta=16.46s
+# Construir imagen personalizada desde Dockerfile del repositorio
+docker build -t tfg_ros2_humble .
+
+# Arrancar contenedor con acceso a pantalla y repositorio montado
+xhost +local:docker
+docker run -it --name tfg_ros2 --network host \
+  -e DISPLAY=$DISPLAY -e LIBGL_ALWAYS_SOFTWARE=1 \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v $HOME/TFG-jesesqher:/root/TFG-jesesqher \
+  tfg_ros2_humble bash
 \end{lstlisting}
-  Resultados idénticos porque todos los goals apuntan al mismo punto placeholder. Se actualizarán con los goals definitivos.}
+  \secciondestino{5.1 — Introducción a la implementación}
+  \nota{\texttt{LIBGL\_ALWAYS\_SOFTWARE=1} fuerza renderizado por software porque los drivers NVIDIA no están instalados en el PC del departamento. Si se instalan los drivers y \texttt{nvidia-container-toolkit}, se puede eliminar esta variable para usar aceleración GPU.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Dockerfile para reproducibilidad del entorno}
+  \solucion{Se añade un \texttt{Dockerfile} en la raíz del repositorio que automatiza la construcción del entorno:
+\begin{lstlisting}[language=bash, caption={Dockerfile}]
+FROM osrf/ros:humble-desktop-full
+RUN apt-get update && apt-get install -y \
+    ros-humble-turtlebot4-simulator \
+    ros-humble-turtlebot4-navigation \
+    ros-humble-turtlebot4-viz \
+    ros-humble-nav2-bringup \
+    ros-humble-slam-toolbox \
+    && rm -rf /var/lib/apt/lists/*
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc \
+    && echo "export ROS_DOMAIN_ID=0" >> ~/.bashrc \
+    && echo "source /usr/share/colcon_cd/function/colcon_cd.sh" \
+       >> ~/.bashrc
+WORKDIR /root
+\end{lstlisting}
+  En cualquier PC con Docker y la imagen base disponible: \texttt{docker build -t tfg\_ros2\_humble .}}
+  \secciondestino{2.3.2 — Metodología de desarrollo}
+  \nota{La imagen base (\texttt{osrf/ros:humble-desktop-full}, $\approx$3--4\,GB) se transfiere por USB al PC del departamento. El \texttt{docker build} aplica las personalizaciones sin necesidad de red.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Resultados del nodo dinámico — métricas en tiempo real}
+  \resultado{Se obtienen 4 CSVs dinámicos (\texttt{metrics\_dijkstra\_dinamico.csv}, \texttt{metrics\_astar\_dinamico.csv}, etc.) con muestras a 5\,Hz durante la navegación real del robot al goal $(-13, 19)$. Cada CSV contiene columnas de timestamp, posición real, posición del plan más cercana, desviación, ETA y velocidades. Se graba también un vídeo de la simulación mostrando Gazebo y RViz simultáneamente.}
   \secciondestino{6.3 — Resultados obtenidos}
-  \nota{El archivo se guarda en \texttt{Results/metrics\_dijkstra.csv} e ignorado por \texttt{.gitignore}. La carpeta se mantiene en el repositorio con un archivo \texttt{.gitkeep}.}
+  \nota{A diferencia del nodo estático, aquí el ETA es real (del feedback de Nav2) y las velocidades reflejan el comportamiento dinámico del robot. La desviación respecto al plan es la métrica más relevante para comparar la calidad de ejecución entre algoritmos.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Decisión: capturas y vídeos para la memoria}
+  \solucion{Se decide incluir el siguiente material visual en la memoria:
+  \begin{itemize}
+    \item \textbf{Vídeo de navegación} — robot siguiendo una trayectoria con Gazebo y RViz simultáneos. Se incluye como QR code en la memoria impresa enlazando a YouTube/Drive.
+    \item \textbf{Captura de RViz con costmap} — muestra las zonas de inflación alrededor de obstáculos, representativa de cómo Nav2 percibe el entorno.
+    \item \textbf{Captura de RViz con trayectoria planificada} — línea rosa sobre el mapa para cada algoritmo si hay diferencias visuales apreciables.
+    \item \textbf{Gráficas comparativas} reconstruidas a partir de los CSVs — trayectorias superpuestas en un plano 2D, gráficas de barras de métricas (longitud, suavidad, curvatura).
+  \end{itemize}
+  La diferencia visual entre smooth y nosmooth no es apreciable en RViz — se refleja mejor en las métricas de suavidad y curvatura del CSV.}
+  \secciondestino{6.3 — Resultados obtenidos}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Problema: multicast no disponible en Docker}
+  \problema{La consola mostraba continuamente \textit{``Exception sending a multicast message: No such device''} al correr el nodo de métricas dentro del contenedor Docker.}
+  \causa{Docker con \texttt{--network host} no soporta multicast en algunos entornos de red. ROS2 usa multicast para el descubrimiento de nodos (DDS).}
+  \solucion{Añadir \texttt{export ROS\_LOCALHOST\_ONLY=1} al \texttt{.bashrc} del contenedor y al \texttt{Dockerfile}. Fuerza a ROS2 a usar solo unicast en localhost, suficiente cuando todos los nodos corren en el mismo PC.}
+  \secciondestino{5.3 — Metodología experimental (incidencias)}
+  \nota{No afecta al funcionamiento — ROS2 cae back a unicast automáticamente. La solución evita el ruido en la consola.}
 \end{entrada}
 
 
