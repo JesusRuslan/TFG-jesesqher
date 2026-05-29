@@ -193,7 +193,7 @@ def generate_launch_description():
         period=30.0,
         actions=[
             Node(
-                package='turtlebot_cpp_slam_nav',
+                package='turtlebot4_cpp_slam_nav',
                 executable='data_measure_dynamic',
                 name='nav_metrics_dynamic_node',
                 output='screen',
