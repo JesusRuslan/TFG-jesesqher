@@ -27,16 +27,13 @@ tfg.pdf
 *.ist
 
 # Archivos temporales y backup
-*.dvi
 *.nav
-*.pdfsync
 *.snm
 *.synctex.gz
 *.vrb
 
 # Archivos de salida final
-*.eps
-*.ps
+
 
 # Archivos de edición y respaldo (por si usas editores que los generan)
 *~
@@ -53,5 +50,5 @@ ros2/**/build/
 ros2/**/install/
 ros2/**/log/
 
-# Proyecto de referencia
-Original Referencia/
+# Proyecto Python
+ros2/Analysis/.venv/
