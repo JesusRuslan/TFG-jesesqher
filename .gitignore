@@ -32,8 +32,9 @@ tfg.pdf
 *.synctex.gz
 *.vrb
 
-# Archivos de salida final
-
+# Archivos de vídeo
+*.mp4
+*.webm
 
 # Archivos de edición y respaldo (por si usas editores que los generan)
 *~
