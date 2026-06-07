@@ -514,6 +514,71 @@ WORKDIR /root
 \end{entrada}
 
 
+% ── ANÁLISIS DE DATOS ─────────────────────────────────────────
+
+\begin{entrada}{2025-XX-XX}{Proyecto Python de análisis de datos}
+  \solucion{Se crea el proyecto \texttt{ros2/Analysis/} con la siguiente estructura:
+  \begin{itemize}
+    \item \texttt{results/static/} — CSVs del nodo estático (4 archivos)
+    \item \texttt{results/dynamic/} — CSVs del nodo dinámico (4 archivos)
+    \item \texttt{screenshots/} — capturas de RViz y Gazebo
+    \item \texttt{plots/static/} y \texttt{plots/dynamic/} — gráficas generadas
+    \item \texttt{static.py} — análisis de métricas estáticas
+    \item \texttt{dynamic.py} — análisis de métricas dinámicas
+    \item \texttt{requirements.txt} — dependencias: \texttt{pandas}, \texttt{matplotlib}, \texttt{numpy}, \texttt{seaborn}
+  \end{itemize}
+  Se usa un entorno virtual Python (\texttt{.venv}) aislado del sistema. Los CSVs y gráficas se ignoran en \texttt{.gitignore} salvo un \texttt{.gitkeep} en cada carpeta de resultados.}
+\begin{lstlisting}[language=bash]
+cd ~/TFG-jesesqher/ros2/Analysis
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python static.py
+python dynamic.py
+\end{lstlisting}
+  \secciondestino{2.3.2 --- Metodologia de desarrollo}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Graficas del analisis estatico}
+  \solucion{El script \texttt{static.py} genera 7 graficas comparando las 4 variantes de algoritmo (Dijkstra-smooth, Dijkstra-nosmooth, A*-smooth, A*-nosmooth):
+  \begin{enumerate}
+    \item Scatter: waypoints vs tiempo de planificacion (4 algoritmos)
+    \item Barras: irregularidad Dijkstra-smooth vs Dijkstra-nosmooth
+    \item Barras: irregularidad A*-smooth vs A*-nosmooth
+    \item Barras: irregularidad --- comparativa completa (4 variantes)
+    \item Barras: curvatura media Dijkstra-smooth vs A*-smooth
+    \item Barras: curvatura media Dijkstra-nosmooth vs A*-nosmooth
+    \item Barras: curvatura media --- comparativa completa (4 variantes)
+  \end{enumerate}}
+  \secciondestino{6.3 --- Resultados obtenidos}
+  \resultado{A* genera trayectorias con mayor irregularidad y curvatura media que Dijkstra en entornos complejos con obstaculos (goals G2 y G4). La diferencia entre smooth y nosmooth es menos pronunciada de lo esperado visualmente, aunque si se refleja en las metricas.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Graficas del analisis dinamico}
+  \solucion{El script \texttt{dynamic.py} genera 14 graficas sobre la navegacion en tiempo real:
+  \begin{itemize}
+    \item \textbf{1--4:} Trayectoria real vs planificada en plano XY por algoritmo
+    \item \textbf{5--8:} Velocidades lineal y angular (doble eje Y) por algoritmo
+    \item \textbf{9--12:} ETA calculado por Nav2 vs tiempo real restante por algoritmo
+    \item \textbf{13:} Tiempo total de navegacion --- barras comparativas
+    \item \textbf{14:} ETA calculado a lo largo del tiempo --- 4 lineas comparativas
+  \end{itemize}}
+  \secciondestino{6.3 --- Resultados obtenidos}
+  \nota{Solo una ejecucion por algoritmo --- los resultados dinamicos no tienen promedio de multiples runs. Documentar como limitacion en la memoria.}
+\end{entrada}
+
+
+\begin{entrada}{2025-XX-XX}{Observacion: trayectoria planificada atraviesa obstaculos en grafica Python}
+  \problema{En las graficas de trayectoria 2D generadas por \texttt{dynamic.py}, la trayectoria planificada (gris discontinua) parece atravesar obstaculos que la trayectoria real si rodea correctamente.}
+  \causa{El nodo dinamico guarda en el CSV el plan mas reciente recibido en \texttt{/plan} en cada muestra de 5\,Hz. Nav2 puede replanificar durante la navegacion, por lo que el plan del CSV no es necesariamente el plan inicial completo sino una mezcla de planes sucesivos. Esto distorsiona la reconstruccion de la trayectoria planificada.}
+  \solucion{La trayectoria real (odometria) si es correcta. La trayectoria planificada en estas graficas es orientativa, no exacta. Para una reconstruccion fiel del plan original habria que guardar el plan completo solo en el momento del primer callback de \texttt{/plan}.}
+  \secciondestino{5.3 --- Metodologia experimental (limitaciones)}
+  \nota{En RViz la trayectoria planificada si se muestra correctamente porque Nav2 la actualiza en tiempo real. La discrepancia es solo en la reconstruccion posterior a partir del CSV.}
+\end{entrada}
+
+
 % ============================================================
 %  PLANTILLA PARA NUEVAS ENTRADAS
 % ============================================================
