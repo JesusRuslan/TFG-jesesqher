@@ -4,11 +4,13 @@ Análisis de métricas estáticas de planificación de trayectorias.
 Compara Dijkstra vs A* con y sin suavizado.
 
 Gráficas generadas:
-  1. Waypoints vs Tiempo de planificación (líneas, 4 algoritmos)
-  2. Suavidad: Dijkstra-smooth vs Dijkstra-nosmooth (barras por goal)
-  3. Suavidad: A*-smooth vs A*-nosmooth (barras por goal)
-  4. Curvatura media: Dijkstra-smooth vs A*-smooth (barras por goal)
-  5. Curvatura media: Dijkstra-nosmooth vs A*-nosmooth (barras por goal)
+  1. Waypoints vs Tiempo de planificación (scatter, 4 algoritmos)
+  2. Irregularidad: Dijkstra-smooth vs Dijkstra-nosmooth (barras por goal)
+  3. Irregularidad: A*-smooth vs A*-nosmooth (barras por goal)
+  4. Irregularidad — Comparativa completa (4 variantes, barras por goal)
+  5. Curvatura media: Dijkstra-smooth vs A*-smooth (barras por goal)
+  6. Curvatura media: Dijkstra-nosmooth vs A*-nosmooth (barras por goal)
+  7. Curvatura media — Comparativa completa (4 variantes, barras por goal)
 """
 
 import os
