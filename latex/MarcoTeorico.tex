@@ -7,6 +7,13 @@ Este capítulo presenta los fundamentos tecnológicos sobre los que se apoya el 
 
 \section{ROS2: el sistema operativo del robot}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{figures/logos/ros2_logo}
+    \caption{Logo de ROS2.}
+    \label{fig:logo_ros2}
+\end{figure}
+
 ROS2 (Robot Operating System 2) es un marco de desarrollo de software de código abierto ampliamente utilizado en robótica. A diferencia de su predecesor ROS1, cuyo soporte finalizó en mayo de 2025 con la distribución Noetic, ROS2 fue diseñado desde cero para entornos de producción, con soporte para comunicaciones en tiempo real, sistemas multi-robot y arquitecturas distribuidas.
 
 Su modelo de comunicación se basa en \textbf{nodos} independientes que intercambian información mediante tres mecanismos principales:
@@ -21,6 +28,23 @@ Este proyecto utiliza la distribución \textbf{ROS2 Humble Hawksbill}, lanzada e
 
 \section{Gazebo: simulación de robots}
 
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/logos/gazebo_classic_logo}
+        \caption{Logo de Gazebo Classic.}
+        \label{fig:logo_gazebo_classic}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/logos/ignition_gazebo_logo}
+        \caption{Logo de Ignition Gazebo (New Gazebo).}
+        \label{fig:logo_ignition}
+    \end{minipage}
+\end{figure}
+
 Gazebo es el simulador de robótica de referencia en el ecosistema ROS2. Permite modelar robots, sensores y entornos físicos con física realista, lo que facilita el desarrollo y validación de algoritmos sin necesidad del hardware real.
 
 Es importante distinguir entre las dos versiones del simulador:
@@ -33,6 +57,32 @@ Es importante distinguir entre las dos versiones del simulador:
 En este proyecto se utiliza \textbf{Ignition Gazebo Fortress}, que es la versión compatible con ROS2 Humble y los paquetes oficiales del TurtleBot4. Fortress ofrece soporte para sensores como LiDAR y cámaras de profundidad, física de contacto realista y un sistema de plugins extensible que permite simular el comportamiento del Create3 con fidelidad suficiente para el desarrollo de algoritmos de navegación.
 
 \section{TurtleBot4 y Create3}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/logos/turtlebot4_logo}
+        \caption{Logo del TurtleBot4.}
+        \label{fig:logo_turtlebot4}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/logos/create3_logo}
+        \caption{Logo del iRobot Create3.}
+        \label{fig:logo_create3}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.7\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/diagrams/turtlebot4_standard_diagram}
+        \caption{Diagrama del TurtleBot4 Standard.}
+        \label{fig:diagram_turtlebot4}
+    \end{minipage}
+\end{figure}
 
 El \textbf{TurtleBot4} es una plataforma robótica móvil desarrollada por Clearpath Robotics en colaboración con iRobot, diseñada específicamente para investigación y aprendizaje con ROS2. Combina una base móvil diferencial, sensores de proximidad, un LiDAR 2D y una cámara de profundidad OAK-D, todo integrado con soporte nativo para ROS2 Humble.
 
@@ -48,9 +98,42 @@ El paquete utilizado en el ecosistema ROS2 Humble es \textbf{slam\_toolbox}, que
 
 \textbf{AMCL} (Adaptive Monte Carlo Localization) es el algoritmo de localización utilizado por Nav2 cuando ya se dispone de un mapa. Implementa un filtro de partículas en el que cada partícula representa una hipótesis de posición y orientación del robot en el mapa. En cada iteración, el algoritmo compara las lecturas del LiDAR con lo que el robot debería ver desde cada hipótesis, reforzando las partículas más consistentes con los datos reales y eliminando las menos probables. Con el tiempo, las partículas convergen hacia la posición real del robot.
 
+Las figuras~\ref{fig:amcl_1}, \ref{fig:amcl_2} y \ref{fig:amcl_3} muestran la evolución del enjambre de partículas de AMCL durante los primeros segundos de navegación en el entorno de simulación: al arrancar, las partículas están dispersas en una zona amplia del mapa; conforme el robot se mueve y el LiDAR recibe nuevas lecturas, las partículas convergen progresivamente hacia la posición real.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/screenshots/puntos-lidar_1}
+        \caption{Partículas AMCL dispersas al inicio (t=13\,s).}
+        \label{fig:amcl_1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/screenshots/puntos-lidar_2}
+        \caption{Partículas convergiendo (t=25\,s).}
+        \label{fig:amcl_2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/screenshots/puntos-lidar_3}
+        \caption{Partículas concentradas en la pose real (t=34\,s).}
+        \label{fig:amcl_3}
+    \end{minipage}
+\end{figure}
+
 Para inicializar correctamente AMCL es necesario proporcionar una estimación de la pose inicial del robot en el mapa. En este proyecto, este paso se ha automatizado mediante un \texttt{TimerAction} en el launch file que publica la pose inicial en el topic \texttt{/initialpose} al arrancar el sistema.
 
 \section{Nav2: el stack de navegación}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\textwidth]{figures/logos/nav2_logo}
+    \caption{Logo de Nav2.}
+    \label{fig:logo_nav2}
+\end{figure}
 
 \textbf{Nav2} (Navigation2) es el stack de navegación autónoma de referencia en ROS2. Sucesor del \texttt{move\_base} de ROS1, Nav2 proporciona una arquitectura modular y extensible que gestiona todo el proceso de navegación: desde la localización hasta la ejecución de trayectorias, pasando por la planificación global y local y los comportamientos de recuperación ante situaciones de bloqueo.
 
