@@ -115,10 +115,10 @@
 %%
 %% Definition and example environments
 %%
-\newtheoremstyle{trinidadTheorem}
+\newtheoremstyle{MyTheorem}
 	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\ ##2\theorem@separator}\hbox{\strut}}}]}
 	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\ ##2\ - ##3\theorem@separator}\hbox{\strut}}}]}
-\theoremstyle{trinidadTheorem}
+\theoremstyle{MyTheorem}
 \theoremsymbol{}
 \theoremheaderfont{\bfseries\color{ThemeColor1}}
 \theorembodyfont{\normalfont}
@@ -232,7 +232,7 @@ fill=#2]
 %%
 %% Page style for general pages in the PhD dissertation
 %%
-\fancypagestyle{trinidadPhD}{%
+\fancypagestyle{PhD}{%
 \fancyhf{}
 \fancyhead[CE]{\tikzheadeven}
 \fancyhead[CO]{\tikzheadodd}
