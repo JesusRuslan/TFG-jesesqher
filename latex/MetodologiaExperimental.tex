@@ -1,0 +1,68 @@
+%!TEX root = tfg.tex
+\chapter{Metodología experimental y de simulación}
+
+\begin{abstract}
+Este capítulo describe el diseño de los experimentos realizados para comparar los algoritmos de planificación de trayectorias, incluyendo la selección de goals, el protocolo de ejecución automatizado y las limitaciones del entorno de simulación que condicionan los resultados.
+\end{abstract}
+
+\section{Diseño del experimento}
+
+El objetivo de los experimentos es comparar el comportamiento de distintos algoritmos de planificación de trayectorias en las mismas condiciones, sobre el mismo mapa y con los mismos puntos de origen y destino. Para garantizar la validez de la comparativa, todos los experimentos parten de la misma posición inicial del robot y utilizan los mismos goals en el mismo orden.
+
+\subsection{Selección de goals}
+
+Se han definido cuatro goals de navegación con características deliberadamente distintas, con el fin de evaluar los algoritmos en situaciones variadas:
+
+\begin{itemize}
+    \item \textbf{goal1\_recto} $(-11, 1)$: trayectoria corta y relativamente directa, sin obstáculos significativos en el camino. Sirve como referencia de comportamiento en condiciones simples.
+    \item \textbf{goal2\_obstaculos} $(2, -5)$: trayectoria que requiere rodear obstáculos para alcanzar el destino. Permite evaluar cómo cada algoritmo gestiona la planificación en presencia de restricciones geométricas.
+    \item \textbf{goal3\_larga} $(11, -13)$: trayectoria larga con pocos cambios de dirección. Permite observar la escala del tiempo de planificación y la longitud de trayectoria en recorridos extensos.
+    \item \textbf{goal4\_compleja} $(-13, 19)$: trayectoria larga con múltiples obstáculos y cambios de dirección. Es el caso más exigente y donde se esperan las mayores diferencias entre algoritmos. Este goal se utiliza también como único destino en el nodo de métricas dinámico.
+\end{itemize}
+
+Adicionalmente, se incluye un goal de calentamiento $(-1, 0)$ al inicio de cada ejecución, cuyas métricas no se registran. Su propósito es forzar la inicialización de las cachés internas de Nav2, de forma que los tiempos de planificación de los goals reales sean comparables entre sí.
+
+\subsection{Configuraciones evaluadas}
+
+Se han evaluado cuatro configuraciones, combinando dos algoritmos de planificación con dos configuraciones de suavizado:
+
+\begin{itemize}
+    \item \textbf{Dijkstra con suavizado} (\texttt{nav2\_dijkstra.yaml}): planificador NavFn con Dijkstra (\texttt{use\_astar: false}) y con suavizado (\texttt{do\_refinement: true}).
+    \item \textbf{Dijkstra sin suavizado} (\texttt{nav2\_dijkstra\_nosmooth.yaml}): igual, pero sin suavizado (\texttt{do\_refinement: false}).
+    \item \textbf{A* con suavizado} (\texttt{nav2\_astar.yaml}): planificador NavFn con algoritmo "\textit{A estrella}" (\texttt{use\_astar: true}) y con suavizado.
+    \item \textbf{A* sin suavizado} (\texttt{nav2\_astar\_nosmooth.yaml}): igual, pero sin suavizado.
+\end{itemize}
+
+\section{Protocolo de ejecución}
+
+Cada experimento se lanza con un único comando que selecciona el algoritmo y la configuración de suavizado:
+
+\begin{lstlisting}[language=bash, basicstyle=\ttfamily\small, backgroundcolor=\color{gray!15}, frame=single]
+ros2 launch turtlebot4_cpp_slam_nav sim.launch.py \
+    planner:=dijkstra \
+    smooth:=true
+\end{lstlisting}
+
+El launch file automatiza la secuencia completa de inicialización, eliminando la intervención manual del usuario:
+
+\begin{enumerate}
+    \item A \textbf{t=0\,s:} arranca Gazebo con el mundo del almacén, el modelo del TurtleBot4, AMCL con el mapa pregenerado y Nav2 con el yaml del algoritmo seleccionado.
+    \item A \textbf{t=10\,s:} publica la pose inicial en \texttt{/initialpose} para inicializar AMCL.
+    \item A \textbf{t=15\,s:} desactiva el límite de retroceso del Create3 (\texttt{safety\_override: backup\_only}).
+    \item A \textbf{t=20\,s:} ejecuta el undock del robot.
+    \item A \textbf{t=30\,s:} arranca el nodo de métricas, que envía los goals y recoge los datos automáticamente.
+\end{enumerate}
+
+Al finalizar todos los goals, el nodo guarda el CSV y se cierra. El proceso completo no requiere ninguna interacción del usuario.
+
+\section{Limitaciones del entorno de simulación}
+
+Durante el desarrollo y la experimentación se identificaron varias limitaciones del entorno de simulación que condicionan los resultados y deben tenerse en cuenta al interpretar los datos.
+
+\textbf{Localización imprecisa de AMCL.} La localización mediante AMCL sobre el mapa pregenerado no siempre converge con precisión, especialmente en zonas del almacén con geometría repetitiva como los pasillos entre estanterías. Esto provoca que el robot ejecute trayectorias ligeramente desplazadas respecto a las planificadas. En el nodo dinámico, esta imprecisión se refleja en los valores de desviación respecto al plan.
+
+\textbf{Undock con estado CANCELED.} Durante el desarrollo en el portátil, el action de undock del Create3 en Ignition Gazebo terminaba sistemáticamente con estado \texttt{CANCELED} en lugar de \texttt{SUCCEEDED}, aunque el robot sí se separaba físicamente del dock. Este comportamiento, conocido del plugin del Create3 en Ignition Gazebo, no se reprodujo en el PC de alto rendimiento del departamento, donde el undock completaba correctamente. No afectó al funcionamiento del sistema en ninguno de los dos entornos.
+
+\textbf{Trayectoria planificada en las gráficas dinámicas.} En las gráficas de trayectoria 2D, la trayectoria planificada reconstruida a partir del CSV presenta discontinuidades que no se corresponden con la trayectoria real planificada por Nav2. En ciertos instantes, el punto del plan registrado en el CSV salta bruscamente a una posición alejada del robot, aunque la posición real varía gradualmente. El origen exacto de este comportamiento no ha sido determinado, pero se cree que está relacionado con replanificaciones de Nav2 que alteran el contenido de \texttt{/plan} durante la navegación. La trayectoria planificada real sí rodea correctamente todos los obstáculos, como confirma la visualización en RViz.
+
+\textbf{Una única ejecución por configuración.} Cabe recalcar que cada configuración de algoritmo se ha ejecutado una única vez. Los resultados obtenidos son por tanto individuales y no promediados sobre múltiples ejecuciones. Esta limitación se debe tener en cuenta al interpretar las diferencias entre algoritmos, ya que parte de la variabilidad observada puede deberse a factores no controlados como la convergencia de AMCL o el estado inicial del costmap.
