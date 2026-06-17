@@ -9,6 +9,9 @@ Gráficas generadas:
   9-12.  ETA real vs ETA calculado por Nav2
   13.    Tiempo total de navegación — comparativa entre variantes
   14.    Comparativa de ETA calculado por cada algoritmo
+  15-18. Desviación respecto al plan a lo largo del tiempo (una por variante)
+  19.    Desviación respecto al plan — comparativa de las 4 variantes
+  20.    Desviación media — comparativa entre variantes (barras)
 """
 
 import os
@@ -200,6 +203,77 @@ def plot_eta_all(data):
     print(f"Guardada: {path}")
 
 
+# -- Gráficas 15-18: Desviación respecto al plan a lo largo del tiempo ---------------------------------------------------------------------------
+def plot_deviation_per_variant(data):
+    for i, (key, df) in enumerate(data.items(), start=15):
+        fig, ax = plt.subplots(figsize=(11, 5))
+
+        ax.plot(df["timestamp_s"], df["desviacion_m"],
+                color=COLORS[key], linewidth=1.5,
+                label="Desviación respecto al plan")
+        ax.axhline(df["desviacion_m"].mean(), color="black", linewidth=1,
+                   linestyle="--", label=f"Media: {df['desviacion_m'].mean():.3f} m")
+
+        ax.set_xlabel("Tiempo transcurrido (s)")
+        ax.set_ylabel("Desviación respecto al plan (m)")
+        ax.set_title(f"Desviación respecto al plan — {LABELS[key]}")
+        ax.legend()
+        ax.grid(True, linestyle="--", alpha=0.5)
+        plt.tight_layout()
+        path = os.path.join(PLOTS_DIR, f"{i}_deviation_{key}.png")
+        plt.savefig(path, dpi=150)
+        plt.close()
+        print(f"Guardada: {path}")
+
+
+# -- Gráfica 19: Desviación de las 4 variantes a lo largo del tiempo ---------------------------------------------------------------------------
+def plot_deviation_all(data):
+    fig, ax = plt.subplots(figsize=(11, 5))
+
+    for key, df in data.items():
+        ax.plot(df["timestamp_s"], df["desviacion_m"],
+                color=COLORS[key], linewidth=1.2, alpha=0.85,
+                label=LABELS[key])
+
+    ax.set_xlabel("Tiempo transcurrido (s)")
+    ax.set_ylabel("Desviación respecto al plan (m)")
+    ax.set_title("Desviación respecto al plan — Comparativa")
+    ax.legend()
+    ax.grid(True, linestyle="--", alpha=0.5)
+    plt.tight_layout()
+    path = os.path.join(PLOTS_DIR, "19_deviation_all.png")
+    plt.savefig(path, dpi=150)
+    plt.close()
+    print(f"Guardada: {path}")
+
+
+# -- Gráfica 20: Desviación media comparativa ---------------------------------------------------------------------------
+def plot_deviation_mean(data):
+    keys   = list(data.keys())
+    means  = [data[k]["desviacion_m"].mean() for k in keys]
+    labels = [LABELS[k] for k in keys]
+    colors = [COLORS[k] for k in keys]
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    x = np.arange(len(keys))
+    bars = ax.bar(x, means, color=colors, width=0.5)
+
+    for bar, m in zip(bars, means):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.001,
+                f"{m:.3f} m", ha="center", va="bottom", fontsize=10)
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, rotation=15, ha="right")
+    ax.set_ylabel("Desviación media respecto al plan (m)")
+    ax.set_title("Desviación media respecto al plan — Comparativa")
+    ax.grid(True, axis="y", linestyle="--", alpha=0.5)
+    plt.tight_layout()
+    path = os.path.join(PLOTS_DIR, "20_deviation_mean.png")
+    plt.savefig(path, dpi=150)
+    plt.close()
+    print(f"Guardada: {path}")
+
+
 # -- Main ---------------------------------------------------------------------------
 if __name__ == "__main__":
     print("Cargando datos...")
@@ -211,5 +285,8 @@ if __name__ == "__main__":
     plot_eta_comparison(data)
     plot_total_time(data)
     plot_eta_all(data)
+    plot_deviation_per_variant(data)
+    plot_deviation_all(data)
+    plot_deviation_mean(data)
 
     print(f"\nTodas las gráficas guardadas en: {PLOTS_DIR}")
