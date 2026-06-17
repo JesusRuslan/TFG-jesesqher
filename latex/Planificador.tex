@@ -1,0 +1,75 @@
+%!TEX root = tfg.tex
+\chapter{Planificador de trayectorias}
+
+\begin{abstract}
+Este capítulo describe el funcionamiento del planificador global de trayectorias utilizado en el proyecto. Se analiza el plugin NavFn de Nav2, los algoritmos de Dijkstra y A* que implementa, el papel del suavizado de trayectorias, y se discute el algoritmo RRT como posible alternativa.
+\end{abstract}
+
+\section{El planificador global en Nav2}
+
+En Nav2, el planificador global es el componente responsable de calcular una ruta completa desde la posición actual del robot hasta el objetivo, utilizando el costmap estático derivado del mapa del entorno. Opera en el espacio discreto de celdas del costmap 2D y produce como salida una secuencia de poses (\texttt{nav\_msgs/Path}) que el controlador local deberá seguir.
+
+El planificador global no tiene en cuenta obstáculos dinámicos ni las restricciones cinemáticas del robot: su función es encontrar un camino geométricamente válido por el espacio libre del mapa. La gestión de obstáculos dinámicos y el seguimiento cinemático de la trayectoria son responsabilidad del controlador local DWB, descrito en el capítulo anterior.
+
+Nav2 implementa el planificador global mediante un sistema de plugins intercambiables. En este proyecto se utiliza el plugin \textbf{NavFn}, que es el planificador por defecto de Nav2 y el que mejor soporte tiene con la configuración oficial del TurtleBot4. NavFn implementa dos algoritmos de búsqueda seleccionables mediante el parámetro \texttt{use\_astar}: el algoritmo de Dijkstra (\texttt{use\_astar: false}) y el algoritmo A* (\texttt{use\_astar: true}). Ambos operan sobre el mismo costmap y producen el mismo formato de salida, lo que permite compararlos directamente sin modificar ningún otro componente del sistema.
+
+\section{Representación del espacio: el costmap}
+
+Antes de describir los algoritmos, es necesario entender sobre qué estructura operan. NavFn trabaja sobre un \textbf{costmap 2D}, una cuadrícula discreta en la que cada celda tiene asignado un coste que representa la dificultad de pasar por ella. Las celdas ocupadas por obstáculos tienen coste máximo (lethal), las celdas libres tienen coste mínimo, y existe una zona de inflado alrededor de los obstáculos con costes intermedios para que el planificador evite acercarse demasiado a las paredes.
+
+El costmap estático se construye a partir del mapa pregenerado del almacén y se actualiza con las lecturas del LiDAR en tiempo real para reflejar obstáculos dinámicos. El planificador global opera sobre una copia estática de este costmap en el momento de la planificación, lo que significa que la ruta calculada refleja el estado del entorno en el instante en que se solicita, y puede quedar obsoleta si el entorno cambia durante la navegación. En ese caso, Nav2 puede replanificar automáticamente.
+
+\section{Algoritmo de Dijkstra}
+
+El algoritmo de Dijkstra es un algoritmo de búsqueda de camino mínimo en grafos con pesos no negativos. Fue propuesto por Edsger W. Dijkstra en 1959 y constituye la base de muchos planificadores de trayectorias en robótica.
+
+En el contexto de NavFn, el grafo sobre el que opera Dijkstra es el propio costmap: cada celda es un nodo y las aristas conectan cada celda con sus vecinas (4 u 8 conectividad). El peso de cada arista es el coste de la celda destino, que refleja la proximidad a obstáculos. El algoritmo expande los nodos por orden creciente de coste acumulado desde el origen, garantizando que el primero en alcanzar el destino lo hace por el camino de coste mínimo.
+
+El proceso de búsqueda puede resumirse así:
+
+\begin{enumerate}
+    \item Se inicializa una cola de prioridad con la celda de origen, con coste acumulado cero.
+    \item En cada iteración se extrae la celda de menor coste acumulado y se expanden sus vecinas.
+    \item Para cada vecina, si el coste acumulado para llegar a ella por este camino es menor que el conocido, se actualiza y se reinserta en la cola.
+    \item El proceso termina cuando se extrae la celda destino de la cola.
+\end{enumerate}
+
+La principal característica de Dijkstra es que es \textbf{completo y óptimo}: si existe un camino, lo encuentra, y el camino encontrado es el de menor coste. Su principal desventaja es que expande el espacio de búsqueda de forma uniforme en todas las direcciones, sin ninguna información sobre la posición del destino. Esto lo hace relativamente lento en espacios grandes, aunque en entornos de interior como el almacén utilizado en este proyecto el tamaño del costmap es suficientemente manejable.
+
+\section{Algoritmo A*}
+
+El algoritmo A* (pronunciado \textit{A estrella}) es una extensión de Dijkstra que incorpora una \textbf{heurística} para guiar la búsqueda hacia el destino de forma más eficiente. Fue introducido por Hart, Nilsson y Raphael en 1968 y es uno de los algoritmos de búsqueda más utilizados en planificación de rutas.
+
+La diferencia respecto a Dijkstra es que A* no ordena la cola de prioridad por el coste acumulado $g(n)$ desde el origen, sino por la función $f(n) = g(n) + h(n)$, donde $h(n)$ es una estimación del coste desde la celda actual hasta el destino. Esta estimación o heurística permite al algoritmo priorizar la exploración de nodos que, además de ser baratos de alcanzar, están más cerca del destino.
+
+En NavFn, la heurística utilizada es la \textbf{distancia euclídea} entre la celda actual y la celda destino. Esta heurística es admisible, es decir, nunca sobreestima el coste real, lo que garantiza que A* sigue siendo óptimo: si existe un camino de coste mínimo, A* lo encuentra.
+
+La ventaja práctica de A* sobre Dijkstra es que expande menos nodos, ya que descarta antes aquellas ramas del espacio de búsqueda que se alejan del destino. En espacios grandes y con pocas restricciones, esto se traduce en tiempos de planificación significativamente menores. En espacios con muchos obstáculos o pasillos estrechos, la diferencia puede ser menor, ya que el espacio libre que puede explorar es más reducido en ambos casos.
+
+\section{Suavizado de trayectorias}
+
+Las trayectorias producidas directamente por Dijkstra o A* sobre una cuadrícula tienen un aspecto característico: están compuestas por segmentos a 0°, 45° o 90°, lo que genera cambios de dirección bruscos que no son ejecutables de forma fluida por el robot diferencial. Para mitigar esto, NavFn ofrece una etapa opcional de \textbf{suavizado de trayectorias} mediante el parámetro \texttt{do\_refinement}.
+
+Cuando el suavizado está activo, NavFn aplica internamente un proceso iterativo de refinamiento que desplaza los waypoints de la trayectoria para reducir los cambios de ángulo entre segmentos consecutivos, manteniendo los puntos dentro del espacio libre del costmap. El resultado es una trayectoria más suave y con menor irregularidad acumulada, más compatible con las limitaciones de curvatura del robot diferencial.
+
+En este proyecto se evalúan las cuatro combinaciones posibles: Dijkstra con y sin suavizado, y A* con y sin suavizado. El impacto del suavizado sobre las métricas de longitud, irregularidad y curvatura es uno de los aspectos que se analizan en los resultados.
+
+\section{Alternativa no implementada: RRT}
+
+Durante el diseño del proyecto se consideró la posibilidad de incluir un tercer algoritmo de planificación: \textbf{RRT} (\textit{Rapidly-exploring Random Tree}), propuesto por LaValle en 1998. A diferencia de Dijkstra y A*, que operan sobre una cuadrícula discreta, RRT es un algoritmo de muestreo aleatorio que construye un árbol de exploración expandiéndose de forma incremental hacia muestras aleatorias del espacio de configuración.
+
+El proceso básico de RRT es el siguiente:
+
+\begin{enumerate}
+    \item Se inicializa el árbol con el nodo raíz en la posición de origen.
+    \item En cada iteración se genera un punto aleatorio en el espacio de configuración.
+    \item Se localiza el nodo del árbol más cercano al punto aleatorio.
+    \item Se extiende el árbol desde ese nodo en dirección al punto aleatorio un paso de longitud fija, siempre que el nuevo segmento esté en espacio libre.
+    \item El proceso termina cuando algún nodo del árbol se acerca suficientemente al destino.
+\end{enumerate}
+
+La principal ventaja de RRT frente a los algoritmos de búsqueda en cuadrícula es su eficiencia en espacios de alta dimensión y su capacidad para incorporar restricciones cinemáticas del robot directamente en la expansión del árbol. Variantes como \textbf{RRT*} añaden un paso de reconexión que garantiza la convergencia hacia la trayectoria óptima conforme aumenta el número de muestras.
+
+Sin embargo, RRT no está disponible como plugin nativo de NavFn en Nav2 Humble. Su integración habría requerido implementar un plugin personalizado para Nav2, lo que quedaba fuera del alcance de este TFG dado el tiempo disponible. Además, RRT produce trayectorias inherentemente irregulares que también requieren una etapa de suavizado posterior para ser ejecutables por un robot diferencial, lo que añade complejidad adicional al sistema.
+
+Por estas razones, la comparativa de este proyecto se ha centrado en los algoritmos disponibles de forma nativa en NavFn, obviando la integración de RRT.
