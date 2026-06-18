@@ -54,6 +54,42 @@ Cuando el suavizado está activo, NavFn aplica internamente un proceso iterativo
 
 En este proyecto se evalúan las cuatro combinaciones posibles: Dijkstra con y sin suavizado, y A* con y sin suavizado. El impacto del suavizado sobre las métricas de longitud, irregularidad y curvatura es uno de los aspectos que se analizan en los resultados.
 
+\section{Controlador local: DWB}
+
+Mientras el planificador global calcula una ruta completa desde el origen hasta el destino, el \textbf{controlador local} es el componente responsable de ejecutarla en tiempo real: genera los comandos de velocidad que el robot debe seguir instante a instante, reaccionando a obstáculos dinámicos y corrigiendo las desviaciones respecto al plan global.
+
+En Nav2, el controlador local utilizado en este proyecto es \textbf{DWB} (\textit{Dynamic Window approach B})\cite{dwb_nav2}, una reimplementación modular del algoritmo clásico DWA (\textit{Dynamic Window Approach})\cite{fox1997dwa} propuesto por Fox, Burgard y Thrun en 1997.
+
+\subsection{DWA: el algoritmo base}
+
+La idea central de DWA es que, en lugar de planificar toda la trayectoria de una vez, en cada ciclo de control el robot genera un conjunto de trayectorias candidatas a partir de los pares de velocidad lineal y angular $(v, \omega)$ alcanzables en el próximo instante. La \textbf{ventana dinámica} es precisamente el subconjunto de velocidades que el robot puede alcanzar físicamente dado su estado actual, teniendo en cuenta sus límites de aceleración máxima. De entre todas las trayectorias candidatas dentro de esa ventana, el algoritmo selecciona la que mejor combina tres objetivos:
+
+\begin{itemize}
+    \item \textbf{Seguimiento del plan global:} minimizar la distancia a la trayectoria planificada por NavFn.
+    \item \textbf{Avance hacia el objetivo:} maximizar el progreso hacia el destino final.
+    \item \textbf{Evitación de obstáculos:} maximizar la distancia mínima a los obstáculos del costmap.
+\end{itemize}
+
+La puntuación de cada trayectoria candidata es una suma ponderada de estos tres criterios, y se elige la de mayor puntuación. Esto se repite en cada ciclo de control (a 20\,Hz en la configuración utilizada), lo que permite al robot reaccionar continuamente a cambios en el entorno.
+
+\subsection{DWB: la reimplementación modular para Nav2}
+
+DWB mantiene el mismo principio de funcionamiento que DWA pero introduce una arquitectura basada en \textbf{critics}: módulos independientes y configurables que puntúan cada trayectoria candidata según un criterio concreto. Los critics por defecto en Nav2 son:
+
+\begin{itemize}
+    \item \texttt{PathAlign}: penaliza las trayectorias que se alejan del plan global.
+    \item \texttt{GoalAlign}: favorece las trayectorias orientadas hacia el objetivo.
+    \item \texttt{PathDist}: penaliza la distancia acumulada a la trayectoria global.
+    \item \texttt{GoalDist}: penaliza la distancia al objetivo final.
+    \item \texttt{RotateToGoal}: activa un comportamiento especial de giro en el lugar cuando el robot está cerca del destino.
+\end{itemize}
+
+Cada critic tiene un peso configurable en el archivo YAML de Nav2. La puntuación final de cada trayectoria candidata es la suma ponderada de todos los critics activos. La ventaja respecto a DWA es que esta arquitectura permite añadir, quitar o reponderar criterios de evaluación sin modificar el código, adaptando el comportamiento del controlador a las necesidades del entorno.
+
+\subsection{Relación con el planificador global}
+
+La interacción entre NavFn y DWB determina en gran medida el comportamiento observable del sistema. El planificador global calcula el camino geométrico, y DWB se encarga de seguirlo de forma ejecutable respetando las restricciones cinemáticas del robot diferencial descritas en el capítulo anterior. Cuando la trayectoria global es irregular, como ocurre con A* en entornos con obstáculos, DWB debe realizar ajustes de dirección más frecuentes, lo que se traduce en mayor velocidad angular y mayor desviación respecto al plan, tal como se observa en los resultados. En este sentido, la calidad del plan global tiene un impacto directo sobre la carga de trabajo del controlador local.
+
 \section{Alternativa no implementada: RRT}
 
 Durante el diseño del proyecto se consideró la posibilidad de incluir un tercer algoritmo de planificación: \textbf{RRT} (\textit{Rapidly-exploring Random Tree})\cite{lavalle1998}, propuesto por LaValle en 1998. A diferencia de Dijkstra y A*, que operan sobre una cuadrícula discreta, RRT es un algoritmo de muestreo aleatorio que construye un árbol de exploración expandiéndose de forma incremental hacia muestras aleatorias del espacio de configuración.
