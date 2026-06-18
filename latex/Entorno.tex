@@ -52,7 +52,7 @@ El desarrollo se ha realizado sobre dos máquinas con diferentes característica
 
 \textbf{Portátil de desarrollo (principal):} Intel Core i5, gráficos integrados, Ubuntu 22.04 LTS con ROS2 Humble instalado de forma nativa. Se ha utilizado para el desarrollo de los nodos C++, la configuración de Nav2 y las pruebas con el nodo de métricas estático. La simulación corre al $\approx$20\% de la velocidad real en este hardware.
 
-\textbf{PC del departamento (experimentos dinámicos):} Intel Core i7-14700F (20 núcleos), GPU NVIDIA GeForce RTX 3050 6\,GB, Ubuntu 24.04 LTS. Dado que Ubuntu 24.04 no es la plataforma oficial de ROS2 Humble, se ha empleado \textbf{Docker} con la imagen oficial \texttt{osrf/ros:humble-desktop-full}, basada en Ubuntu 22.04, para garantizar la compatibilidad. El acceso a la GPU desde el contenedor se habilita mediante \texttt{nvidia-container-toolkit}, lo que permite que Ignition Gazebo use aceleración hardware y la simulación corra al 85--100\% de la velocidad real. Este entorno se ha utilizado para las pruebas con el nodo de métricas dinámico, que requiere que el robot navegue correctamente hasta el destino.
+\textbf{PC del departamento (experimentos dinámicos):} Intel Core i7-14700F (20 núcleos), GPU NVIDIA GeForce RTX 3050 6\,GB, Ubuntu 24.04 LTS. Dado que Ubuntu 24.04 no es la plataforma oficial de ROS2 Humble, se ha empleado \textbf{Docker}\cite{docker} con la imagen oficial \texttt{osrf/ros:humble-desktop-full}, basada en Ubuntu 22.04, para garantizar la compatibilidad. El acceso a la GPU desde el contenedor se habilita mediante \texttt{nvidia-container-toolkit}, lo que permite que Ignition Gazebo use aceleración hardware y la simulación corra al 85--100\% de la velocidad real. Este entorno se ha utilizado para las pruebas con el nodo de métricas dinámico, que requiere que el robot navegue correctamente hasta el destino.
 
 Para garantizar la reproducibilidad del entorno Docker en cualquier máquina, se incluye en el repositorio un \texttt{Dockerfile} que automatiza la instalación de ROS2 Humble y los paquetes necesarios del TurtleBot4 a partir de la imagen base.
 
@@ -99,7 +99,7 @@ Durante el desarrollo se han utilizado diversas herramientas de línea de comand
     \label{fig:logo_vscode}
 \end{figure}
 
-El editor principal de desarrollo ha sido \textbf{Visual Studio Code}, con las siguientes extensiones que mejoran significativamente la experiencia de desarrollo en el ecosistema ROS2/C++:
+El editor principal de desarrollo ha sido \textbf{Visual Studio Code}\cite{vscode}, con las siguientes extensiones que mejoran significativamente la experiencia de desarrollo en el ecosistema ROS2/C++:
 
 \begin{itemize}
     \item \textbf{Robotics Developer Environment (Ranch Hand Robotics):} suite de extensiones específicamente diseñada para el desarrollo con ROS2. Proporciona autocompletado de tipos de mensajes, integración con el sistema de build de ROS2 y herramientas de depuración adaptadas al ecosistema. Se optó por esta extensión en lugar de la extensión oficial \textit{ROS} de Microsoft, que ha sido marcada como \textit{deprecated} y ya no recibe mantenimiento activo.

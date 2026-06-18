@@ -21,7 +21,7 @@ El costmap estático se construye a partir del mapa pregenerado del almacén y s
 
 \section{Algoritmo de Dijkstra}
 
-El algoritmo de Dijkstra es un algoritmo de búsqueda de camino mínimo en grafos con pesos no negativos. Fue propuesto por Edsger W. Dijkstra en 1959 y constituye la base de muchos planificadores de trayectorias en robótica.
+El algoritmo de Dijkstra\cite{dijkstra1959} es un algoritmo de búsqueda de camino mínimo en grafos con pesos no negativos. Fue propuesto por Edsger W. Dijkstra en 1959 y constituye la base de muchos planificadores de trayectorias en robótica.
 
 En el contexto de NavFn, el grafo sobre el que opera Dijkstra es el propio costmap: cada celda es un nodo y las aristas conectan cada celda con sus vecinas (4 u 8 conectividad). El peso de cada arista es el coste de la celda destino, que refleja la proximidad a obstáculos. El algoritmo expande los nodos por orden creciente de coste acumulado desde el origen, garantizando que el primero en alcanzar el destino lo hace por el camino de coste mínimo.
 
@@ -38,7 +38,7 @@ La principal característica de Dijkstra es que es \textbf{completo y óptimo}: 
 
 \section{Algoritmo A*}
 
-El algoritmo A* (pronunciado \textit{A estrella}) es una extensión de Dijkstra que incorpora una \textbf{heurística} para guiar la búsqueda hacia el destino de forma más eficiente. Fue introducido por Hart, Nilsson y Raphael en 1968 y es uno de los algoritmos de búsqueda más utilizados en planificación de rutas.
+El algoritmo A* (pronunciado \textit{A estrella})\cite{hart1968} es una extensión de Dijkstra que incorpora una \textbf{heurística} para guiar la búsqueda hacia el destino de forma más eficiente. Fue introducido por Hart, Nilsson y Raphael en 1968 y es uno de los algoritmos de búsqueda más utilizados en planificación de rutas.
 
 La diferencia respecto a Dijkstra es que A* no ordena la cola de prioridad por el coste acumulado $g(n)$ desde el origen, sino por la función $f(n) = g(n) + h(n)$, donde $h(n)$ es una estimación del coste desde la celda actual hasta el destino. Esta estimación o heurística permite al algoritmo priorizar la exploración de nodos que, además de ser baratos de alcanzar, están más cerca del destino.
 
@@ -56,7 +56,7 @@ En este proyecto se evalúan las cuatro combinaciones posibles: Dijkstra con y s
 
 \section{Alternativa no implementada: RRT}
 
-Durante el diseño del proyecto se consideró la posibilidad de incluir un tercer algoritmo de planificación: \textbf{RRT} (\textit{Rapidly-exploring Random Tree}), propuesto por LaValle en 1998. A diferencia de Dijkstra y A*, que operan sobre una cuadrícula discreta, RRT es un algoritmo de muestreo aleatorio que construye un árbol de exploración expandiéndose de forma incremental hacia muestras aleatorias del espacio de configuración.
+Durante el diseño del proyecto se consideró la posibilidad de incluir un tercer algoritmo de planificación: \textbf{RRT} (\textit{Rapidly-exploring Random Tree})\cite{lavalle1998}, propuesto por LaValle en 1998. A diferencia de Dijkstra y A*, que operan sobre una cuadrícula discreta, RRT es un algoritmo de muestreo aleatorio que construye un árbol de exploración expandiéndose de forma incremental hacia muestras aleatorias del espacio de configuración.
 
 El proceso básico de RRT es el siguiente:
 
@@ -68,7 +68,7 @@ El proceso básico de RRT es el siguiente:
     \item El proceso termina cuando algún nodo del árbol se acerca suficientemente al destino.
 \end{enumerate}
 
-La principal ventaja de RRT frente a los algoritmos de búsqueda en cuadrícula es su eficiencia en espacios de alta dimensión y su capacidad para incorporar restricciones cinemáticas del robot directamente en la expansión del árbol. Variantes como \textbf{RRT*} añaden un paso de reconexión que garantiza la convergencia hacia la trayectoria óptima conforme aumenta el número de muestras.
+La principal ventaja de RRT frente a los algoritmos de búsqueda en cuadrícula es su eficiencia en espacios de alta dimensión y su capacidad para incorporar restricciones cinemáticas del robot directamente en la expansión del árbol. Variantes como \textbf{RRT*}\cite{karaman2011} añaden un paso de reconexión que garantiza la convergencia hacia la trayectoria óptima conforme aumenta el número de muestras.
 
 Sin embargo, RRT no está disponible como plugin nativo de NavFn en Nav2 Humble. Su integración habría requerido implementar un plugin personalizado para Nav2, lo que quedaba fuera del alcance de este TFG dado el tiempo disponible. Además, RRT produce trayectorias inherentemente irregulares que también requieren una etapa de suavizado posterior para ser ejecutables por un robot diferencial, lo que añade complejidad adicional al sistema.
 

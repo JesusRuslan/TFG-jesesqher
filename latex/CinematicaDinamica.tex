@@ -23,7 +23,7 @@ Los parámetros geométricos del modelo de simulación, tal y como están defini
 
 \subsection{Descripción del modelo}
 
-El TurtleBot4 sigue un modelo de \textbf{tracción diferencial} (\textit{differential drive}): el movimiento del robot se obtiene actuando de forma independiente sobre la velocidad de cada una de las dos ruedas motrices. No existe ningún mecanismo de dirección adicional; el giro se consigue imponiendo una diferencia de velocidad entre la rueda derecha y la izquierda.
+El TurtleBot4 sigue un modelo de \textbf{tracción diferencial} (\textit{differential drive})\cite{siegwart2011robotics}: el movimiento del robot se obtiene actuando de forma independiente sobre la velocidad de cada una de las dos ruedas motrices. No existe ningún mecanismo de dirección adicional; el giro se consigue imponiendo una diferencia de velocidad entre la rueda derecha y la izquierda.
 
 Este modelo supone que:
 
@@ -103,7 +103,7 @@ Los casos límite son relevantes para entender el comportamiento del robot duran
 
 \section{Limitaciones físicas impuestas por el firmware}
 
-El firmware del Create3 impone una serie de restricciones sobre el movimiento del robot que tienen impacto directo en la planificación y ejecución de trayectorias. Estas restricciones son configurables a través del nodo ROS2 \texttt{motion\_control} mediante el parámetro \texttt{safety\_override}.
+El firmware del Create3 impone una serie de restricciones sobre el movimiento del robot que tienen impacto directo en la planificación y ejecución de trayectorias. Estas restricciones son configurables a través del nodo ROS2 \texttt{motion\_control} mediante el parámetro \texttt{safety\_override}\cite{create3_docs}\cite{create3_sim}.
 
 \textbf{Velocidad máxima lineal:} Con las funciones de seguridad del movimiento activas (\texttt{safety\_override=none} o \texttt{backup\_only}), la velocidad máxima queda limitada a \textbf{0,306\,m/s}. Este límite está relacionado con la distancia de frenado necesaria para detenerse ante un borde detectado por los sensores de cliff. Desactivando completamente la seguridad (\texttt{safety\_override=full}), el robot puede alcanzar su velocidad máxima real de 0,460\,m/s, aunque esto no se recomienda para navegación autónoma. En este proyecto se opera siempre con \texttt{safety\_override=backup\_only}, por lo que el límite efectivo es 0,306\,m/s.
 
@@ -115,7 +115,7 @@ El firmware del Create3 impone una serie de restricciones sobre el movimiento de
 
 \section{Odometría y estimación del estado}
 
-El Create3 combina tres fuentes de datos para producir su estimación odométrica:
+Durante su ejecución, el Create3 combina tres fuentes de datos para producir su estimación odométrica\cite{create3_docs}:
 
 \begin{itemize}
     \item \textbf{Encoders de rueda:} publican en \texttt{/wheel\_ticks} a 62,5\,Hz, con una resolución de \textbf{508,8 ticks por rotación} de rueda. Permiten integrar el desplazamiento a partir de las ecuaciones de cinemática directa.

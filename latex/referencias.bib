@@ -46,10 +46,10 @@
 
 % --- ROS2 ----------------------------------------------------------------
 
-@inproceedings{macenski2022ros2,
+@article{macenski2022ros2,
   author    = {Macenski, Steven and Foote, Tully and Gerkey, Brian and Lalancette, Chris and Woodall, William},
   title     = {Robot Operating System 2: Design, architecture, and uses in the wild},
-  booktitle = {Science Robotics},
+  journal   = {Science Robotics},
   volume    = {7},
   number    = {66},
   year      = {2022},
@@ -79,6 +79,14 @@
   title        = {{Nav2} --- documentación oficial},
   year         = {2023},
   url          = {https://docs.nav2.org/},
+}
+
+@article{macenski2024smac,
+  author  = {Macenski, Steve and Booker, Matthew and Wallace, Josh and Fischer, Tony},
+  title   = {Open-Source, Cost-Aware Kinematically Feasible Planning for Mobile and Surface Robotics},
+  journal = {arXiv preprint arXiv:2401.13078},
+  year    = {2024},
+  url     = {https://arxiv.org/abs/2401.13078}
 }
 
 % --- Gazebo / simulación ------------------------------------------------
@@ -172,15 +180,22 @@
 
 % --- DWB / DWA (controlador local) --------------------------------------
 
-@inproceedings{fox1997dwa,
+@article{fox1997dwa,
   author    = {Fox, Dieter and Burgard, Wolfram and Thrun, Sebastian},
   title     = {The dynamic window approach to collision avoidance},
-  booktitle = {IEEE Robotics \& Automation Magazine},
+  journal   = {IEEE Robotics \& Automation Magazine},
   volume    = {4},
   number    = {1},
   pages     = {23--33},
   year      = {1997},
   doi       = {10.1109/100.580977}
+}
+
+@misc{dwb_nav2,
+  author       = {Lu, David},
+  title        = {{DWB Local Planner} --- plugin de Nav2},
+  year         = {2019},
+  url          = {https://github.com/ros-planning/navigation2/tree/main/nav2_dwb_controller}
 }
 
 % --- Plataforma de desarrollo -------------------------------------------
