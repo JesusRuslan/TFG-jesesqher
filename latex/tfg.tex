@@ -22,6 +22,7 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{listings}
+\usepackage{tcolorbox}
 % Packages for specific symbols
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -43,7 +44,6 @@
 
 \makeglossaries
 \begin{document}
-\nocite{*}
 \makeTitlePage
 
 \pagestyle{empty}
@@ -90,17 +90,18 @@
 \input{Resultados}
 
 \part{Conclusiones}
-%\input{Logros}
-%\input{Futuro}
+\input{Logros}
+\input{Futuro}
 
 \lineNumbersOff
 
-\setglossarystyle{long}
-\printglossaries
+%\setglossarystyle{long}
+%\printglossaries
+
 \newpage
 
 \bibliographystyle{abbrvnat}
-%\addcontentsline{toc}{chapter}{Referencias bibliográficas}
+\addcontentsline{toc}{chapter}{Referencias bibliográficas}
 \bibliography{referencias}
 
 \end{document}
