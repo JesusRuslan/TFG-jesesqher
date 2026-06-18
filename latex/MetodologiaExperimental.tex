@@ -48,7 +48,7 @@ El launch file automatiza la secuencia completa de inicialización, eliminando l
 \begin{enumerate}
     \item A \textbf{t=0\,s:} arranca Gazebo con el mundo del almacén, el modelo del TurtleBot4, AMCL con el mapa pregenerado y Nav2 con el yaml del algoritmo seleccionado.
     \item A \textbf{t=10\,s:} publica la pose inicial en \texttt{/initialpose} para inicializar AMCL.
-    \item A \textbf{t=15\,s:} desactiva el límite de retroceso del Create3 (\texttt{safety\_override: backup\_only}).
+    \item A \textbf{t=15\,s:} desactiva el límite de seguridad a la distancia de retroceso del Create3 (\texttt{safety\_override: backup\_only}).
     \item A \textbf{t=20\,s:} ejecuta el undock del robot.
     \item A \textbf{t=30\,s:} arranca el nodo de métricas, que envía los goals y recoge los datos automáticamente.
 \end{enumerate}

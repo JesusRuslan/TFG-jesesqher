@@ -2,7 +2,7 @@
 \chapter{Cinemática y dinámica del robot}
 
 \begin{abstract}
-Este capítulo describe el modelo cinemático y dinámico del TurtleBot4, con el objetivo de entender cómo se traducen las órdenes de movimiento en desplazamiento real. Se analiza la arquitectura mecánica del robot, su modelo diferencial de tracción, las ecuaciones de cinemática directa e inversa, y las limitaciones físicas impuestas por el firmware que condicionan la planificación de trayectorias.
+Este capítulo describe el modelo cinemático y dinámico del TurtleBot4, con el objetivo de entender cómo se traducen las órdenes de movimiento en desplazamiento real. Se analiza la arquitectura mecánica del robot, su modelo diferencial de tracción, las ecuaciones de cinemática directa e inversa y las limitaciones físicas impuestas por el firmware que condicionan la planificación de trayectorias.
 \end{abstract}
 
 \section{Arquitectura mecánica del TurtleBot4}
@@ -107,7 +107,7 @@ El firmware del Create3 impone una serie de restricciones sobre el movimiento de
 
 \textbf{Velocidad máxima lineal:} Con las funciones de seguridad del movimiento activas (\texttt{safety\_override=none} o \texttt{backup\_only}), la velocidad máxima queda limitada a \textbf{0,306\,m/s}. Este límite está relacionado con la distancia de frenado necesaria para detenerse ante un borde detectado por los sensores de cliff. Desactivando completamente la seguridad (\texttt{safety\_override=full}), el robot puede alcanzar su velocidad máxima real de 0,460\,m/s, aunque esto no se recomienda para navegación autónoma. En este proyecto se opera siempre con \texttt{safety\_override=backup\_only}, por lo que el límite efectivo es 0,306\,m/s.
 
-\textbf{Límite de aceleración:} El parámetro \texttt{wheel\_accel\_limit} presente en el nodo \texttt{motion\_control} define la rampa de aceleración aplicada a los comandos de velocidad de las ruedas. Su valor por defecto es el máximo configurable: \textbf{900\,mm/s\textsuperscript{2}}. Esto significa que el robot no alcanza instantáneamente la velocidad de consigna, sino que sigue un perfil de aceleración, lo que produce un error de seguimiento al inicio de cada segmento de trayectoria.
+\textbf{Límite de aceleración:} El parámetro \texttt{wheel\_accel\_limit}, contenido en el nodo \texttt{motion\_control}, define la rampa de aceleración aplicada a los comandos de velocidad de las ruedas. Su valor por defecto es el máximo configurable: \textbf{900\,mm/s\textsuperscript{2}}. Esto significa que el robot no alcanza instantáneamente la velocidad de consigna, sino que sigue un perfil de aceleración, lo que produce un error de seguimiento al inicio de cada segmento de trayectoria.
 
 \textbf{Restricción de retroceso (\textit{backup limit}):} Por defecto, el Create3 limita el movimiento hacia atrás para evitar caídas, ya que sus sensores de cliff solo cubren la parte delantera del robot. En este proyecto, esta restricción se desactiva explícitamente mediante \texttt{safety\_override=backup\_only} al inicio de cada experimento, lo que es necesario para que Nav2 pueda ejecutar maniobras de recuperación que impliquen retroceso.
 
@@ -131,6 +131,6 @@ El modelo cinemático presentado en este capítulo es la base sobre la que se co
 
 \textbf{Planificador global (NavFn con Dijkstra o A*):} Opera sobre el costmap 2D y calcula una ruta geométrica en el espacio $(x, y)$ sin modelar explícitamente las restricciones cinemáticas del robot. La trayectoria resultante es un camino que el controlador local deberá seguir. El suavizado de trayectorias (\textit{SimpleSmoother}) reduce los cambios de dirección bruscos, produciendo rutas más compatibles con las limitaciones de curvatura del robot diferencial.
 
-\textbf{Controlador local (DWB):} El \textit{Dynamic Window Approach} sí modela explícitamente las restricciones cinemáticas. Genera trayectorias candidatas dentro de la ventana de velocidades alcanzables —respetando la velocidad máxima de 0,306\,m/s y el límite de aceleración de 900\,mm/s\textsuperscript{2}— y selecciona la que mejor combina el seguimiento de la trayectoria global con la evitación de obstáculos locales.
+\textbf{Controlador local (DWB):} El \textit{Dynamic Window Approach} sí modela explícitamente las restricciones cinemáticas. Genera trayectorias candidatas dentro de la ventana de velocidades alcanzables, respetando la velocidad máxima de 0,306\,m/s y el límite de aceleración de 900\,mm/s\textsuperscript{2}, y selecciona la que mejor combina el seguimiento de la trayectoria global con la evitación de obstáculos locales.
 
 \textbf{Odometría como fuente de localización de apoyo:} La estimación publicada en \texttt{/odom} se utiliza en el árbol de transformadas TF de ROS2 para mantener la relación entre los marcos \texttt{odom} y \texttt{base\_link}. AMCL corrige el error acumulado en esta estimación usando el LiDAR, publicando la transformada entre \texttt{map} y \texttt{odom}. Esta arquitectura de dos niveles es estándar en Nav2 y está directamente condicionada por las características odométricas del Create3.

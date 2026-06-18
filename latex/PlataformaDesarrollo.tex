@@ -65,7 +65,7 @@ $ source install/setup.bash
 
 \subsection{turtlebot4\_cpp\_tutorials}
 
-Este paquete contiene el nodo de control más básico desarrollado en la fase inicial del proyecto. El nodo \texttt{turtlebot4\_first\_cpp\_node} se suscribe al topic \texttt{/interface\_buttons} para detectar las pulsaciones de los botones físicos del Create3, y publica comandos de velocidad en \texttt{/cmd\_vel}. Implementa control open-loop en una primera versión y control closed-loop con realimentación de odometría en la versión final, parando el robot cuando la distancia recorrida medida por \texttt{/odom} alcanza el objetivo.
+Este paquete contiene el nodo de control más básico desarrollado en la fase inicial del proyecto. El nodo \texttt{turtlebot4\_first\_cpp\_node} se suscribe al topic llamado \texttt{/interface\_buttons} para detectar las pulsaciones de los botones físicos del Create3, y publica comandos de velocidad en \texttt{/cmd\_vel}. Implementa control open-loop en una primera versión y control closed-loop con retroalimentación de odometría en la versión final, parando el robot cuando la distancia recorrida medida por \texttt{/odom} alcanza el objetivo.
 
 Este paquete tiene un valor principalmente pedagógico: sirvió para comprender los mecanismos básicos de comunicación de ROS2 (publicadores, suscriptores y el modelo de callbacks) antes de abordar la integración con Nav2.
 
@@ -96,7 +96,7 @@ turtlebot4_cpp_slam_nav/
 
 \section{Configuración de Nav2 por algoritmo}
 
-Nav2 se configura mediante archivos YAML que definen los parámetros de cada uno de sus servidores. Para este proyecto se han creado cuatro archivos de configuración mínimos, uno por combinación de algoritmo y configuración de suavizado, que contienen únicamente los parámetros que se modifican respecto a los valores por defecto:
+Nav2 se configura mediante archivos YAML que definen los parámetros de cada uno de sus servidores. Para este proyecto se han creado cuatro archivos de configuración mínimos, uno por cada combinación de algoritmo y configuración de suavizado, que contienen únicamente los parámetros que se modifican respecto a los valores por defecto:
 
 \begin{itemize}
     \item \texttt{nav2\_dijkstra.yaml}: planificador NavFn con Dijkstra (\texttt{use\_astar: false}) y suavizado activo.
@@ -105,7 +105,7 @@ Nav2 se configura mediante archivos YAML que definen los parámetros de cada uno
     \item \texttt{nav2\_astar\_nosmooth.yaml}: A* sin suavizado.
 \end{itemize}
 
-El resto de parámetros de Nav2 (controlador local DWB, costmaps, servidor de comportamientos) se toman del yaml oficial del paquete \texttt{turtlebot4\_navigation}. El yaml personalizado se pasa al launch de Nav2 mediante el argumento \texttt{params\_file}, que reemplaza completamente el yaml por defecto, por lo que los archivos de configuración incluyen también las secciones que no se modifican.
+El resto de parámetros de Nav2 (controlador local DWB, costmaps, servidor de comportamientos, etc.) se toman del yaml oficial del paquete \texttt{turtlebot4\_navigation}. El yaml personalizado se pasa al launch de Nav2 mediante el argumento \texttt{params\_file}, que reemplaza completamente el yaml por defecto, por lo que los archivos de configuración incluyen también las secciones que no se modifican.
 
 El algoritmo se selecciona al lanzar la simulación mediante los argumentos \texttt{planner} y \texttt{smooth}:
 
@@ -136,4 +136,4 @@ Los tiempos de inicialización están ajustados al hardware del PC de alto rendi
 
 \subsection{sim2.launch.py}
 
-Variante del launch file principal diseñada para el nodo de métricas dinámico. La única diferencia respecto a \texttt{sim.launch.py} es el nodo de métricas lanzado: \texttt{data\_measure\_dynamic} en lugar de \texttt{data\_measure}. Los tiempos de inicialización son idénticos en ambos casos.
+Variante del launch file principal diseñada para el nodo de métricas dinámico. La única diferencia respecto a \texttt{sim.launch.py} es que el nodo de métricas lanzado cambia: \texttt{data\_measure\_dynamic} en lugar de \texttt{data\_measure}. Los tiempos de inicialización son idénticos en ambos casos.
