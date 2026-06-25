@@ -1,0 +1,143 @@
+%!TEX root = tfg.tex
+\chapter{Arquitectura de la plataforma de desarrollo robótico}
+
+\begin{quotation}[Científico de la computación]{Edsger W. Dijkstra (1930--2002)}
+Si la depuración es el proceso de eliminar errores, entonces la programación debe ser el proceso de introducirlos.
+\end{quotation}
+
+\begin{abstract}
+Este capítulo describe la arquitectura del sistema software desarrollado: la organización del workspace ROS2, los paquetes implementados, la configuración de Nav2 y los launch files que automatizan el proceso de experimentación.
+\end{abstract}
+
+\section{Tutoriales y aprendizaje inicial}
+
+Antes de comenzar el desarrollo propiamente dicho, fue necesaria una fase de aprendizaje del ecosistema ROS2. El punto de partida fueron los \textbf{tutoriales oficiales de ROS2 Humble} disponibles en la \href{https://docs.ros.org/en/humble/Tutorials.html}{documentación oficial}, organizados en dos niveles de dificultad. El código desarrollado durante esta fase se conserva en el directorio \texttt{ros2/Tutorial/} del repositorio, organizado por nivel y temática.
+
+\subsection{Beginner -- CLI Tools}
+
+El primer bloque cubre el uso de las herramientas de línea de comandos de ROS2: inspección de nodos, topics, services y actions en ejecución, y grabación y reproducción de topics mediante \textit{bag files} con \texttt{ros2 bag}. Esta última herramienta permite capturar el flujo de mensajes de un sistema en ejecución y reproducirlo posteriormente, lo que resulta útil para depuración y análisis offline.
+
+\subsection{Beginner -- Client Libraries}
+
+Este bloque es el núcleo del aprendizaje de programación en ROS2 e incluye los siguientes tutoriales:
+
+\begin{itemize}
+    \item \textbf{Workspace y paquetes:} creación de workspaces con \texttt{colcon} y paquetes tanto con \texttt{ament\_cmake} (C++) como con \texttt{ament\_python} (Python). Se aprende la estructura de un paquete ROS2 y el proceso de compilación e instalación.
+
+    \item \textbf{Publicador/Suscriptor:} implementación de nodos que publican y reciben mensajes en topics, en C++ y Python. Es el patrón de comunicación más utilizado en ROS2, y la base del control de velocidad del robot mediante \texttt{/cmd\_vel}.
+
+    \item \textbf{Cliente/Servidor:} implementación del patrón petición/respuesta mediante services, en C++ y Python. A diferencia de los topics, los services son síncronos: el cliente espera la respuesta antes de continuar.
+
+    \item \textbf{Parámetros:} declaración, lectura y modificación de parámetros de nodos en tiempo de ejecución, en C++ y Python. Los parámetros se han utilizado extensivamente en los nodos de métricas para configurar rutas, algoritmos y opciones de suavizado sin recompilar.
+
+    \item \textbf{Interfaces personalizadas:} definición de distintos tipos de mensajes (\texttt{.msg}), servicios (\texttt{.srv}) y actions (\texttt{.action}) propios. Los tutoriales incluyen ejemplos como \texttt{Num.msg}, \texttt{Sphere.msg}, \texttt{AddressBook.msg} y \texttt{AddThreeInts.srv}, que ilustran cómo extender el sistema de tipos de ROS2 para comunicar datos específicos de una aplicación.
+
+    \item \textbf{Plugins:} uso del sistema de plugins de ROS2, basado en \texttt{pluginlib}, que permite cargar implementaciones intercambiables en tiempo de ejecución. Aunque no se ha hecho uso directo de este mecanismo en el desarrollo del proyecto, su comprensión resulta relevante para entender cómo Nav2 gestiona internamente el intercambio de algoritmos de planificación.
+\end{itemize}
+
+\subsection{Intermediate -- Actions}
+
+Las actions son el mecanismo de comunicación de ROS2 para tareas de larga duración. A diferencia de los services, permiten recibir retroalimentación periódica mientras la tarea está en curso y cancelarla si es necesario. Este tutorial implementa un action server y un action client que calculan la secuencia de Fibonacci hasta un número dado (\texttt{Fibonacci.action}), tanto en C++ como en Python. Las actions son el mecanismo que utiliza Nav2 para la navegación autónoma: el nodo de métricas actúa como action client enviando objetivos a Nav2 y recibiendo feedback con el ETA en tiempo real.
+
+\section{Estructura del workspace ROS2}
+
+El código del proyecto está organizado en un workspace ROS2 llamado \texttt{tfg\_ws}, ubicado en \texttt{ros2/Simulated/tfg\_ws/}. Un workspace ROS2 es el directorio raíz que contiene el código fuente de los paquetes (\texttt{src/}), los artefactos de compilación (\texttt{build/}) y los archivos de instalación (\texttt{install/}) generados por \texttt{colcon}, la herramienta de construcción estándar de ROS2.
+
+\vspace{1em}
+\begin{minipage}{\linewidth}
+\begin{verbatim}
+tfg_ws/
++-- src/
+|   +-- turtlebot4_cpp_tutorials/
+|   +-- turtlebot4_cpp_slam_nav/
++-- build/              # generado por colcon, no versionado
++-- install/            # generado por colcon, no versionado
+\end{verbatim}
+\end{minipage}
+\vspace{1em}
+
+Para compilar el workspace y activar el entorno:
+
+\begin{lstlisting}[language=bash, basicstyle=\ttfamily\small, backgroundcolor=\color{gray!15}, frame=single]
+$ cd tfg_ws
+$ colcon build
+$ source install/setup.bash
+\end{lstlisting}
+
+
+\section{Paquetes desarrollados}
+
+\subsection{turtlebot4\_cpp\_tutorials}
+
+Este paquete contiene el nodo de control más básico desarrollado en la fase inicial del proyecto. El nodo \texttt{turtlebot4\_first\_cpp\_node} se suscribe al topic llamado \texttt{/interface\_buttons} para detectar las pulsaciones de los botones físicos del Create3, y publica comandos de velocidad en \texttt{/cmd\_vel}. Implementa control open-loop en una primera versión y control closed-loop con retroalimentación de odometría en la versión final, parando el robot cuando la distancia recorrida medida por \texttt{/odom} alcanza el objetivo.
+
+Este paquete tiene un valor principalmente pedagógico: sirvió para comprender los mecanismos básicos de comunicación de ROS2 (publicadores, suscriptores y el modelo de callbacks) antes de abordar la integración con Nav2.
+
+\subsection{turtlebot4\_cpp\_slam\_nav}
+
+Este es el paquete principal del proyecto. Contiene los nodos de medición de métricas, la configuración de Nav2 y los launch files que automatizan el proceso de experimentación completo.
+
+Su estructura interna es la siguiente:
+
+\vspace{1em}
+\begin{minipage}{\linewidth}
+\begin{verbatim}
+turtlebot4_cpp_slam_nav/
++-- src/
+|   +-- data_measure.cpp            # Nodo de metricas estatico
+|   +-- data_measure_dynamic.cpp    # Nodo de metricas dinamico
++-- config/
+|   +-- nav2_dijkstra.yaml
+|   +-- nav2_dijkstra_nosmooth.yaml
+|   +-- nav2_astar.yaml
+|   +-- nav2_astar_nosmooth.yaml
++-- launch/
+    +-- sim.launch.py           # Simulacion con metricas estaticas
+    +-- sim2.launch.py          # Simulacion con metricas dinamicas
+\end{verbatim}
+\end{minipage}
+\vspace{1em}
+
+\section{Configuración de Nav2 por algoritmo}
+
+Nav2 se configura mediante archivos YAML que definen los parámetros de cada uno de sus servidores. Para este proyecto se han creado cuatro archivos de configuración mínimos, uno por cada combinación de algoritmo y configuración de suavizado, que contienen únicamente los parámetros que se modifican respecto a los valores por defecto:
+
+\begin{itemize}
+    \item \texttt{nav2\_dijkstra.yaml}: planificador NavFn con Dijkstra (\texttt{use\_astar: false}) y suavizado activo.
+    \item \texttt{nav2\_dijkstra\_nosmooth.yaml}: igual que el anterior pero con suavizado desactivado (\texttt{do\_refinement: false}).
+    \item \texttt{nav2\_astar.yaml}: planificador NavFn con A* (\texttt{use\_astar: true}) y suavizado activo.
+    \item \texttt{nav2\_astar\_nosmooth.yaml}: A* sin suavizado.
+\end{itemize}
+
+El resto de parámetros de Nav2 (controlador local DWB, costmaps, servidor de comportamientos, etc.) se toman del yaml oficial del paquete \texttt{turtlebot4\_navigation}. El yaml personalizado se pasa al launch de Nav2 mediante el argumento \texttt{params\_file}, que reemplaza completamente el yaml por defecto, por lo que los archivos de configuración incluyen también las secciones que no se modifican.
+
+El algoritmo se selecciona al lanzar la simulación mediante los argumentos \texttt{planner} y \texttt{smooth}:
+
+\begin{lstlisting}[language=bash, basicstyle=\ttfamily\small, backgroundcolor=\color{gray!15}, frame=single]
+$ ros2 launch turtlebot4_cpp_slam_nav sim.launch.py \
+    planner:=astar \
+    smooth:=false
+\end{lstlisting}
+
+
+\section{Launch files}
+
+\subsection{sim.launch.py}
+
+El launch file principal orquesta el lanzamiento completo del entorno de simulación y automatiza el proceso de inicialización mediante una secuencia de \texttt{TimerAction}:
+
+\begin{enumerate}
+    \item \textbf{Gazebo + robot + localización:} arranca Ignition Gazebo con el mundo del almacén, el modelo del TurtleBot4 y AMCL con el mapa pregenerado.
+    \item \textbf{Nav2:} lanza el stack de navegación con el yaml del planificador seleccionado.
+    \item \textbf{RViz2:} lanza la visualización (opcional, aunque activo por defecto. Controlado por el argumento \texttt{launch\_rviz}).
+    \item \textbf{t=10\,s:} publica la pose inicial en \texttt{/initialpose} para inicializar AMCL.
+    \item \textbf{t=15\,s:} desactiva el límite para el retroceso del TurtleBot4 (\texttt{safety\_override: backup\_only}).
+    \item \textbf{t=20\,s:} ejecuta el undock del robot.
+    \item \textbf{t=30\,s:} arranca el nodo de métricas estático (\texttt{data\_measure}).
+\end{enumerate}
+
+Los tiempos de inicialización están ajustados al hardware del PC de alto rendimiento del departamento, donde la simulación corre al 85--100\% de la velocidad real:
+
+\subsection{sim2.launch.py}
+
+Variante del launch file principal diseñada para el nodo de métricas dinámico. La única diferencia respecto a \texttt{sim.launch.py} es que el nodo de métricas lanzado cambia: \texttt{data\_measure\_dynamic} en lugar de \texttt{data\_measure}. Los tiempos de inicialización son idénticos en ambos casos.

@@ -1,0 +1,99 @@
+%!TEX root = tfg.tex
+\chapter{Requisitos del sistema}
+
+\begin{quotation}[Informático]{Edsger W. Dijkstra (1930--2002)}
+La simplicidad es prerrequisito de la fiabilidad.
+\end{quotation}
+
+\begin{abstract}
+Este capítulo recoge los requisitos funcionales y no funcionales del sistema desarrollado, tanto los impuestos por las características del hardware y software utilizados como los derivados de los objetivos del proyecto.
+\end{abstract}
+
+\section{Resumen de requisitos}
+
+Los requisitos del sistema recogidos en este capítulo son el resultado de un proceso de refinamiento progresivo. El planteamiento inicial del proyecto contemplaba tanto la evaluación en simulación como la validación con el robot físico, lo que se reflejaba en un conjunto más amplio de requisitos orientados al control directo del hardware. A lo largo del desarrollo, y a partir de las indicaciones de mi tutor, Fernando Díaz, el foco se fue acotando hacia la comparativa sistemática de algoritmos de planificación en entorno simulado, priorizando la automatización de la recogida de métricas y la reproducibilidad de los experimentos sobre la operación con el robot real. La tabla siguiente recoge los requisitos resultantes de este proceso, indicando su identificador, tipo y una descripción breve.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|p{11cm}|}
+\hline
+\textbf{ID} & \textbf{Tipo} & \textbf{Descripción} \\
+\hline
+RF-01 & Funcional & El sistema debe navegar autónomamente hasta un destino dado en coordenadas del mapa. \\
+\hline
+RF-02 & Funcional & El sistema debe soportar múltiples algoritmos de planificación global intercambiables sin modificar el código. \\
+\hline
+RF-03 & Funcional & El sistema debe recoger métricas de planificación de forma automatizada para cada objetivo y algoritmo. \\
+\hline
+RF-04 & Funcional & El sistema debe recoger métricas de ejecución en tiempo real durante la navegación. \\
+\hline
+RF-05 & Funcional & El sistema debe localizar al robot en el mapa usando AMCL con inicialización automática de la pose. \\
+\hline
+RF-06 & Funcional & El sistema debe guardar los resultados de cada experimento en archivos CSV diferenciados por algoritmo y configuración. \\
+\hline
+RNF-01 & No funcional & La velocidad máxima de navegación no puede superar 0,306\,m/s, impuesta por el firmware del Create3. \\
+\hline
+RNF-02 & No funcional & Los comandos de velocidad deben publicarse en \texttt{/cmd\_vel} a una frecuencia mínima de 10\,Hz para evitar el safety timeout del Create3. \\
+\hline
+RNF-03 & No funcional & El sistema debe funcionar sobre ROS2 Humble con Ignition Gazebo Fortress en Ubuntu 22.04 o en un contenedor Docker equivalente. \\
+\hline
+RNF-04 & No funcional & El planificador global debe poder cambiarse exclusivamente mediante configuración (archivo YAML), sin recompilar el código. \\
+\hline
+RNF-05 & No funcional & Los experimentos deben ser reproducibles: mismo punto de inicio, misma orientación y mismos objetivos para todos los algoritmos evaluados. \\
+\hline
+RNF-06 & No funcional & El nodo de métricas debe cancelar la navegación inmediatamente tras recibir el plan en el modo estático, para no interferir en los objetivos sucesivos. \\
+\hline
+\end{tabular}
+\caption{Resumen de requisitos del sistema.}
+\label{tab:requisitos}
+\end{table}
+
+\section{Requisitos funcionales}
+
+\begin{enumerate}
+
+    \item[\textbf{RF-01}] \textbf{Navegación autónoma hasta un destino.}
+    El sistema debe ser capaz de planificar y ejecutar una trayectoria desde la posición actual del robot hasta un punto objetivo especificado en coordenadas del mapa (\texttt{frame\_id: map}). La navegación debe gestionarse a través del stack Nav2, que se encarga de la planificación global, el control local y los comportamientos de recuperación ante situaciones de bloqueo.
+
+    \item[\textbf{RF-02}] \textbf{Soporte para múltiples algoritmos de planificación.}
+    El sistema debe permitir cambiar el algoritmo de planificación global entre distintas opciones (Dijkstra, A* y potencialmente otros) sin necesidad de modificar ni recompilar el código. Este requisito se satisface mediante el sistema de plugins de Nav2 y la parametrización a través de archivos YAML específicos por algoritmo.
+
+    \item[\textbf{RF-03}] \textbf{Recogida automática de métricas de planificación.}
+    Para cada objetivo y algoritmo, el sistema debe calcular y registrar automáticamente las siguientes métricas sobre la trayectoria planificada: tiempo de planificación, longitud total, distancia en línea recta, ratio longitud/línea recta, irregularidad (cambio de ángulo acumulado), curvatura media, número de waypoints y ETA estimado.
+
+    \item[\textbf{RF-04}] \textbf{Recogida de métricas de ejecución en tiempo real.}
+    Durante la navegación real del robot, el sistema debe muestrear a 5\,Hz la posición real (odometría), el punto más cercano del plan, la desviación respecto al plan, el ETA recalculado por Nav2 y las velocidades lineal y angular.
+
+    \item[\textbf{RF-05}] \textbf{Localización automática con AMCL.}
+    El sistema debe localizar al robot en el mapa pregenerado del entorno usando AMCL, con inicialización automática de la pose inicial al arrancar el sistema, sin intervención manual del operador.
+
+    \item[\textbf{RF-06}] \textbf{Almacenamiento de resultados por algoritmo y configuración.}
+    Los resultados de cada experimento deben guardarse en archivos CSV independientes, nombrados de forma que identifiquen el algoritmo y la configuración de suavizado utilizada (por ejemplo, \texttt{metrics\_dijkstra\_nosmooth.csv}).
+
+\end{enumerate}
+
+\newpage
+\section{Requisitos no funcionales}
+
+\begin{enumerate}
+
+    \item[\textbf{RNF-01}] \textbf{Límite de velocidad máxima.}
+    El firmware del iRobot Create3 impone un límite de velocidad máxima de \textbf{0,306\,m/s} en movimiento lineal, tanto en el robot real como en la simulación. Cualquier valor superior enviado en \texttt{/cmd\_vel} se satura a este límite. En el desarrollo de los nodos de control se ha fijado la velocidad nominal en 0,3\,m/s para operar cerca del máximo sin saturación.
+
+    \item[\textbf{RNF-02}] \textbf{Frecuencia mínima de publicación en \texttt{/cmd\_vel}.}
+    El Create3 implementa un mecanismo de seguridad (\textit{safety timeout}) que detiene el robot automáticamente si no recibe comandos de velocidad con suficiente regularidad. Para evitar este comportamiento, los nodos de control deben publicar en \texttt{/cmd\_vel} a una frecuencia mínima de \textbf{10\,Hz} mientras el robot esté en movimiento.
+
+    \item[\textbf{RNF-03}] \textbf{Compatibilidad con el entorno de software.}
+    El sistema debe ejecutarse correctamente sobre \textbf{ROS2 Humble} con \textbf{Ignition Gazebo Fortress} en \textbf{Ubuntu 22.04 LTS}, o en un entorno Docker basado en la imagen \texttt{osrf/ros:humble-desktop-full} con los paquetes del TurtleBot4 instalados.
+
+    \item[\textbf{RNF-04}] \textbf{Cambio de planificador por configuración.}
+    El cambio de algoritmo de planificación debe realizarse exclusivamente a través de los argumentos del launch file y los archivos YAML de configuración de Nav2. No debe ser necesario modificar ni recompilar ningún nodo C++ para cambiar de algoritmo.
+
+    \item[\textbf{RNF-05}] \textbf{Reproducibilidad de los experimentos.}
+    Para que la comparativa entre algoritmos sea válida, todos los experimentos deben partir de las mismas condiciones: misma posición y orientación inicial del robot, mismos objetivos y mismo entorno. El launch file automatiza el undock, la pose inicial de AMCL y el arranque del nodo de métricas para garantizar esta reproducibilidad.
+
+    \item[\textbf{RNF-06}] \textbf{No interferencia entre objetivos consecutivos.}
+    En el modo de métricas estático, el nodo debe cancelar la navegación inmediatamente tras recibir y procesar el plan, antes de pasar al siguiente objetivo. Esto evita que el robot intente ejecutar la trayectoria y su posición cambie, lo que invalidaría las condiciones de partida del siguiente experimento.
+
+\end{enumerate}

@@ -1,0 +1,32 @@
+%!TEX root = tfg.tex
+\chapter{Líneas de trabajo futuro}
+
+\begin{quotation}[Poeta]{Antonio Machado (1875--1939)}
+Caminante, son tus huellas el camino y nada más; caminante, no hay camino, se hace camino al andar.
+\end{quotation}
+
+\begin{abstract}
+Este capítulo recoge las líneas de trabajo que quedan abiertas tras la realización del proyecto, tanto las que surgieron de limitaciones de alcance como las que se derivan naturalmente de los resultados obtenidos.
+\end{abstract}
+
+\begin{description}
+
+    \item[\textbf{Validación con el robot físico.}] \hfill\break
+    La totalidad de los experimentos de este proyecto se ha realizado en simulación. Una línea de trabajo inmediata y directa es reproducir los mismos experimentos sobre el TurtleBot4 real en el entorno del almacén, comparando el comportamiento observado en simulación con el del hardware físico. Esta validación permitiría cuantificar el \textit{sim-to-real gap} del sistema (la diferencia entre el comportamiento simulado y el real) e identificar qué aspectos del modelo de simulación son menos fieles, como el ruido en la odometría, las imprecisiones del LiDAR en superficies reflectantes o las variaciones en la adherencia de las ruedas.
+
+    \item[\textbf{Integración de RRT* como tercer algoritmo.}] \hfill\break
+    Como se describe en el capítulo de planificador, RRT* es un algoritmo de muestreo aleatorio con garantías de convergencia hacia la trayectoria óptima que habría completado de forma natural la comparativa de este proyecto. Su integración en Nav2 requiere desarrollar un plugin personalizado para el \texttt{planner\_server}, lo que constituye una extensión técnicamente abordable como trabajo de fin de máster o proyecto de investigación. Una implementación de referencia es la del paquete \texttt{nav2\_smac\_planner}, que podría servir como base arquitectónica para el desarrollo del plugin.
+
+    \item[\textbf{Comparativa con otros planificadores nativos de Nav2.}] \hfill\break
+    Nav2 incluye el plugin \textbf{Smac Planner}\cite{macenski2024smac}, que implementa variantes de A* con restricciones cinemáticas (Hybrid-A* y State Lattice) diseñadas específicamente para robots no holonómicos. A diferencia de NavFn, Smac Planner incorpora la cinemática del robot directamente en el proceso de búsqueda, lo que en principio debería producir trayectorias más ejecutables para un robot diferencial como el TurtleBot4. Comparar NavFn con Smac Planner sobre el mismo entorno y con las mismas métricas sería una extensión directa de este trabajo, sin necesidad de desarrollar ningún plugin adicional.
+
+    \item[\textbf{Múltiples ejecuciones por configuración para análisis estadístico.}] \hfill\break
+    Los experimentos dinámicos de este proyecto se han ejecutado una única vez por configuración, lo que limita la robustez estadística de las conclusiones. Una mejora directa sería automatizar la ejecución de múltiples repeticiones por configuración (al menos cinco o diez) y calcular métricas de tendencia central y dispersión (media, desviación típica, intervalos de confianza) para cada variante. Esto permitiría distinguir diferencias reales entre algoritmos de variabilidad aleatoria debida al comportamiento no determinista de AMCL y del planificador local.
+
+    \item[\textbf{Optimización de parámetros del controlador local DWB.}] \hfill\break
+    Los resultados muestran que el controlador local DWB tiende a igualar el comportamiento de ejecución de las distintas configuraciones, amortiguando las diferencias de calidad entre planificadores. Una línea de trabajo interesante sería explorar si un ajuste personalizado de los parámetros de DWB (en particular los pesos de los critics \texttt{PathAlign} y \texttt{GoalAlign}, y los límites de velocidad angular) permite sacar mayor partido a las trayectorias más suaves de Dijkstra, reduciendo la desviación media y el número de replanificaciones.
+
+    \item[\textbf{Navegación en entornos dinámicos con obstáculos móviles.}] \hfill\break
+    Todos los experimentos de este proyecto se han realizado en un entorno estático, con obstáculos fijos definidos en el mapa. Una extensión relevante para aplicaciones reales de almacén es evaluar el comportamiento del sistema en presencia de obstáculos dinámicos, como personas, carretillas elevadoras u otros robots; que no están representados en el mapa estático, y deben ser gestionados por el costmap dinámico y el controlador local. En este contexto, la diferencia entre planificadores globales podría verse amplificada o reducida respecto a los resultados obtenidos en condiciones estáticas.
+
+\end{description}

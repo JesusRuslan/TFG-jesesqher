@@ -1,0 +1,140 @@
+%!TEX root = tfg.tex
+\chapter{Cinemática y dinámica del robot}
+
+\begin{quotation}[Estadístico]{George E. P. Box (1919--2013)}
+Todos los modelos son incorrectos, pero algunos son útiles.
+\end{quotation}
+
+\begin{abstract}
+Este capítulo describe el modelo cinemático y dinámico del TurtleBot4, con el objetivo de entender cómo se traducen las órdenes de movimiento en desplazamiento real. Se analiza la arquitectura mecánica del robot, su modelo diferencial de tracción, las ecuaciones de cinemática directa e inversa y las limitaciones físicas impuestas por el firmware que condicionan la planificación de trayectorias.
+\end{abstract}
+
+\section{Arquitectura mecánica del TurtleBot4}
+
+El TurtleBot4 es un robot móvil de interior cuya base de movimiento es el \textbf{iRobot Create3}, una plataforma de robótica educativa basada íntegramente en ROS2. El Create3 es un robot de tracción diferencial diseñado para desplazarse en entornos de interior relativamente planos. Incorpora dos ruedas motrices con suspensiones independientes, que le permiten superar alfombras o pequeños umbrales, y una rueda de apoyo delantera pasiva como tercer punto de contacto con el suelo.
+
+Desde el punto de vista del software, toda la interfaz del Create3 se expone a través de ROS2: los datos de sensores se publican como topics y el control de los actuadores se realiza mediante subscripciones, servidores de acciones y parámetros. Esto incluye los encoders de rueda, el sensor inercial (IMU) y el sensor óptico de ratón, que se combinan en el firmware del robot para producir una estimación de odometría fusionada.
+
+Los parámetros geométricos del modelo de simulación, tal y como están definidos en el URDF del repositorio oficial \texttt{iRobotEducation/create3\_sim}, son:
+
+\begin{itemize}
+    \item \textbf{Masa del chasis} (\textit{body\_mass}): $2{,}300$\,kg.
+    \item \textbf{Radio del chasis} (\textit{body\_radius}): $16{,}4$\,cm.
+    \item \textbf{Distancia entre ruedas} ($L$, \textit{distance\_between\_wheels}): $23{,}3$\,cm, es decir, $L = 0{,}233$\,m. Es el parámetro clave para el modelo cinemático diferencial.
+\end{itemize}
+
+\section{Modelo cinemático diferencial}
+
+\subsection{Descripción del modelo}
+
+El TurtleBot4 sigue un modelo de \textbf{tracción diferencial} (\textit{differential drive})\cite{siegwart2011robotics}: el movimiento del robot se obtiene actuando de forma independiente sobre la velocidad de cada una de las dos ruedas motrices. No existe ningún mecanismo de dirección adicional; el giro se consigue imponiendo una diferencia de velocidad entre la rueda derecha y la izquierda.
+
+Este modelo supone que:
+
+\begin{itemize}
+    \item El robot se desplaza en un plano horizontal, sin pendiente apreciable.
+    \item Las ruedas ruedan sin deslizamiento lateral (\textit{condición de rodadura pura}).
+    \item El contacto con el suelo se reduce a un punto por rueda.
+\end{itemize}
+
+Bajo estas hipótesis, el estado del robot en el plano se describe mediante la pose $(x, y, \theta)$, donde $(x, y)$ son las coordenadas del centro del eje entre ruedas y $\theta$ es la orientación respecto al eje $X$ del marco de referencia global (\texttt{map}).
+
+\subsection{Cinemática directa}
+
+Si se definen $v_R$ y $v_L$ como las velocidades lineales de las ruedas derecha e izquierda respectivamente, la velocidad lineal del centro del robot ($v$) y su velocidad angular ($\omega$) se calculan como:
+
+\begin{equation}
+    v = \frac{v_R + v_L}{2}
+    \label{eq:vel_lineal}
+\end{equation}
+
+\begin{equation}
+    \omega = \frac{v_R - v_L}{L}
+    \label{eq:vel_angular}
+\end{equation}
+
+A partir de estas velocidades, las ecuaciones de cinemática directa que describen la evolución de la pose del robot en el tiempo son:
+
+\begin{equation}
+    \dot{x} = v \cos\theta
+    \label{eq:xdot}
+\end{equation}
+
+\begin{equation}
+    \dot{y} = v \sin\theta
+    \label{eq:ydot}
+\end{equation}
+
+\begin{equation}
+    \dot{\theta} = \omega
+    \label{eq:thetadot}
+\end{equation}
+
+En ROS2, la estimación de la pose resultante de integrar estas ecuaciones se publica en el topic \texttt{/odom}, con mensajes de tipo \texttt{nav\_msgs/Odometry}, a una frecuencia de \textbf{20\,Hz}. El firmware del Create3 no utiliza únicamente los encoders de rueda para esta estimación, sino que fusiona sus lecturas con las del sensor IMU y el sensor óptico de ratón, lo que le permite detectar situaciones de deslizamiento (\textit{slip}) y corregir la estimación en consecuencia.
+
+\subsection{Cinemática inversa}
+
+La cinemática inversa permite obtener las velocidades de cada rueda a partir de las velocidades del robot deseadas. Despejando $v_R$ y $v_L$ de las ecuaciones para las velocidades lineal y angular:
+
+\begin{equation}
+    v_R = v + \frac{\omega \cdot L}{2}
+    \label{eq:vr}
+\end{equation}
+
+\begin{equation}
+    v_L = v - \frac{\omega \cdot L}{2}
+    \label{eq:vl}
+\end{equation}
+
+Esta transformación es la que aplica internamente el controlador del Create3 cuando recibe un mensaje \texttt{geometry\_msgs/Twist} en el topic \texttt{/cmd\_vel}. El campo \texttt{linear.x} corresponde a $v$ y el campo \texttt{angular.z} corresponde a $\omega$; los demás campos son cero para este tipo de robot.
+
+\subsection{Radio de curvatura}
+
+Cuando el robot describe una trayectoria curva, el movimiento puede interpretarse como una rotación instantánea en torno a un punto denominado \textbf{ICC} (\textit{Instantaneous Center of Curvature}), situado sobre el eje que une las dos ruedas. El radio de curvatura $R$ que describe el centro del robot vale:
+
+\begin{equation}
+    R = \frac{v}{\omega} = \frac{L}{2} \cdot \frac{v_R + v_L}{v_R - v_L}
+    \label{eq:radio}
+\end{equation}
+
+Los casos límite son relevantes para entender el comportamiento del robot durante la navegación:
+
+\begin{itemize}
+    \item Si $v_R = v_L$ ($\omega = 0$): el robot avanza en línea recta ($R \to \infty$).
+    \item Si $v_R = -v_L$: el robot gira sobre su propio centro ($R = 0$), sin desplazamiento lineal.
+    \item En el caso general: el robot describe un arco de circunferencia de radio $R$.
+\end{itemize}
+
+\section{Limitaciones físicas impuestas por el firmware}
+
+El firmware del Create3 impone una serie de restricciones sobre el movimiento del robot que tienen impacto directo en la planificación y ejecución de trayectorias. Estas restricciones son configurables a través del nodo ROS2 \texttt{motion\_control} mediante el parámetro \texttt{safety\_override}\cite{create3_docs}\cite{create3_sim}.
+
+\textbf{Velocidad máxima lineal:} Con las funciones de seguridad del movimiento activas (\texttt{safety\_override=none} o \texttt{backup\_only}), la velocidad máxima queda limitada a \textbf{0,306\,m/s}. Este límite está relacionado con la distancia de frenado necesaria para detenerse ante un borde detectado por los sensores de cliff. Desactivando completamente la seguridad (\texttt{safety\_override=full}), el robot puede alcanzar su velocidad máxima real de 0,460\,m/s, aunque esto no se recomienda para navegación autónoma. En este proyecto se opera siempre con \texttt{safety\_override=backup\_only}, por lo que el límite efectivo es 0,306\,m/s.
+
+\textbf{Límite de aceleración:} El parámetro \texttt{wheel\_accel\_limit}, contenido en el nodo \texttt{motion\_control}, define la rampa de aceleración aplicada a los comandos de velocidad de las ruedas. Su valor por defecto es el máximo configurable: \textbf{900\,mm/s\textsuperscript{2}}. Esto significa que el robot no alcanza instantáneamente la velocidad de consigna, sino que sigue un perfil de aceleración, lo que produce un error de seguimiento al inicio de cada segmento de trayectoria.
+
+\textbf{Restricción de retroceso (\textit{backup limit}):} Por defecto, el Create3 limita el movimiento hacia atrás para evitar caídas, ya que sus sensores de cliff solo cubren la parte delantera del robot. En este proyecto, esta restricción se desactiva explícitamente mediante \texttt{safety\_override=backup\_only} al inicio de cada experimento, lo que es necesario para que Nav2 pueda ejecutar maniobras de recuperación que impliquen retroceso.
+
+\textbf{Restricción de no holonomía:} El robot diferencial no puede desplazarse lateralmente. Para alcanzar una pose con orientación distinta a la actual, debe combinar traslación y rotación. Esto implica que las trayectorias planificadas deben ser ejecutables por este tipo de robot, y es una de las razones por las que el suavizado de trayectorias es relevante en este proyecto.
+
+\section{Odometría y estimación del estado}
+
+Durante su ejecución, el Create3 combina tres fuentes de datos para producir su estimación odométrica\cite{create3_docs}:
+
+\begin{itemize}
+    \item \textbf{Encoders de rueda:} publican en \texttt{/wheel\_ticks} a 62,5\,Hz, con una resolución de \textbf{508,8 ticks por rotación} de rueda. Permiten integrar el desplazamiento a partir de las ecuaciones de cinemática directa.
+    \item \textbf{IMU:} publica en \texttt{/imu} a 100\,Hz. Proporciona medidas de aceleración lineal y velocidad angular, que complementan la estimación de los encoders en presencia de deslizamiento.
+    \item \textbf{Sensor óptico de ratón:} publica en \texttt{/mouse} a 62,5\,Hz. Mide el desplazamiento relativo del suelo bajo el robot, y es inmune al deslizamiento de las ruedas.
+\end{itemize}
+
+La estimación fusionada se publica en \texttt{/odom} a 20\,Hz. Esta odometría es la fuente de información de movimiento que consume Nav2, y se combina con las lecturas del LiDAR a través del filtro de partículas AMCL para corregir el error acumulado durante el movimiento. La calidad de la odometría depende directamente de la precisión del modelo geométrico del robot: errores en la distancia entre ruedas ($L$) se traducen en errores sistemáticos en la estimación del ángulo girado.
+
+\section{Relación con el sistema de navegación Nav2}
+
+El modelo cinemático presentado en este capítulo es la base sobre la que se construye toda la pila de navegación:
+
+\textbf{Planificador global (NavFn con Dijkstra o A*):} Opera sobre el costmap 2D y calcula una ruta geométrica en el espacio $(x, y)$ sin modelar explícitamente las restricciones cinemáticas del robot. La trayectoria resultante es un camino que el controlador local deberá seguir. El suavizado de trayectorias (\textit{SimpleSmoother}) reduce los cambios de dirección bruscos, produciendo rutas más compatibles con las limitaciones de curvatura del robot diferencial.
+
+\textbf{Controlador local (DWB):} El \textit{Dynamic Window Approach} sí modela explícitamente las restricciones cinemáticas. Genera trayectorias candidatas dentro de la ventana de velocidades alcanzables, respetando la velocidad máxima de 0,306\,m/s y el límite de aceleración de 900\,mm/s\textsuperscript{2}, y selecciona la que mejor combina el seguimiento de la trayectoria global con la evitación de obstáculos locales.
+
+\textbf{Odometría como fuente de localización de apoyo:} La estimación publicada en \texttt{/odom} se utiliza en el árbol de transformadas TF de ROS2 para mantener la relación entre los marcos \texttt{odom} y \texttt{base\_link}. AMCL corrige el error acumulado en esta estimación usando el LiDAR, publicando la transformada entre \texttt{map} y \texttt{odom}. Esta arquitectura de dos niveles es estándar en Nav2 y está directamente condicionada por las características odométricas del Create3.

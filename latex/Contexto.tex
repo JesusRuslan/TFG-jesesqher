@@ -1,49 +1,47 @@
-\chapter{Contexto}
+\chapter{Contexto y motivación}
 
-\begin{quotation} [Empresario] {Paul Allen (1953--2018)}
-Me gusta crear nuevas ideas, trabajando en nuevos proyectos creativos.
+\begin{quotation}[Físico teórico]{Richard P. Feynman (1918--1988)}
+Lo que no puedo crear, no lo entiendo.
 \end{quotation}
 
 \begin{abstract}
-Comenzar un proyecto no es sencillo, lo primero que hemos de hacer es proveer de contexto para evaluar dónde nos encontramos.
+Antes de construir un edificio, es necesario conocer sus cimientos. Este capítulo presenta el contexto sobre el que se asienta el proyecto.
 \end{abstract}
 
-\section{Hacia una Gestión Eficiente y Justa de Cambios de Grupo}
+\section{El mundo de la robótica móvil}
 
-La implementación de un sistema de permutas surge de la necesidad de ofrecer una mayor flexibilidad a los estudiantes en la organización de sus horarios académicos. Con el actual proceso de asignación de grupos, los estudiantes a menudo se encuentran situaciones en las que su horario no se ajusta bien a sus responsabilidades personales, laborales u otras actividades académicas. Esto puede generar dificultades en el equilibrio entre el estudio y otros compromisos, afectando tanto el rendimiento académico como el bienestar personal de los estudiantes.
+La robótica móvil estudia el diseño y control de sistemas que pueden desplazarse de forma autónoma en un entorno físico. A diferencia de otros robots que trabajan en espacios muy restringidos o guiados por carriles, un robot móvil se mueve en un espacio continuo, donde el entorno puede cambiar, y donde ningún trayecto es exactamente igual al anterior. Esto hace que la navegación autónoma sea un problema desafiante: se trata no solo de moverse, sino de moverse de forma segura, eficiente y con un objetivo claro.
 
-Actualmente, el proceso de permutas se realiza de manera manual y descentralizada, lo que implica que cada estudiante debe buscar por su cuenta a otra persona con quien intercambiar su grupo. Este sistema informal no garantiza que todos los estudiantes que necesitan un cambio logren realizarlo, y puede ser lento e ineficiente, especialmente en períodos de alta demanda al inicio de cada cuatrimestre.
+En este contexto, los robots móviles se utilizan en entornos muy diversos: fábricas, almacenes, hospitales, museos, edificios universitarios o incluso en la calle. En todos ellos, el robot debe ser capaz de interpretar su entorno, saber dónde se encuentra, y planificar rutas hacia lugares de destino sin chocar ni bloquear el paso a personas u otros sistemas. La clave no está solo en tener ruedas, sensores o motores, sino en integrarlos en un sistema que tome decisiones razonables sobre el movimiento.
 
-La implementación de un sistema de permutas automatizado permitiría simplificar este proceso, facilitando que los estudiantes encuentren coincidencias de manera más rápida y justa. Un sistema de este tipo podría ofrecer:
+\section{Navegación autónoma: entre la percepción y la decisión}
 
-\begin{itemize}
+La navegación autónoma de un robot móvil puede resumirse como un ciclo continuo de tres pasos: percibir el entorno, localizarse en él y decidir hacia dónde moverse. En este proyecto, el robot se apoya en sensores como el láser o el SLAM para construir un mapa 2D del entorno, y utiliza algoritmos de planificación de trayectoria para calcular rutas desde el punto actual hasta un objetivo. En este sentido, como señaló Alfred Korzybski, ``\emph{el mapa no es el territorio}''\cite{korzybski1933}, por lo que esta representación nunca es perfecta y el sistema debe ser capaz de adaptarse a las diferencias entre el modelo y la realidad. La decisión final se traduce en comandos de velocidad que el robot ejecuta, ajustando su trayectoria en tiempo real.
 
-\item  \textbf{Eficiencia en el proceso de cambio de grupo}. Al identificar automáticamente posibles permutas, el sistema ahorraría tiempo tanto a estudiantes como a la administración.
+Esta idea se acerca mucho a la frase que abre el capítulo: la verdadera medida de la autonomía no es que el robot pueda moverse, sino que sepa \emph{hacia dónde ir} y cómo llegar de forma segura. Un sistema de navegación autónoma no es un mero motor que avanza recto, sino un sistema de control que reacciona a obstáculos, cambios de planificación y errores de localización, ajustando su comportamiento en cada instante.
 
-\item  \textbf{Accesibilidad y equidad}. Todos los estudiantes tendrían las mismas oportunidades de realizar cambios, sin depender de contactos personales o de esfuerzos individuales.
-    
-\item \textbf{Gestión centralizada y soporte}. La administración podría supervisar y apoyar el proceso mediante un sistema de gestión de incidencias, asegurando que cualquier problema pueda ser resuelto rápidamente y ofreciendo un servicio de ayuda continuo al estudiantado.
+\section{ROS 2 como base del sistema}
 
-\end{itemize}
+ROS 2 (Robot Operating System 2) es un marco de desarrollo de software ampliamente utilizado en robótica por su arquitectura distribuida, modular y orientada a componentes. En lugar de construir un sistema monolítico, ROS 2 permite que cada parte del robot (percepción, localización, planificación, control y supervisión) se implemente como un nodo independiente que se comunica con el resto mediante mensajes. Esto favorece la reutilización de código, la integración de sensores y la extensión futura del sistema.
 
+En este trabajo se utiliza la distribución \textbf{ROS 2 Humble}, que ofrece estabilidad y soporte de largo plazo, ideal para proyectos académicos y experimentales. Además, ROS 2 proporciona herramientas estándar para la depuración, la visualización y el testeo de nodos, lo que permite entender el comportamiento del sistema en tiempo de ejecución y corregir fallos de forma más eficiente. Desde ROS 2 se coordinan tanto el robot simulado en Ignition Gazebo Fortress (el simulador por antonomasia del ecosistema ROS2 Humble) como el sistema real de TurtleBot 4, permitiendo que el desarrollo se transfiera con relativa facilidad entre simulación y hardware.
+
+\section{TurtleBot 4: plataforma para navegar y validar}
+
+TurtleBot 4 es una plataforma de robótica móvil diseñada para investigación, aprendizaje y prototipado. Combina un chasis móvil, sensores de proximidad, láser (o equivalentes), procesamiento embebido y conectividad inalámbrica, y está pensada precisamente para experimentar con navegación autónoma, mapeado y control de robots. Su compatibilidad con ROS 2 Humble facilita la integración de paquetes de navegación, SLAM y visualización, lo que la convierte en una base muy adecuada para un TFG centrado en navegación autónoma.
+
+En este proyecto, TurtleBot 4 se utiliza como laboratorio rodante de manera simulada, dejando las pruebas en el robot físico como trabajo futuro en base a lo aprendido. El entorno de simulación permite probar algoritmos, parámetros y configuraciones de forma segura, mientras que el robot real permitiría validar que el comportamiento en el mundo físico es coherente con el esperado en simulación.
+
+\section{Del mapeado a la navegación continua}
+
+Un paso clave en la navegación autónoma es la construcción de un mapa del entorno. Para ello se utiliza \textbf{SLAM} (Simultaneous Localization And Mapping), que permite que el robot se localice y construya un mapa 2D a la vez que se mueve. Una vez existe un mapa fiable, el robot puede usarlo para planificar trayectorias desde su posición actual hasta un objetivo, evitando obstáculos y respetando el espacio visible. Además, el sistema de navegación puede reaccionar ante cambios, como nuevos obstáculos o cambios de planificación, recalculando la ruta en tiempo real.
+
+En este contexto, la navegación no es un evento único, sino un proceso continuo. El robot debe ser capaz de replanificar, recuperarse de situaciones de bloqueo, respetar zonas de seguridad y adaptar su comportamiento al entorno. Esto implica que el diseño del sistema no solo tenga un “modo de avance”, sino estrategias de recuperación, de detección de problemas y de replanificación. En este trabajo, la pila de navegación \textbf{Nav2} proporciona este conjunto de herramientas dentro de ROS 2, permitiendo que el robot navegue de forma autónoma en entornos estáticos y dinámicos.
 
 \section{Estado del arte}
 
-\textbf{Introducción}
+Actualmente, la navegación autónoma de robots móviles ha dejado de ser una tecnología experimental para convertirse en una realidad en entornos de fábrica, logística y edificios inteligentes. Muchas empresas y proyectos de investigación utilizan sistemas basados en ROS 2, Nav2 y SLAM para dotar a sus robots de una navegación robusta y flexible. A su vez, plataformas como TurtleBot 4 ofrecen una forma accesible de experimentar con estos sistemas, lo que las convierte en candidatas naturales para proyectos académicos y de pruebas.
 
-En este apartado se detallan las investigaciones previas que se han llevado a cabo sobre la implementación de sistemas digitales de gestión de permutas.
+En el ámbito académico, se han desarrollado múltiples trabajos que analizan el rendimiento de distintos algoritmos de navegación, modos de mapeado y estrategias de control para robots móviles. Estos trabajos muestran que la elección de la pila de navegación, los parámetros de planificación y la calidad del mapa tienen un impacto directo en la eficiencia y seguridad del robot. Además, la combinación de simulación y hardware real se ha convertido en una práctica estándar, ya que permite probar configuraciones complejas sin riesgo de daño físico.
 
-\textbf{Investigaciones consultadas}\\
-Algunas universidades en España han implementado sistemas digitales de gestión de permutas para facilitar el cambio de grupo entre estudiantes y asegurar un proceso más eficiente y equitativo. Estos sistemas generalmente operan a través de plataformas en línea donde los estudiantes pueden solicitar permutas de manera rápida y organizada.\\
-
-Un ejemplo, es la Universidad de Las Palmas de Gran Canaria (ULPGC), donde el proceso de permuta de asignaturas es un sistema formalmente implementado para permitir a los estudiantes realizar cambios en sus matrículas. Este proceso está diseñado para gestionar situaciones en las que los estudiantes deseen cambiar asignaturas de su plan de estudios, ya sea por conflicto de horarios, necesidad de reorganizar su carga académica, o por otras razones justificadas.\\
-Este sistema facilita la presentación de solicitudes de permuta a través de la Sede Electrónica de la ULPGC, permitiendo que el trámite se realice de manera digital, sin necesidad de que los estudiantes acudan físicamente a las oficinas administrativas. Los estudiantes deben especificar las asignaturas que desean permutar, incluyendo información como códigos y créditos, y cualquier ajuste en las tasas de matrícula se realiza según los créditos implicados en la permuta.\\
-Además, la ULPGC regula el proceso de permuta en función de los periodos de matrícula de cada cuatrimestre. Esto asegura que los estudiantes pueden reorganizar sus asignaturas según sus necesidades en cada etapa del curso académico, dentro de los plazos oficiales. \footnote{Procedimiento para la permuta de asignaturas, ULPGC. (\href{https://www.ulpgc.es/sites/default/files/ArchivosULPGC/adm_eet/tramite_de_permutas.pdf}{en la siguiente referencia})}\\ 
-
-Otro caso, sería el sistema de permutas implementado por la Universidad Autónoma de México (UAM) se lleva a cabo completamente de manera digital a través de su módulo de información escolar.\\
-Este sistema permite a los estudiantes intercambiar grupos sin necesidad de realizar trámites presenciales, facilitando el proceso y reduciendo la carga administrativa. Para realizar una permuta, ambos estudiantes deben ingresar al sistema, registrar los datos del otro estudiante, y confirmar la disponibilidad de plazas en los grupos solicitados. Esta plataforma mejora la eficiencia y accesibilidad del proceso, permitiendo que los estudiantes gestionen sus horarios de forma ágil.\footnote{Para consultar más detalles del proceso de gestión de permutas, UAM. (\href{https://www.ulpgc.es/sites/default/files/ArchivosULPGC/adm_eet/tramite_de_permutas.pdf}{en la siguiente referencia})}\\
-
-\textbf{Conclusiones}
-
-Los sistemas de permutas en universidades españolas y a nivel internacional están evolucionando rápidamente hacia plataformas digitales más eficientes. La digitalización de estos procesos no solo mejora la eficiencia administrativa, sino que también facilita un acceso más equitativo para todos los estudiantes.\\
-La implementación de sistemas avanzados, como algoritmos de optimización, y el establecimiento de canales de soporte, son tendencias claves que podrían servir de modelo para futuras implementaciones.                                                                                                                                                                                              
+En este contexto, el proyecto se inserta en la línea de trabajo que explora la navegación autónoma de robots móviles con ROS 2 y TurtleBot 4, centrándose en la implementación, evaluación y ajuste de algoritmos de navegación y mapeado. La hipótesis central es que, mediante la configuración adecuada de la pila de navegación y la integración de SLAM, se puede obtener un sistema de navegación autónoma robusto, capaz de desplazarse de forma segura en entornos de interior, tanto en simulación como en el mundo real.

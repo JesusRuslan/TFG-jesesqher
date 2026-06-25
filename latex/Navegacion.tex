@@ -1,0 +1,117 @@
+%!TEX root = tfg.tex
+\chapter{Implementación del sistema de navegación}
+
+\begin{quotation}[Informático]{Linus Torvalds (1969--)}
+Hablar es barato. Muéstrame el código.
+\end{quotation}
+
+\begin{abstract}
+Este capítulo describe la implementación de los nodos ROS2 desarrollados en C++: el nodo de control básico del robot, y los dos nodos de medición de métricas que automatizan los experimentos de navegación y recogen los datos para la comparativa de algoritmos.
+\end{abstract}
+
+\section{Nodo de control básico}
+
+El paquete llamado \texttt{turtlebot4\_cpp\_tutorials} contiene un único nodo denominado \texttt{turtlebot4\_first\_cpp\_node}, desarrollado como primer contacto con la programación de nodos ROS2 en C++ y como verificación del entorno de simulación.
+
+El nodo se suscribe al topic \texttt{/interface\_buttons}, que publica mensajes del tipo \texttt{irobot\_create\_msgs/msg/InterfaceButtons}, para detectar las pulsaciones de los botones físicos del Create3. Al pulsar el botón 1, el robot avanza una distancia objetivo; al pulsar el botón 2, se detiene manualmente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/graphs/ros2_node_graph_turtlebot4_final}
+    \caption{Grafo de nodos ROS2 del nodo \texttt{turtlebot4\_first\_cpp\_node}: suscripciones a \texttt{/interface\_buttons} y \texttt{/odom}, y publicación en \texttt{/cmd\_vel}.}
+    \label{fig:ros2_node_graph}
+\end{figure}
+
+Se implementaron dos versiones de control:
+
+\textbf{Control open-loop:} la duración del movimiento se calcula como $t = d / v$, donde $d$ es la distancia objetivo y $v$ la velocidad nominal. El robot publica en \texttt{/cmd\_vel} a 10\,Hz durante ese tiempo y para. Este método acumula error porque asume velocidad constante, ignorando la rampa de aceleración interna del Create3.
+
+\textbf{Control closed-loop con odometría:} el nodo se suscribe adicionalmente a \texttt{/odom} (\texttt{nav\_msgs/msg/Odometry}) y guarda la posición de inicio $(x_0, y_0)$ al comenzar el movimiento. En cada callback de odometría calcula la distancia recorrida:
+\[ d = \sqrt{(x - x_0)^2 + (y - y_0)^2} \]
+y detiene el robot cuando se alcanza la distancia objetivo. Esta versión es más precisa ya que usa la posición real medida por el robot en lugar de una estimación temporal.
+
+Un aspecto relevante descubierto durante el desarrollo es que el Create3 implementa un \textit{safety timeout}: si el topic \texttt{/cmd\_vel} deja de recibir mensajes con regularidad, el robot se detiene automáticamente. Por este motivo, el nodo publica comandos de velocidad de forma continua a 10\,Hz mediante un \texttt{wall\_timer}, en lugar de publicar una única vez al iniciar el movimiento.
+
+\section{Nodo de métricas estático}
+
+El nodo \texttt{data\_measure} implementa un action client de Nav2 que automatiza el envío de objetivos de navegación y la recogida de métricas sobre la trayectoria planificada. Se denomina ``estático'' porque cancela la navegación inmediatamente tras recibir el plan, sin que el robot ejecute físicamente la trayectoria.
+
+\subsection{Objetivos de navegación}
+
+El nodo itera sobre un conjunto de cuatro objetivos de navegación distintos definidos como coordenadas fijas en el mapa del almacén, seleccionados para evaluar el comportamiento en diferentes trayectorias. Además, se incluye un objetivo genérico inicial para precargar la memoria del planificador.
+
+\begin{itemize}
+    \item \textbf{warmup} $(-1, 0)$: objetivo de calentamiento, no se registran sus métricas. Necesario porque Nav2 inicializa cachés internas en la primera planificación, lo que hace que el primer objetivo tarde significativamente más que los siguientes.
+    \item \textbf{goal1\_recto} $(-11, 1)$: trayectoria corta y sin obstáculos directos.
+    \item \textbf{goal2\_obstaculos} $(2, -5)$: trayectoria que requiere rodear obstáculos.
+    \item \textbf{goal3\_larga} $(11, -13)$: trayectoria larga con pocos cambios de dirección.
+    \item \textbf{goal4\_compleja} $(-13, 19)$: trayectoria larga y compleja con múltiples obstáculos.
+\end{itemize}
+
+\subsection{Flujo de funcionamiento}
+
+El nodo sigue el siguiente flujo para cada objetivo:
+
+\begin{enumerate}
+    \item Envía el objetivo a Nav2 mediante \texttt{async\_send\_goal} y anota el timestamp de envío.
+    \item Espera el callback de \texttt{/plan} (\texttt{nav\_msgs/msg/Path}), que llega cuando Nav2 ha calculado la trayectoria.
+    \item Calcula las métricas sobre el plan recibido y anota el timestamp de llegada.
+    \item Cancela la navegación con \texttt{async\_cancel\_all\_goals}.
+    \item Guarda las métricas en el CSV y espera 3 segundos antes de enviar el siguiente objetivo.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/graphs/flujo_nodo_estatico}
+    \caption{Flujo de funcionamiento del nodo de métricas estático para cada objetivo de navegación.}
+    \label{fig:flujo_nodo_estatico}
+\end{figure}
+
+\subsection{Métricas calculadas}
+
+Para cada objetivo se calculan las siguientes métricas:
+
+\begin{itemize}
+    \item \textbf{Tiempo de planificación:} diferencia entre el timestamp de envío del objetivo y el de recepción del plan, en milisegundos.
+    \item \textbf{Longitud total:} suma de distancias euclídeas entre puntos consecutivos del plan, en metros.
+    \item \textbf{Distancia en línea recta:} distancia euclídea entre el primer y el último punto del plan, en metros.
+    \item \textbf{Ratio longitud/línea recta:} cociente entre la longitud real y la distancia en línea recta. Un valor de 1,0 indica trayectoria perfectamente directa; valores mayores indican mayor rodeo.
+    \item \textbf{Irregularidad:} suma de los cambios de ángulo entre segmentos consecutivos del plan, en radianes. Mide cuánto gira la trayectoria en total.
+    \item \textbf{Curvatura media:} cociente entre la irregularidad y la longitud total, en rad/m. Normaliza la irregularidad respecto a la longitud para comparar trayectorias de distinta extensión.
+    \item \textbf{Número de waypoints:} número de puntos intermedios del plan.
+    \item \textbf{ETA aproximado:} estimación general del tiempo de viaje, calculado como $\text{ETA} = \text{longitud} / v_{\max}$, donde $v_{\max} = 0{,}3$\,m/s.
+\end{itemize}
+
+Los resultados se guardan en archivos CSV nombrados según el algoritmo y la configuración de suavizado, por ejemplo \texttt{metrics\_astar\_nosmooth.csv}.
+
+\section{Nodo de métricas dinámico}
+
+El nodo \texttt{data\_measure\_dynamic} complementa al nodo estático recogiendo métricas durante la ejecución real de la navegación. A diferencia del nodo estático, el robot sí navega hasta el destino, lo que permite medir cómo se ejecuta la trayectoria en la práctica.
+
+\subsection{Objetivos de navegación}
+
+El nodo procesa únicamente dos objetivos: un warmup $(-1, 0)$ y el objetivo dinámico $(-13, 19)$, que corresponde al objetivo más complejo del nodo estático y ofrece suficiente recorrido para observar el comportamiento del robot durante un tiempo prolongado.
+
+\subsection{Flujo de funcionamiento}
+
+Para el objetivo de warmup, el nodo envía el objetivo y espera a que Nav2 lo complete sin registrar datos. Al completarse, limpia el buffer de muestras y el plan almacenado antes de proceder al objetivo real.
+
+Para el objetivo dinámico, activa el muestreo a 5\,Hz desde el momento en que envía el objetivo hasta que Nav2 reporta que el robot ha llegado al destino. En cada muestra se busca el punto del plan más cercano a la posición real del robot para calcular la desviación. Al finalizar, vuelca todas las muestras al CSV.
+
+El nodo también intercepta la señal \texttt{SIGINT} (Ctrl+C) para guardar el CSV con los datos recogidos hasta ese momento antes de terminar, lo que permite detener el experimento manualmente en cualquier punto de la trayectoria.
+
+\subsection{Métricas recogidas}
+
+En cada muestra temporal se registran los siguientes valores:
+
+\begin{itemize}
+    \item \textbf{timestamp\_s:} tiempo transcurrido desde el inicio de la navegación, en segundos.
+    \item \textbf{pos\_real\_x, pos\_real\_y:} posición real del robot según la odometría.
+    \item \textbf{pos\_plan\_x, pos\_plan\_y:} coordenadas del punto del plan más cercano a la posición real.
+    \item \textbf{desviacion\_m:} distancia entre la posición real y el punto más cercano del plan, en metros.
+    \item \textbf{eta\_s:} ETA recalculado por Nav2 en tiempo real, obtenido del feedback del action server.
+    \item \textbf{vel\_lineal:} velocidad lineal del robot, en m/s.
+    \item \textbf{vel\_angular:} velocidad angular del robot, en rad/s.
+\end{itemize}
+
+Los resultados se guardan en archivos CSV nombrados con el sufijo \texttt{\_dinamico}, por ejemplo \texttt{metrics\_dijkstra\_dinamico.csv}.

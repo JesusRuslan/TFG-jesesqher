@@ -1,31 +1,42 @@
-%!TEX root =  tfg.tex
-\chapter{Objetivos}
+%!TEX root = tfg.tex
+\chapter{Objetivos del proyecto}
 
-\begin{quotation} [Pensador] {Confuncio (551 a.C. --479 a.C.)}
-Cuando el objetivo te parezca difícil, no cambies de objetivo; busca un nuevo camino para llegar a él.
+\begin{quotation}{Anónimo}
+La verdadera medida de la autonomía no está en moverse, sino en saber hacia dónde ir.
 \end{quotation}
 
 \begin{abstract}
-Para gestionar exitosamente un proyecto es prioritario saber los objetivos que pretendemos alcanzar. 
+Antes de evaluar un sistema de navegación, es necesario definir qué se quiere mejorar y cómo medirlo. Este capítulo recoge la motivación del trabajo y los objetivos que estructuran su desarrollo.
 \end{abstract}
 
-
-\newpage
 \section{Motivación}
 
-La plataforma de Permutas de la ETSII busca ser un servicio hecho por y para estudiantes que por medio de algoritmos persiga la optimización y eficiencia de la busqueda y asignación de cambios de grupo entre estudiantes de la Escuela Técnico Superior de Ingeniería Informática de la Universida de Sevilla.
+La navegación autónoma de robots móviles es un campo de creciente relevancia en aplicaciones industriales, logísticas y de servicio. La capacidad de un robot para desplazarse de forma autónoma por un entorno, construyendo un mapa del mismo y planificando trayectorias eficientes, constituye una de las competencias fundamentales de la robótica moderna.
 
-La idea de esta plataforma que busque la optimización de un proceso tan recurrente como las permutas, durante el tiempo que nos hemos encontrado en la ETSII, nos hemos encontrado cada año al inicio de los cuatrimestres ante los procesos de permutas en los que, sobre todo, los estudiantes de primer año buscan realizar cambios de grupos para asistira aquellos que más les convengan en terminos de horarios, además los estudiantes de segundo y sucesivos años buscan cambios que les sean favorables en términos de la asistencia a clases así como la presentación de proyectos; es por esto que se busca implementar un sistema que presente garantías tangibles con respecto a la optimización y maximización de vambios que le sea favorable al estudiantado.
+El ecosistema ROS2 (Robot Operating System 2) junto con el stack de navegación Nav2 ofrece un marco de trabajo estandarizado para el desarrollo de estas capacidades. Sin embargo, la elección del algoritmo de planificación de trayectorias tiene un impacto directo en la eficiencia del robot: distintos algoritmos producen trayectorias de diferente longitud, suavidad y coste computacional, lo que afecta tanto al tiempo de ejecución como al consumo energético del sistema.
 
-La situación que tratamos de mejorar es por tanto, la optimización de la documentaciín a producir para los intercambios de grupos, tratando de maximizar el número de cambios de grupo, mientras minimizamos la documentación a producir facilitando las labores de gestión documental de la Escuela. 
+Este trabajo surge de la necesidad de evaluar y comparar de forma sistemática distintos algoritmos de planificación de trayectorias sobre una plataforma robótica real, el TurtleBot4, empleando tanto un entorno de simulación como el robot físico.
 
-Nuestro nicho de mercado está determinado por tres grandes agentes, el primero de todos el estudiantado de la ETSII, a quien consideramos el mayor interesado de la plataforma y su sistema de optimización. Derivado de este primer grupo el personal de secretaría de la escuela encontrará mejoras para la gestión de las permutas con un sistema que busca la minimizaación de la documentación a presentar. Por último la Subdirección de Ordeación Académica será nuestro tercer interesado para la implementación de este sistema. 
-
-\newpage
 \section{Listado de objetivos}
-\subsection{Objetivos técnicos}
 
-Primero enumeraremos los objetivos técnicos del proyecto, el primero de estos será la creación de un  Back-End solido haciendo seguimiento de buenas prácticas para la mantención posterior de esta plataforma por parte de las personas interesadas en que este servicio tenga una continuidad en el tiempo así como un uso real por parte de los estudiantes de la ETSII. Además busco en esto la aplicación de nuevas tecnologías en el Front-End que permitan producir un servicio atractivo, funcional y fácil de usar por parte del estudiantado. Por último uno de los temas más críticos hoy en día es la protección de datos por tanto habrá que desarrollar e implementar una Base de Datos robusta y segura que garantice a los usuarios que sus datos no serán consultados.
+\begin{description}
 
-\subsection{Objetivos personales}
-En cuanto a objetivos personales, el primero es el desarrollar un proyecto real que impacte de manera positiva en la Escuela Técnico Superior de Ingeniería Informática de la Universidad de Sevilla, desde el inicio de mis estudios de enseñanza superior se me ha repetido una frase que abandero hasta día de hoy, \textit(No dejes que la Universidad pase por ti, tú debes pasar popr la Universidad.) Este proyecto es por tanto, la huella que dejo en la Universidad para que las posteriores generaciones disfruten de algo que yo no tuve en su momento jugando un papel activo, propositivo y de mejora dentro de esta institución jugando un papel activo, propositivo y de mejor dentro de esta institución.
+\item \textbf{Objetivo 1. Puesta en marcha del entorno de simulación.}
+Configurar y verificar el entorno de simulación basado en Ignition Gazebo con el modelo TurtleBot4, garantizando que el robot simulado se comporta de forma equivalente al robot real en lo relativo a control de movimiento y lectura de sensores.
+
+\item \textbf{Objetivo 2. Desarrollo de nodos de control en ROS2.}
+Implementar nodos de control en C++ que permitan mover el robot de forma autónoma, incorporando tanto control open-loop como closed-loop con realimentación de odometría.
+
+\item \textbf{Objetivo 3. Integración con el stack de navegación Nav2.}
+Configurar Nav2 para la navegación autónoma del TurtleBot4, incluyendo la localización mediante AMCL y la planificación de trayectorias sobre un mapa del entorno.
+
+\item \textbf{Objetivo 4. Implementación y evaluación de algoritmos de planificación.}
+Configurar y ejecutar distintos algoritmos de planificación de trayectorias disponibles en Nav2 (Dijkstra, A* y al menos un algoritmo alternativo), midiendo métricas de rendimiento comparables.
+
+\item \textbf{Objetivo 5. Diseño del sistema de medición.}
+Desarrollar un nodo ROS2 en C++ que automatice la recogida de métricas de navegación (longitud de trayectoria, tiempo de planificación, suavidad) para cada algoritmo evaluado.
+
+\item \textbf{Objetivo 6. Análisis comparativo.}
+Elaborar un análisis cuantitativo y cualitativo de los algoritmos evaluados, identificando las condiciones bajo las cuales cada uno ofrece un mejor rendimiento.
+
+\end{description}

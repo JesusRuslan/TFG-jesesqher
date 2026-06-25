@@ -1,3 +1,6 @@
+% A sample model to write a TFG project
+
+% IMPORTANT!!! Substitute "draft" with "final" to render the final version of the TFG 
 \documentclass[titlepage,openright,twoside,a4paper,final,12pt,spanish]{book}
 
 % Configuring the environment to support spanish characters.
@@ -9,13 +12,17 @@
 \usepackage[pdftex,final]{graphicx}
 
 % Style package
-\usepackage{TFG}
+\usepackage{TfG}
 % Font Package (Palatino)
 \usepackage{mathpazo}
 % Packages for specific capabilities
 \usepackage{rotating} % for text rotation in tables
 \usepackage{multirow} % for multirow in tables
 \usepackage{subfigure} % Place subfigures in figure environment
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{tcolorbox}
 % Packages for specific symbols
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -25,24 +32,30 @@
 \usepackage{pifont} % for \ding{55} (a check mark)
 
 \author{Jesús Ruslan Esquinas Herrera}{Grado en Ingeniería Informática - Ingeniería de Computadores}{D.~}{77845636C}
+\authorURL{}
 \authorEMail{jesesqher@alum.us.es}
 \setTitle{Evaluación y Optimización de la Navegación SLAM en Robots Móviles}
+%\setSubtitle{No subtitle}
 \setUniversity{Universidad de Sevilla}
 \copyrightText{Reservados todos los derechos. Está prohibida la reproducción total o parcial de esta obra por cualquier medio o procedimiento, comprendidos la impresión, la reprografía, el microfilm, el tratamiento informático o cualquier otro sistema, así como la distribución de ejemplares mediante alquiler y préstamo, sin la autorización escrita del autor o de los límites que autorice la Ley de Propiedad Intelectual.}
-\supervisor{Fernando Díaz del Río}{Dr.~}{Departamento de Arquitectura y Tecnología de Computadores}
+\supervisor{Fernando Díaz del Río}{Dr.~}{Arquitectura y Tecnología de Computadores}
+
+
 
 \makeglossaries
 \begin{document}
 \makeTitlePage
 
 \pagestyle{empty}
-% \begin{dedication}
-% ...Dedicatoria
-% \end{dedication}
+\begin{dedication}
+    A mis padres, a mis tíos, y a mi pareja,\break
+    que me han ayudado mucho, aun sin saberlo siquiera.
+\end{dedication}
 \pagenumbering{roman}
+\pagestyle{empty}
 
-\input{agradecimientos}
-\input{resumen}
+\input{Agradecimientos}
+\input{Resumen}
 
 \tableofcontents
 \listoffigures
@@ -52,32 +65,44 @@
 \pagenumbering{arabic}
 \input{acronyms}
 
-\lineNumbersOff
+\lineNumbersOn
 
 \part{Introducción}
 \input{Contexto}
 \input{Objetivos}
-\nocite{*}
 
-\part{Metodología}
+\part{Estudio Previo}
+\input{Introduccion}
+\input{MetodologiaDesarrollo}
 
+\part{Análisis del problema}
+\input{MarcoTeorico}
+\input{Entorno}
+\input{Requisitos}
 
-\part{Diseño del sistema}
+\part{Diseño e implementación}
+\input{PlataformaDesarrollo}
+\input{Navegacion}
+\input{CinematicaDinamica}
+\input{Planificador}
 
+\part{Pruebas}
+\input{MetodologiaExperimental}
+\input{Resultados}
 
-\part{Desarrollo del proyecto}
+\part{Conclusiones}
+\input{Logros}
+\input{Futuro}
 
+\lineNumbersOff
 
-\part{Cierre del proyecto}
+%\setglossarystyle{long}
+%\printglossaries
 
-
-\part{Apendices}
-
-\printglossaries
 \newpage
 
 \bibliographystyle{abbrvnat}
-%\addcontentsline{toc}{chapter}{Referencias bibliográficas}
+\addcontentsline{toc}{chapter}{Referencias bibliográficas}
 \bibliography{referencias}
 
 \end{document}

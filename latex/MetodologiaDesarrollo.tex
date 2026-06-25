@@ -1,0 +1,47 @@
+%!TEX root = tfg.tex
+\chapter{Metodología de desarrollo}
+
+\begin{quotation}[General]{Dwight D. Eisenhower (1890--1969)}
+Los planes no sirven de nada, pero la planificación lo es todo.
+\end{quotation}
+
+\begin{abstract}
+Este capítulo describe el enfoque metodológico adoptado para el desarrollo del proyecto, incluyendo la organización iterativa del trabajo, el control de versiones y las herramientas y entornos de desarrollo utilizados.
+\end{abstract}
+
+\section{Enfoque iterativo e incremental}
+
+El desarrollo del proyecto ha seguido un enfoque \textbf{iterativo e incremental}, en el que cada fase añade funcionalidad sobre la anterior y los resultados de cada iteración sirven de base para la siguiente. Este enfoque ha resultado natural dado el carácter experimental del trabajo: no es posible diseñar e implementar el sistema completo de antemano, sino que cada decisión de diseño depende de los resultados obtenidos en la fase anterior.
+
+Las principales fases del desarrollo han sido las siguientes:
+
+\begin{enumerate}
+    \item \textbf{Aprendizaje del ecosistema ROS2.} Antes de cualquier desarrollo, fue necesario comprender el funcionamiento de ROS2 desde sus fundamentos: el modelo de comunicación basado en nodos, topics, servicios y actions; el sistema de compilación con \texttt{colcon}; la estructura de paquetes; y las herramientas de depuración y visualización como \texttt{rviz2} y \texttt{ros2 topic}. Esta fase, que incluyó la realización de tutoriales oficiales del TurtleBot4 y experimentos básicos con el robot simulado, fue la más extensa del proyecto y constituyó la base sobre la que se apoyaron todas las fases posteriores.
+    \item \textbf{Control básico del robot.} Implementación de nodos C++ para mover el robot mediante los botones del Create3, primero con control open-loop y posteriormente con control closed-loop usando odometría.
+    \item \textbf{Integración con Nav2.} Configuración del stack de navegación Nav2 con AMCL para localización y planificación de trayectorias sobre un mapa pregenerado del entorno de simulación.
+    \item \textbf{Automatización de experimentos.} Desarrollo de los nodos de medición en C++ (\texttt{data\_measure.cpp} y \texttt{data\_measure\_dynamic.cpp}) que automatizan el envío de objetivos y la recogida de métricas.
+    \item \textbf{Análisis de resultados.} Creación del proyecto Python de análisis que genera gráficas comparativas a partir de los datos recogidos.
+\end{enumerate}
+
+\section{Control de versiones}
+
+El código fuente y la memoria del proyecto se han gestionado mediante \textbf{Git}, con el repositorio alojado en GitHub. Se han utilizado ramas diferenciadas para separar el desarrollo según su naturaleza:
+
+\begin{itemize}
+    \item \texttt{main}: rama principal, contiene el estado estable del proyecto.
+    \item \texttt{SLAM/Nav-work}: desarrollo del sistema ROS2: nodos C++, configuración de Nav2, scripts de análisis y Dockerfile.
+    \item \texttt{LaTeX-work}: redacción de la memoria del TFG.
+    \item \texttt{Tutorials}: tutoriales iniciales de ROS2 y primeras pruebas con el TurtleBot4.
+\end{itemize}
+
+Esta separación ha permitido trabajar en paralelo sobre el código y la memoria sin interferencias, y mantener un historial de cambios claro y trazable.
+
+\section{Documentación del proceso}
+
+Dado que el desarrollo ha sido iterativo y ha implicado numerosas decisiones técnicas, errores y soluciones no siempre evidentes, se ha mantenido un \textbf{diario de desarrollo} personal en formato \LaTeX\ (\texttt{notas\_desarrollo.tex}). Este documento recoge, para cada hito relevante del proyecto, una descripción del problema abordado, la causa identificada, la solución adoptada y la sección de la memoria a la que pertenece el contenido.
+
+Este enfoque ha permitido documentar el proceso en tiempo real sin interrumpir el flujo de desarrollo, y ha facilitado la redacción posterior de la memoria al tener ya estructurado y etiquetado el contenido.
+
+\section{Entorno de desarrollo}
+
+El desarrollo se ha realizado principalmente sobre \textbf{Ubuntu 22.04 LTS} con \textbf{ROS2 Humble}, tanto en un portátil de uso general como en un PC de alto rendimiento del Departamento de Arquitectura y Tecnología de Computadores. Para este último, que utiliza Ubuntu 24.04, se ha empleado \textbf{Docker} con una imagen basada en Ubuntu 22.04 que incluye ROS2 Humble y los paquetes necesarios del TurtleBot4, garantizando así la reproducibilidad del entorno independientemente del sistema operativo del host.

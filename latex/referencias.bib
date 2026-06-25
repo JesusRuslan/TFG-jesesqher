@@ -1,49 +1,225 @@
-This file was created with JabRef 2.1.
-Encoding: Cp1252
-
 %!TEX root =  tfg.tex
 
-@misc{spring,
-author={Marcos Vázquez Gonzalez},
-title = {¿Qué es Spring Boot?},
-year ={2021},
-howpublished={https://blog.codmind.com/que-es-spring-boot/},
- }
+% -- Algoritmos de planificación ---------------------------------------------------------------------------
 
-@misc{react,
-author={ Gastón Gaminiti},
-title = { ¿Qué es React JS y cómo funciona?},
-year = {2021},
-howpublished={https://www.coderhouse.es/blog/que-es-react-js/},
+@article{dijkstra1959,
+  author  = {Dijkstra, Edsger W.},
+  title   = {A note on two problems in connexion with graphs},
+  journal = {Numerische Mathematik},
+  volume  = {1},
+  number  = {1},
+  pages   = {269--271},
+  year    = {1959},
+  doi     = {10.1007/BF01386390}
 }
 
-@misc{chakra,
-author= {Goncy},
-title = {Acelerando el desarrollo con Chakra UI},
-year = {2021},
-howpublished={https://goncy.netlify.app/acelerando-desarrollo-chakra },
+@article{hart1968,
+  author  = {Hart, Peter E. and Nilsson, Nils J. and Raphael, Bertram},
+  title   = {A formal basis for the heuristic determination of minimum cost paths},
+  journal = {IEEE Transactions on Systems Science and Cybernetics},
+  volume  = {4},
+  number  = {2},
+  pages   = {100--107},
+  year    = {1968},
+  doi     = {10.1109/TSSC.1968.300136}
 }
 
-
-@book{pmbok,
- author = {Project Management Institute},
- title = {A guide to the Project Management Body of Knowledge (PMBOK guide)},
- year = {2017},
- isbn = {9781628251845},
- publisher = {Project Management Institute},
- address = {Newtown Square, PA, USA},
-}
- 
-@misc{moscow,
-    author = {Benjamín Hermitte},
-    title = {El método MoSCoW: priorización simple de tareas en un Proyecto},
-    year = {2021},
-    howpublished = {https://www.wimi-teamwork.com/es/blog/el-metodo-moscow-priorizacion-simple-de-tareas-en-un-proyecto/}
+@techreport{lavalle1998,
+  author      = {LaValle, Steven M.},
+  title       = {Rapidly-exploring random trees: A new tool for path planning},
+  institution = {Iowa State University, Department of Computer Science},
+  number      = {TR 98-11},
+  year        = {1998},
+  url         = {http://lavalle.pl/papers/Lav98c.pdf}
 }
 
-@misc{postmortem,
-    author = {Héctor Canto},
-    title = {Qué es y cómo se hace un Post Mortem},
-    year = {2021},
-    howpublished = {https://openwebinars.net/blog/que-es-y-como-se-hace-un-post-mortem/ }
+@article{karaman2011,
+  author  = {Karaman, Sertac and Frazzoli, Emilio},
+  title   = {Sampling-based algorithms for optimal motion planning},
+  journal = {The International Journal of Robotics Research},
+  volume  = {30},
+  number  = {7},
+  pages   = {846--894},
+  year    = {2011},
+  doi     = {10.1177/0278364911406761}
+}
+
+% -- ROS2 ---------------------------------------------------------------------------
+
+@article{macenski2022ros2,
+  author    = {Macenski, Steven and Foote, Tully and Gerkey, Brian and Lalancette, Chris and Woodall, William},
+  title     = {Robot Operating System 2: Design, architecture, and uses in the wild},
+  journal   = {Science Robotics},
+  volume    = {7},
+  number    = {66},
+  year      = {2022},
+  doi       = {10.1126/scirobotics.abm6074}
+}
+
+@misc{ros2_humble,
+  author       = {{Open Robotics}},
+  title        = {{ROS 2 Humble Hawksbill} --- documentación oficial},
+  year         = {2022},
+  url          = {https://docs.ros.org/en/humble/},
+}
+
+% -- Nav2 ---------------------------------------------------------------------------
+
+@inproceedings{macenski2020nav2,
+  author    = {Macenski, Steven and Martín, Francisco and White, Ruffin and Clavero, Jonatan Ginés},
+  title     = {The Marathon 2: A Navigation System},
+  booktitle = {2020 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  pages     = {2718--2725},
+  year      = {2020},
+  doi       = {10.1109/IROS45743.2020.9341207}
+}
+
+@misc{nav2_docs,
+  author       = {{Nav2 Contributors}},
+  title        = {{Nav2} --- documentación oficial},
+  year         = {2023},
+  url          = {https://docs.nav2.org/},
+}
+
+@article{macenski2024smac,
+  author  = {Macenski, Steve and Booker, Matthew and Wallace, Josh and Fischer, Tony},
+  title   = {Open-Source, Cost-Aware Kinematically Feasible Planning for Mobile and Surface Robotics},
+  journal = {arXiv preprint arXiv:2401.13078},
+  year    = {2024},
+  url     = {https://arxiv.org/abs/2401.13078}
+}
+
+% -- Gazebo / simulación ---------------------------------------------------------------------------
+
+@inproceedings{koenig2004gazebo,
+  author    = {Koenig, Nathan and Howard, Andrew},
+  title     = {Design and use paradigms for {Gazebo}, an open-source multi-robot simulator},
+  booktitle = {2004 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  volume    = {3},
+  pages     = {2149--2154},
+  year      = {2004},
+  doi       = {10.1109/IROS.2004.1389727}
+}
+
+@misc{ignition_fortress,
+  author       = {{Open Robotics}},
+  title        = {Ignition {Gazebo} Fortress --- documentación oficial},
+  year         = {2021},
+  url          = {https://gazebosim.org/docs/fortress},
+}
+
+% -- TurtleBot4 y Create3 ---------------------------------------------------------------------------
+
+@misc{turtlebot4_docs,
+  author       = {{Clearpath Robotics}},
+  title        = {{TurtleBot 4} --- documentación oficial},
+  year         = {2022},
+  url          = {https://turtlebot.github.io/turtlebot4-user-manual/},
+}
+
+@misc{create3_docs,
+  author       = {{iRobot Education}},
+  title        = {{iRobot Create 3} --- documentación oficial},
+  year         = {2022},
+  url          = {https://iroboteducation.github.io/create3_docs/},
+}
+
+@misc{create3_sim,
+  author       = {{iRobot Education}},
+  title        = {{create3\_sim} --- repositorio oficial de simulación},
+  year         = {2022},
+  url          = {https://github.com/iRobotEducation/create3_sim},
+}
+
+% -- SLAM y localización ---------------------------------------------------------------------------
+
+@article{durrant2006slam,
+  author  = {Durrant-Whyte, Hugh and Bailey, Tim},
+  title   = {Simultaneous localisation and mapping ({SLAM}): Part {I}},
+  journal = {IEEE Robotics \& Automation Magazine},
+  volume  = {13},
+  number  = {2},
+  pages   = {99--110},
+  year    = {2006},
+  doi     = {10.1109/MRA.2006.1638022}
+}
+
+@inproceedings{fox1999amcl,
+  author    = {Fox, Dieter and Burgard, Wolfram and Dellaert, Frank and Thrun, Sebastian},
+  title     = {Monte Carlo localization: Efficient position estimation for mobile robots},
+  booktitle = {Proceedings of the Sixteenth National Conference on Artificial Intelligence (AAAI-99)},
+  pages     = {343--349},
+  year      = {1999}
+}
+
+@misc{slam_toolbox,
+  author       = {Macenski, Steven},
+  title        = {{slam\_toolbox} --- {SLAM} para ROS2},
+  year         = {2021},
+  url          = {https://github.com/SteveMacenski/slam_toolbox},
+}
+
+% -- Cinemática de robots diferenciales ---------------------------------------------------------------------------
+
+@book{siegwart2011robotics,
+  author    = {Siegwart, Roland and Nourbakhsh, Illah R. and Scaramuzza, Davide},
+  title     = {Introduction to Autonomous Mobile Robots},
+  edition   = {2},
+  publisher = {MIT Press},
+  year      = {2011},
+  isbn      = {978-0-262-01535-6}
+}
+
+@book{thrun2005probabilistic,
+  author    = {Thrun, Sebastian and Burgard, Wolfram and Fox, Dieter},
+  title     = {Probabilistic Robotics},
+  publisher = {MIT Press},
+  year      = {2005},
+  isbn      = {978-0-262-20162-9}
+}
+
+% -- DWB / DWA (controlador local) ---------------------------------------------------------------------------
+
+@article{fox1997dwa,
+  author    = {Fox, Dieter and Burgard, Wolfram and Thrun, Sebastian},
+  title     = {The dynamic window approach to collision avoidance},
+  journal   = {IEEE Robotics \& Automation Magazine},
+  volume    = {4},
+  number    = {1},
+  pages     = {23--33},
+  year      = {1997},
+  doi       = {10.1109/100.580977}
+}
+
+@misc{dwb_nav2,
+  author       = {Lu, David},
+  title        = {{DWB Local Planner} --- plugin de Nav2},
+  year         = {2019},
+  url          = {https://github.com/ros-planning/navigation2/tree/main/nav2_dwb_controller}
+}
+
+% -- Plataforma de desarrollo ---------------------------------------------------------------------------
+
+@misc{vscode,
+  author       = {{Microsoft}},
+  title        = {Visual Studio Code},
+  year         = {2024},
+  url          = {https://code.visualstudio.com/},
+}
+
+@misc{docker,
+  author       = {{Docker Inc.}},
+  title        = {Docker --- plataforma de contenedores},
+  year         = {2024},
+  url          = {https://www.docker.com/},
+}
+
+% -- Extras ---------------------------------------------------------------------------
+
+@book{korzybski1933,
+  author    = {Korzybski, Alfred},
+  title     = {Science and Sanity: An Introduction to Non-Aristotelian Systems and General Semantics},
+  publisher = {Institute of General Semantics},
+  year      = {1933},
+  address   = {New York}
 }
