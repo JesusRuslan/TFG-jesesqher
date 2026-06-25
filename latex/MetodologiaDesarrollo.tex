@@ -19,7 +19,7 @@ Las principales fases del desarrollo han sido las siguientes:
     \item \textbf{Aprendizaje del ecosistema ROS2.} Antes de cualquier desarrollo, fue necesario comprender el funcionamiento de ROS2 desde sus fundamentos: el modelo de comunicación basado en nodos, topics, servicios y actions; el sistema de compilación con \texttt{colcon}; la estructura de paquetes; y las herramientas de depuración y visualización como \texttt{rviz2} y \texttt{ros2 topic}. Esta fase, que incluyó la realización de tutoriales oficiales del TurtleBot4 y experimentos básicos con el robot simulado, fue la más extensa del proyecto y constituyó la base sobre la que se apoyaron todas las fases posteriores.
     \item \textbf{Control básico del robot.} Implementación de nodos C++ para mover el robot mediante los botones del Create3, primero con control open-loop y posteriormente con control closed-loop usando odometría.
     \item \textbf{Integración con Nav2.} Configuración del stack de navegación Nav2 con AMCL para localización y planificación de trayectorias sobre un mapa pregenerado del entorno de simulación.
-    \item \textbf{Automatización de experimentos.} Desarrollo de los nodos de medición en C++ (\texttt{data\_measure.cpp} y \texttt{data\_measure\_dynamic.cpp}) que automatizan el envío de goals y la recogida de métricas.
+    \item \textbf{Automatización de experimentos.} Desarrollo de los nodos de medición en C++ (\texttt{data\_measure.cpp} y \texttt{data\_measure\_dynamic.cpp}) que automatizan el envío de objetivos y la recogida de métricas.
     \item \textbf{Análisis de resultados.} Creación del proyecto Python de análisis que genera gráficas comparativas a partir de los datos recogidos.
 \end{enumerate}
 

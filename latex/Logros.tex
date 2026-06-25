@@ -37,11 +37,11 @@ Los objetivos planteados al inicio del proyecto han sido alcanzados en su totali
 
     \item A* presenta tiempos de planificación entre un 20 y un 50\% menores que Dijkstra smooth, lo que lo hace preferible en escenarios donde la velocidad de replanificación sea crítica y la suavidad de la trayectoria sea menos relevante.
 
-    \item El suavizado de trayectorias (\texttt{do\_refinement: true}) tiene un efecto limitado sobre la irregularidad (reducción inferior al 5\%) pero mejora moderadamente la curvatura media (entre un 10 y un 20\% en la mayoría de los goals). Su coste en tiempo de planificación es de entre 3 y 9 ms en Dijkstra.
+    \item El suavizado de trayectorias (\texttt{do\_refinement: true}) tiene un efecto limitado sobre la irregularidad (reducción inferior al 5\%) pero mejora moderadamente la curvatura media (entre un 10 y un 20\% en la mayoría de los objetivos). Su coste en tiempo de planificación es de entre 3 y 9 ms en Dijkstra.
 
     \item En ejecución, el controlador local DWB tiende a igualar el comportamiento de las distintas configuraciones: las diferencias de tiempo total de navegación son inferiores al 5\% y las de desviación media inferiores a 0,1 metros. La diferencia más apreciable es el perfil de velocidad angular, notablemente más errático en A* como consecuencia directa de la mayor irregularidad de sus trayectorias.
 
-    \item Dijkstra smooth es la configuración con mejor desviación media global (1,204 m) y la que produce un comportamiento de navegación más estable y predecible, siendo la opción recomendada para entornos de almacén con obstáculos estáticos.
+    \item Dijkstra smooth es la configuración con mejor desviación media global (1,204 m) y la que produce un comportamiento de navegación más estable y predecible, siendo la opción recomendada para entornos de almacén con obstáculos estáticos. No obstante, estos resultados deben interpretarse con cautela: como se ha señalado en el análisis de trayectorias, la reconstrucción del plan desde el CSV presenta discontinuidades debidas a replanificaciones de Nav2, lo que introduce un error sistemático en la métrica de desviación respecto al plan.
 \end{itemize}
 
 Más allá del cumplimiento de los objetivos, el proyecto ha permitido adquirir una comprensión profunda del ecosistema ROS2 y del stack de navegación Nav2, desde la configuración del entorno de simulación hasta el análisis cuantitativo de los resultados. El trabajo desarrollado constituye una base sólida y reproducible para futuras investigaciones en navegación autónoma de robots móviles.

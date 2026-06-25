@@ -6,12 +6,12 @@ Lo que no se define no se puede medir. Lo que no se mide no se puede mejorar.
 \end{quotation}
 
 \begin{abstract}
-Este capítulo presenta y analiza los resultados de los experimentos de navegación realizados con las cuatro configuraciones evaluadas: Dijkstra con y sin suavizado, y A* con y sin suavizado. Los resultados se organizan en dos bloques: métricas estáticas, obtenidas sobre la trayectoria planificada sin ejecución real, y métricas dinámicas, obtenidas durante la navegación real del robot hasta el goal más complejo del entorno de simulación.
+Este capítulo presenta y analiza los resultados de los experimentos de navegación realizados con las cuatro configuraciones evaluadas: Dijkstra con y sin suavizado, y A* con y sin suavizado. Los resultados se organizan en dos bloques: métricas estáticas, obtenidas sobre la trayectoria planificada sin ejecución real, y métricas dinámicas, obtenidas durante la navegación real del robot hasta el objetivo más complejo del entorno de simulación.
 \end{abstract}
 
 \section{Resultados estáticos}
 
-Las métricas estáticas se obtienen a partir de la trayectoria planificada por NavFn para cada uno de los cuatro goals de navegación, sin que el robot se desplace físicamente. Permiten comparar los algoritmos en términos de calidad geométrica del plan: tiempo de cómputo, longitud, suavidad y curvatura.
+Las métricas estáticas se obtienen a partir de la trayectoria planificada por NavFn para cada uno de los cuatro objetivos de navegación, sin que el robot se desplace físicamente. Permiten comparar los algoritmos en términos de calidad geométrica del plan: tiempo de cómputo, longitud, suavidad y curvatura.
 
 \subsection{Tiempo de planificación y número de waypoints}
 
@@ -20,17 +20,17 @@ La figura~\ref{fig:waypoints_plantime} muestra la relación entre el número de 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/plots/static/1_waypoints_vs_plantime}
-    \caption{Waypoints vs tiempo de planificación para los cuatro goals y configuraciones.}
+    \caption{Waypoints vs tiempo de planificación para los cuatro objetivos y configuraciones.}
     \label{fig:waypoints_plantime}
 \end{figure}
 
-Se observa una correlación clara entre el número de waypoints y el tiempo de planificación: los goals más complejos generan planes más largos y tardan más en calcularse. El goal más exigente, \texttt{goal4\_compleja}, produce planes de aproximadamente 3.700--3.860 waypoints y tiempos de planificación de entre 46 y 57 ms, mientras que los goals más sencillos se resuelven en menos de 25 ms con menos de 800 waypoints.
+Se observa una correlación clara entre el número de waypoints y el tiempo de planificación: los objetivos más complejos generan planes más largos y tardan más en calcularse. El objetivo más exigente, \texttt{goal4\_compleja}, produce planes de aproximadamente 3.700--3.860 waypoints y tiempos de planificación de entre 46 y 57 ms, mientras que los objetivos más sencillos se resuelven en menos de 25 ms con menos de 800 waypoints.
 
-En cuanto a las diferencias entre algoritmos, A* nosmooth es consistentemente el más rápido: 10,9 ms en \texttt{goal1\_recto} y 46,2 ms en \texttt{goal4\_compleja}. Dijkstra smooth es el más lento, con 22,5 ms y 57,4 ms respectivamente. El overhead del suavizado es apreciable en Dijkstra (entre 3 y 9 ms por goal), mientras que en A* la diferencia entre smooth y nosmooth es menor (inferior a 3 ms en todos los goals salvo \texttt{goal2\_obstaculos}, donde el suavizado añade 8 ms).
+En cuanto a las diferencias entre algoritmos, A* nosmooth es consistentemente el más rápido: 10,9 ms en \texttt{goal1\_recto} y 46,2 ms en \texttt{goal4\_compleja}. Dijkstra smooth es el más lento, con 22,5 ms y 57,4 ms respectivamente. El overhead del suavizado es apreciable en Dijkstra (entre 3 y 9 ms por objetivo), mientras que en A* la diferencia entre smooth y nosmooth es menor (inferior a 3 ms en todos los objetivos salvo \texttt{goal2\_obstaculos}, donde el suavizado añade 8 ms).
 
 \subsection{Irregularidad de la trayectoria}
 
-Las figuras~\ref{fig:smoothness_dijkstra}, \ref{fig:smoothness_astar} y \ref{fig:smoothness_all} muestran la irregularidad de la trayectoria, medida como el cambio de ángulo acumulado en radianes, para cada goal y configuración.
+Las figuras~\ref{fig:smoothness_dijkstra}, \ref{fig:smoothness_astar} y \ref{fig:smoothness_all} muestran la irregularidad de la trayectoria, medida como el cambio de ángulo en valor absoluto acumulado en radianes, para cada objetivo y configuración.
 
 \begin{figure}[H]
     \centering
@@ -53,9 +53,9 @@ Las figuras~\ref{fig:smoothness_dijkstra}, \ref{fig:smoothness_astar} y \ref{fig
     \label{fig:smoothness_all}
 \end{figure}
 
-El hallazgo más relevante del análisis estático es la diferencia radical en irregularidad entre Dijkstra y A*. En el goal más exigente (\texttt{goal4\_compleja}), Dijkstra smooth produce una irregularidad de 55,2 rad y Dijkstra nosmooth de 57,1 rad. A* smooth alcanza los 242,2 rad y A* nosmooth los 245,4 rad, lo que supone una irregularidad aproximadamente 4,4 veces mayor que la de Dijkstra.
+El hallazgo más relevante del análisis estático es la diferencia radical en irregularidad entre Dijkstra y A*. En el objetivo más exigente (\texttt{goal4\_compleja}), Dijkstra smooth produce una irregularidad de 55,2 rad y Dijkstra nosmooth de 57,1 rad. A* smooth alcanza los 242,2 rad y A* nosmooth los 245,4 rad, lo que supone una irregularidad aproximadamente 4,4 veces mayor que la de Dijkstra.
 
-En los goals más sencillos (\texttt{goal1\_recto} y \texttt{goal3\_larga}) las diferencias son pequeñas en todos los algoritmos: con pocos obstáculos que rodear, ambos algoritmos producen planes geométricamente similares. La divergencia aparece con fuerza en \texttt{goal2\_obstaculos} (Dijkstra: 5,2 rad, A*: 21--25 rad) y se amplifica en \texttt{goal4\_compleja}, donde la mayor densidad de obstáculos obliga a A* a generar trayectorias con cambios de dirección muy frecuentes.
+En los objetivos más sencillos (\texttt{goal1\_recto} y \texttt{goal3\_larga}) las diferencias son pequeñas en todos los algoritmos: con pocos obstáculos que rodear, ambos algoritmos producen planes geométricamente similares. La divergencia aparece con fuerza en \texttt{goal2\_obstaculos} (Dijkstra: 5,2 rad, A*: 21--25 rad) y se amplifica en \texttt{goal4\_compleja}, donde la mayor densidad de obstáculos obliga a A* a generar trayectorias con cambios de dirección muy frecuentes.
 
 La figura~\ref{fig:serrado_astar} ilustra visualmente este comportamiento: la trayectoria planificada por A* nosmooth presenta un patrón en zigzag característico de los algoritmos de búsqueda en cuadrícula cuando la heurística prioriza avanzar hacia el destino a través de celdas diagonales. Este patrón no aparece en las trayectorias de Dijkstra, que expande de forma uniforme y genera caminos más regulares.
 
@@ -66,11 +66,11 @@ La figura~\ref{fig:serrado_astar} ilustra visualmente este comportamiento: la tr
     \label{fig:serrado_astar}
 \end{figure}
 
-Respecto al efecto del suavizado, su impacto sobre la irregularidad es mínimo en ambos algoritmos. En Dijkstra la diferencia entre smooth y nosmooth es inferior a 2 rad en todos los goals; en A*, inferior a 4 rad. El suavizado de NavFn reduce ligeramente la irregularidad pero no corrige el patrón estructural del algoritmo.
+Respecto al efecto del suavizado, su impacto sobre la irregularidad es mínimo en ambos algoritmos. En Dijkstra la diferencia entre smooth y nosmooth es inferior a 2 rad en todos los objetivos; en A*, inferior a 4 rad. El suavizado de NavFn reduce ligeramente la irregularidad pero no corrige el patrón estructural del algoritmo.
 
 \subsection{Curvatura media}
 
-Las figuras~\ref{fig:curvature_smooth}, \ref{fig:curvature_nosmooth} y \ref{fig:curvature_all} muestran la curvatura media de la trayectoria en rad/m, que normaliza la irregularidad respecto a la longitud del plan y permite comparar goals de distinta extensión.
+Las figuras~\ref{fig:curvature_smooth}, \ref{fig:curvature_nosmooth} y \ref{fig:curvature_all} muestran la curvatura media de la trayectoria en rad/m, que normaliza la irregularidad respecto a la longitud del plan y permite comparar objetivos de distinta extensión.
 
 \begin{figure}[H]
     \centering
@@ -93,13 +93,13 @@ Las figuras~\ref{fig:curvature_smooth}, \ref{fig:curvature_nosmooth} y \ref{fig:
     \label{fig:curvature_all}
 \end{figure}
 
-Los resultados confirman y matizan lo observado en los resultados de irregularidad. En \texttt{goal1\_recto}, todos los algoritmos producen curvaturas similares (0,61--0,68 rad/m), ya que la trayectoria es prácticamente directa. En \texttt{goal2\_obstaculos}, Dijkstra se mantiene en torno a 0,77 rad/m mientras que A* smooth alcanza 3,13 rad/m y A* nosmooth 3,77 rad/m. En \texttt{goal4\_compleja}, Dijkstra produce una curvatura media de ~1,0 rad/m frente a los ~4,2 rad/m de A*. La diferencia es consistente: A* genera trayectorias con una densidad de giros entre 3 y 5 veces mayor que Dijkstra en los goals con obstáculos.
+Los resultados confirman y matizan lo observado en los resultados de irregularidad. En \texttt{goal1\_recto}, todos los algoritmos producen curvaturas similares (0,61--0,68 rad/m), ya que la trayectoria es prácticamente directa. En \texttt{goal2\_obstaculos}, Dijkstra se mantiene en torno a 0,77 rad/m mientras que A* smooth alcanza 3,13 rad/m y A* nosmooth 3,77 rad/m. En \texttt{goal4\_compleja}, Dijkstra produce una curvatura media de ~1,0 rad/m frente a los ~4,2 rad/m de A*. La diferencia es consistente: A* genera trayectorias con una densidad de giros entre 3 y 5 veces mayor que Dijkstra en los objetivos con obstáculos.
 
-En cuanto al efecto del suavizado sobre la curvatura media, el comportamiento es mayoritariamente favorable: smooth produce menor curvatura que nosmooth en casi todos los goals, aunque la reducción es modesta (inferior al 20\% en la mayoría de los casos). La excepción es \texttt{goal3\_larga}, donde A* nosmooth presenta una curvatura ligeramente menor que A* smooth (1,35 vs 1,46 rad/m), sin una causa clara más allá de la particularidad geométrica de esa trayectoria.
+En cuanto al efecto del suavizado sobre la curvatura media, el comportamiento es mayoritariamente favorable: smooth produce menor curvatura que nosmooth en casi todos los objetivos, aunque la reducción es modesta (inferior al 20\% en la mayoría de los casos). La excepción es \texttt{goal3\_larga}, donde A* nosmooth presenta una curvatura ligeramente menor que A* smooth (1,35 vs 1,46 rad/m), sin una causa clara más allá de la particularidad geométrica de esa trayectoria.
 
 \section{Resultados dinámicos}
 
-Las métricas dinámicas se obtienen durante la ejecución real del robot navegando hasta \texttt{goal4\_compleja} $(-13, 19)$, el goal más complejo del entorno. El robot recorre una trayectoria de aproximadamente 58 metros en un entorno con múltiples obstáculos y cambios de dirección.
+Las métricas dinámicas se obtienen durante la ejecución real del robot navegando hasta \texttt{goal4\_compleja} $(-13, 19)$, el objetivo más complejo del entorno. El robot recorre una trayectoria de aproximadamente 58 metros en un entorno con múltiples obstáculos y cambios de dirección.
 
 \begin{tcolorbox}[colback=gray!10, colframe=gray!40, title=Vídeo de la navegación]
 Se ha grabado un vídeo de la navegación completa del robot simulado hasta \texttt{goal4\_compleja} con la configuración Dijkstra smooth, que incluye la visualización en RViz2 del costmap, las partículas AMCL y la trayectoria ejecutada en tiempo real. El vídeo está disponible en:\\
@@ -170,7 +170,7 @@ Las figuras~\ref{fig:par_dijkstra}--\ref{fig:par_astar_nosmooth} muestran, para 
     \label{fig:par_astar_nosmooth}
 \end{figure}
 
-Las cuatro trayectorias reales son prácticamente idénticas en forma, lo que indica que el controlador local DWB produce un comportamiento de navegación similar independientemente del planificador global utilizado. Comparando la vista de RViz2 con la reconstrucción desde CSV, se aprecia que la trayectoria planificada reconstruida presenta discontinuidades en la zona inferior derecha del mapa, debidas a replanificaciones de Nav2 durante la navegación tal y como se describe en el capítulo de metodología. La trayectoria planificada real sí rodea correctamente todos los obstáculos, como confirma la vista de RViz2.
+Las cuatro trayectorias reales son prácticamente idénticas en forma, lo que indica que el controlador local DWB produce un comportamiento de navegación similar independientemente del planificador global utilizado. Comparando la vista de RViz2 con la reconstrucción desde CSV, se aprecia que la trayectoria planificada reconstruida presenta discontinuidades en la zona inferior derecha del mapa, debidas a replanificaciones de Nav2 durante la navegación tal y como se describe en el capítulo de metodología (\ref{sec:limitaciones_simulacion}). La trayectoria planificada real sí rodea correctamente todos los obstáculos, como confirma la vista de RViz2.
 
 \subsection{Velocidades de navegación}
 
@@ -334,11 +334,11 @@ En términos de desviación media (figura~\ref{fig:dev_mean}), Dijkstra smooth o
 
 Los resultados obtenidos permiten extraer las siguientes conclusiones sobre el comportamiento de los algoritmos evaluados en el entorno de simulación utilizado:
 
-\textbf{Dijkstra produce trayectorias significativamente más suaves que A* en NavFn:} La irregularidad de A* es entre 4 y 5 veces mayor que la de Dijkstra en el goal más complejo, y la curvatura media entre 3 y 5 veces mayor en los goals con obstáculos. Esta diferencia es estructural y no se corrige con el suavizado de NavFn.
+\textbf{Dijkstra produce trayectorias significativamente más suaves que A* en NavFn:} La irregularidad de A* es entre 4 y 5 veces mayor que la de Dijkstra en el objetivo más complejo, y la curvatura media entre 3 y 5 veces mayor en los objetivos con obstáculos. Esta diferencia es estructural y no se corrige con el suavizado de NavFn.
 
-\textbf{El suavizado tiene un efecto limitado sobre la irregularidad:} La reducción de irregularidad que aporta \texttt{do\_refinement: true} es inferior al 5\% en ambos algoritmos. Su efecto más apreciable es sobre la curvatura media, donde mejora entre un 10 y un 20\% en la mayoría de los goals. El suavizado tiene un coste en tiempo de planificación de entre 3 y 9 ms en Dijkstra.
+\textbf{El suavizado tiene un efecto limitado sobre la irregularidad:} La reducción de irregularidad que aporta \texttt{do\_refinement: true} es inferior al 5\% en ambos algoritmos. Su efecto más apreciable es sobre la curvatura media, donde mejora entre un 10 y un 20\% en la mayoría de los objetivos. El suavizado tiene un coste en tiempo de planificación de entre 3 y 9 ms en Dijkstra.
 
-\textbf{A* es más rápido en planificación pero a costa de mayor irregularidad:} A* nosmooth es consistentemente el más rápido en todos los goals, con tiempos de planificación entre un 20 y un 50\% menores que Dijkstra smooth. Sin embargo, las trayectorias que genera son marcadamente más irregulares, lo que se traduce en mayor velocidad angular durante la ejecución y mayor desviación media respecto al plan.
+\textbf{A* es más rápido en planificación pero a costa de mayor irregularidad:} A* nosmooth es consistentemente el más rápido en todos los objetivos, con tiempos de planificación entre un 20 y un 50\% menores que Dijkstra smooth. Sin embargo, las trayectorias que genera son marcadamente más irregulares, lo que se traduce en mayor velocidad angular durante la ejecución y mayor desviación media respecto al plan.
 
 \textbf{Las diferencias en ejecución son reales pero moderadas:} El controlador local DWB absorbe parte de las diferencias entre planificadores: los tiempos totales de navegación difieren en apenas un 5\% y las desviaciones medias en menos de 0,1 m. La diferencia más visible en ejecución es el perfil de velocidad angular, que es notablemente más errático en A*.
 

@@ -27,14 +27,14 @@ Un aspecto relevante descubierto durante el desarrollo es que el Create3 impleme
 
 \section{Nodo de métricas estático}
 
-El nodo \texttt{data\_measure} implementa un action client de Nav2 que automatiza el envío de goals de navegación y la recogida de métricas sobre la trayectoria planificada. Se denomina ``estático'' porque cancela la navegación inmediatamente tras recibir el plan, sin que el robot ejecute físicamente la trayectoria.
+El nodo \texttt{data\_measure} implementa un action client de Nav2 que automatiza el envío de objetivos de navegación y la recogida de métricas sobre la trayectoria planificada. Se denomina ``estático'' porque cancela la navegación inmediatamente tras recibir el plan, sin que el robot ejecute físicamente la trayectoria.
 
-\subsection{Goals de navegación}
+\subsection{Objetivos de navegación}
 
-El nodo procesa cinco goals en secuencia, definidos como coordenadas fijas en el mapa del almacén:
+El nodo itera sobre un conjunto de cuatro objetivos de navegación distintos definidos como coordenadas fijas en el mapa del almacén, seleccionados para evaluar el comportamiento en diferentes trayectorias. Además, se incluye un objetivo genérico inicial para precargar la memoria del planificador.
 
 \begin{itemize}
-    \item \textbf{warmup} $(-1, 0)$: goal de calentamiento, no se registran sus métricas. Necesario porque Nav2 inicializa cachés internas en la primera planificación, lo que hace que el primer goal tarde significativamente más que los siguientes.
+    \item \textbf{warmup} $(-1, 0)$: objetivo de calentamiento, no se registran sus métricas. Necesario porque Nav2 inicializa cachés internas en la primera planificación, lo que hace que el primer objetivo tarde significativamente más que los siguientes.
     \item \textbf{goal1\_recto} $(-11, 1)$: trayectoria corta y sin obstáculos directos.
     \item \textbf{goal2\_obstaculos} $(2, -5)$: trayectoria que requiere rodear obstáculos.
     \item \textbf{goal3\_larga} $(11, -13)$: trayectoria larga con pocos cambios de dirección.
@@ -43,22 +43,22 @@ El nodo procesa cinco goals en secuencia, definidos como coordenadas fijas en el
 
 \subsection{Flujo de funcionamiento}
 
-El nodo sigue el siguiente flujo para cada goal:
+El nodo sigue el siguiente flujo para cada objetivo:
 
 \begin{enumerate}
-    \item Envía el goal a Nav2 mediante \texttt{async\_send\_goal} y anota el timestamp de envío.
+    \item Envía el objetivo a Nav2 mediante \texttt{async\_send\_goal} y anota el timestamp de envío.
     \item Espera el callback de \texttt{/plan} (\texttt{nav\_msgs/msg/Path}), que llega cuando Nav2 ha calculado la trayectoria.
     \item Calcula las métricas sobre el plan recibido y anota el timestamp de llegada.
     \item Cancela la navegación con \texttt{async\_cancel\_all\_goals}.
-    \item Guarda las métricas en el CSV y espera 3 segundos antes de enviar el siguiente goal.
+    \item Guarda las métricas en el CSV y espera 3 segundos antes de enviar el siguiente objetivo.
 \end{enumerate}
 
 \subsection{Métricas calculadas}
 
-Para cada goal se calculan las siguientes métricas:
+Para cada objetivo se calculan las siguientes métricas:
 
 \begin{itemize}
-    \item \textbf{Tiempo de planificación:} diferencia entre el timestamp de envío del goal y el de recepción del plan, en milisegundos.
+    \item \textbf{Tiempo de planificación:} diferencia entre el timestamp de envío del objetivo y el de recepción del plan, en milisegundos.
     \item \textbf{Longitud total:} suma de distancias euclídeas entre puntos consecutivos del plan, en metros.
     \item \textbf{Distancia en línea recta:} distancia euclídea entre el primer y el último punto del plan, en metros.
     \item \textbf{Ratio longitud/línea recta:} cociente entre la longitud real y la distancia en línea recta. Un valor de 1,0 indica trayectoria perfectamente directa; valores mayores indican mayor rodeo.
@@ -72,17 +72,17 @@ Los resultados se guardan en archivos CSV nombrados según el algoritmo y la con
 
 \section{Nodo de métricas dinámico}
 
-El nodo \texttt{data\_measure\_dynamic} complementa al nodo estático recogiendo métricas durante la ejecución real de la navegación. A diferencia del nodo estático, el robot sí navega físicamente hasta el destino, lo que permite medir cómo se ejecuta la trayectoria en la práctica.
+El nodo \texttt{data\_measure\_dynamic} complementa al nodo estático recogiendo métricas durante la ejecución real de la navegación. A diferencia del nodo estático, el robot sí navega hasta el destino, lo que permite medir cómo se ejecuta la trayectoria en la práctica.
 
-\subsection{Goals de navegación}
+\subsection{Objetivos de navegación}
 
-El nodo procesa únicamente dos goals: un warmup $(-1, 0)$ y el goal dinámico $(-13, 19)$, que corresponde al goal más complejo del nodo estático y ofrece suficiente recorrido para observar el comportamiento del robot durante un tiempo prolongado.
+El nodo procesa únicamente dos objetivos: un warmup $(-1, 0)$ y el objetivo dinámico $(-13, 19)$, que corresponde al objetivo más complejo del nodo estático y ofrece suficiente recorrido para observar el comportamiento del robot durante un tiempo prolongado.
 
 \subsection{Flujo de funcionamiento}
 
-Para el goal de warmup, el nodo envía el goal y espera a que Nav2 lo complete sin registrar datos. Al completarse, limpia el buffer de muestras y el plan almacenado antes de proceder al goal real.
+Para el objetivo de warmup, el nodo envía el objetivo y espera a que Nav2 lo complete sin registrar datos. Al completarse, limpia el buffer de muestras y el plan almacenado antes de proceder al objetivo real.
 
-Para el goal dinámico, activa el muestreo a 5\,Hz desde el momento en que envía el goal hasta que Nav2 reporta que el robot ha llegado al destino. En cada muestra se busca el punto del plan más cercano a la posición real del robot para calcular la desviación. Al finalizar, vuelca todas las muestras al CSV.
+Para el objetivo dinámico, activa el muestreo a 5\,Hz desde el momento en que envía el objetivo hasta que Nav2 reporta que el robot ha llegado al destino. En cada muestra se busca el punto del plan más cercano a la posición real del robot para calcular la desviación. Al finalizar, vuelca todas las muestras al CSV.
 
 El nodo también intercepta la señal \texttt{SIGINT} (Ctrl+C) para guardar el CSV con los datos recogidos hasta ese momento antes de terminar, lo que permite detener el experimento manualmente en cualquier punto de la trayectoria.
 

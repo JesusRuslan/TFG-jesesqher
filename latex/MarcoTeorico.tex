@@ -25,7 +25,7 @@ Su modelo de comunicación se basa en \textbf{nodos} independientes que intercam
 \begin{itemize}
     \item \textbf{Topics:} canal de comunicación asíncrono de tipo publicador/suscriptor. Un nodo publica mensajes en un topic y cualquier nodo suscrito los recibe. Es el mecanismo más habitual para datos continuos como lecturas de sensores o comandos de velocidad.
     \item \textbf{Services:} comunicación síncrona de tipo petición/respuesta. El cliente envía una petición y espera la respuesta del servidor antes de continuar.
-    \item \textbf{Actions:} similar a los services pero para tareas de larga duración. Permiten enviar un objetivo, recibir retroalimentación periódica sobre el progreso y obtener el resultado final cuando la tarea termina. En este proyecto se utilizan para enviar goals de navegación a Nav2.
+    \item \textbf{Actions:} similar a los services pero para tareas de larga duración. Permiten enviar un objetivo, recibir retroalimentación periódica sobre el progreso y obtener el resultado final cuando la tarea termina. En este proyecto se utilizan para enviar objetivos de navegación a Nav2.
 \end{itemize}
 
 Este proyecto utiliza la distribución \textbf{ROS2 Humble Hawksbill}\cite{ros2_humble}, lanzada en mayo de 2022 con soporte de largo plazo (LTS) hasta mayo de 2027. Es la distribución oficial para Ubuntu 22.04 y la que los paquetes del TurtleBot4 soportan de forma nativa. En 2026, el ecosistema ROS2 ha evolucionado con distribuciones más recientes como Jazzy Jalisco (2024) y Kilted Kaiju (2025), pero Humble sigue siendo la referencia estable más utilizada en entornos académicos e industriales.

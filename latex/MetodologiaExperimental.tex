@@ -6,25 +6,25 @@ Mide lo que se pueda medir, y haz medible lo que no lo sea.
 \end{quotation}
 
 \begin{abstract}
-Este capítulo describe el diseño de los experimentos realizados para comparar los algoritmos de planificación de trayectorias, incluyendo la selección de goals, el protocolo de ejecución automatizado y las limitaciones del entorno de simulación que condicionan los resultados.
+Este capítulo describe el diseño de los experimentos realizados para comparar los algoritmos de planificación de trayectorias, incluyendo la selección de objetivos, el protocolo de ejecución automatizado y las limitaciones del entorno de simulación que condicionan los resultados.
 \end{abstract}
 
 \section{Diseño del experimento}
 
-El objetivo de los experimentos es comparar el comportamiento de distintos algoritmos de planificación de trayectorias en las mismas condiciones, sobre el mismo mapa y con los mismos puntos de origen y destino. Para garantizar la validez de la comparativa, todos los experimentos parten de la misma posición inicial del robot y utilizan los mismos goals en el mismo orden.
+El objetivo de los experimentos es comparar el comportamiento de distintos algoritmos de planificación de trayectorias en las mismas condiciones, sobre el mismo mapa y con los mismos puntos de origen y destino. Para garantizar la validez de la comparativa, todos los experimentos parten de la misma posición inicial del robot y utilizan los mismos objetivos en el mismo orden.
 
-\subsection{Selección de goals}
+\subsection{Selección de objetivos}
 
-Se han definido cuatro goals de navegación con características deliberadamente distintas, con el fin de evaluar los algoritmos en situaciones variadas:
+Se han definido cuatro objetivos de navegación con características deliberadamente distintas, con el fin de evaluar los algoritmos en situaciones variadas:
 
 \begin{itemize}
     \item \textbf{goal1\_recto} $(-11, 1)$: trayectoria corta y relativamente directa, sin obstáculos significativos en el camino. Sirve como referencia de comportamiento en condiciones simples.
     \item \textbf{goal2\_obstaculos} $(2, -5)$: trayectoria que requiere rodear obstáculos para alcanzar el destino. Permite evaluar cómo cada algoritmo gestiona la planificación en presencia de restricciones geométricas.
     \item \textbf{goal3\_larga} $(11, -13)$: trayectoria larga con pocos cambios de dirección. Permite observar la escala del tiempo de planificación y la longitud de trayectoria en recorridos extensos.
-    \item \textbf{goal4\_compleja} $(-13, 19)$: trayectoria larga con múltiples obstáculos y cambios de dirección. Es el caso más exigente y donde se esperan las mayores diferencias entre algoritmos. Este goal se utiliza también como único destino en el nodo de métricas dinámico.
+    \item \textbf{goal4\_compleja} $(-13, 19)$: trayectoria larga con múltiples obstáculos y cambios de dirección. Es el caso más exigente y donde se esperan las mayores diferencias entre algoritmos. Este objetivo se utiliza también como único destino en el nodo de métricas dinámico.
 \end{itemize}
 
-Adicionalmente, se incluye un goal de calentamiento $(-1, 0)$ al inicio de cada ejecución, cuyas métricas no se registran. Su propósito es forzar la inicialización de las cachés internas de Nav2, de forma que los tiempos de planificación de los goals reales sean comparables entre sí.
+Adicionalmente, se incluye un objetivo de calentamiento $(-1, 0)$ al inicio de cada ejecución, cuyas métricas no se registran. Su propósito es forzar la inicialización de las cachés internas de Nav2, de forma que los tiempos de planificación de los objetivos reales sean comparables entre sí.
 
 \subsection{Configuraciones evaluadas}
 
@@ -54,12 +54,13 @@ El launch file automatiza la secuencia completa de inicialización, eliminando l
     \item A \textbf{t=10\,s:} publica la pose inicial en \texttt{/initialpose} para inicializar AMCL.
     \item A \textbf{t=15\,s:} desactiva el límite de seguridad a la distancia de retroceso del Create3 (\texttt{safety\_override: backup\_only}).
     \item A \textbf{t=20\,s:} ejecuta el undock del robot.
-    \item A \textbf{t=30\,s:} arranca el nodo de métricas, que envía los goals y recoge los datos automáticamente.
+    \item A \textbf{t=30\,s:} arranca el nodo de métricas, que envía los objetivos y recoge los datos automáticamente.
 \end{enumerate}
 
-Al finalizar todos los goals, el nodo guarda el CSV y se cierra. El proceso completo no requiere ninguna interacción del usuario.
+Al finalizar todos los objetivos, el nodo guarda el CSV y se cierra. El proceso completo no requiere ninguna interacción del usuario.
 
 \section{Limitaciones del entorno de simulación}
+\label{sec:limitaciones_simulacion}
 
 Durante el desarrollo y la experimentación se identificaron varias limitaciones del entorno de simulación que condicionan los resultados y deben tenerse en cuenta al interpretar los datos.
 
